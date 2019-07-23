@@ -99,12 +99,12 @@
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="物流中转站题目描述Shopee物流会有很多个中转站。在选址的过程中，会选择离用户最近的地方建一个物流中转站。 假设给你一个二维平面网格，每个格子是房子则为1，或者是空地则为0。找到一个空地修建一个物流中转站，使得这个物流中转站到所有的房子的距离之和最小。 能修建，则返回最小的距离和。如果无法修建，则返回 -1。 若范围限制在100*100以内的网格，如何计算出最小的距离和？ 当平面网格非常大的情况">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/home/dzou/.config/Typora/typora-user-images/1562076624237.png">
-<meta property="og:updated_time" content="2019-07-23T09:42:18.345Z">
+<meta property="og:image" content="http://yoursite.com/images/1.png">
+<meta property="og:updated_time" content="2019-07-23T09:57:15.316Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="牛客网算法编程题--物流中转站 解答">
 <meta name="twitter:description" content="物流中转站题目描述Shopee物流会有很多个中转站。在选址的过程中，会选择离用户最近的地方建一个物流中转站。 假设给你一个二维平面网格，每个格子是房子则为1，或者是空地则为0。找到一个空地修建一个物流中转站，使得这个物流中转站到所有的房子的距离之和最小。 能修建，则返回最小的距离和。如果无法修建，则返回 -1。 若范围限制在100*100以内的网格，如何计算出最小的距离和？ 当平面网格非常大的情况">
-<meta name="twitter:image" content="http://yoursite.com/home/dzou/.config/Typora/typora-user-images/1562076624237.png">
+<meta name="twitter:image" content="http://yoursite.com/images/1.png">
 
 
 
@@ -407,7 +407,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  
+                  810字
                 </span>
               
 
@@ -423,7 +423,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  
+                  3分
                 </span>
               
             </div>
@@ -459,7 +459,7 @@
 <h3 id="Lambda-Stream-静态内部类"><a href="#Lambda-Stream-静态内部类" class="headerlink" title="Lambda Stream+静态内部类"></a>Lambda Stream+静态内部类</h3><p>希望大家看完以后可以学会将stream和内部类应用到项目中,也可以进一步学习一下Lambda,时很有必要的</p>
 <h4 id="步入正题"><a href="#步入正题" class="headerlink" title="步入正题"></a>步入正题</h4><p>思路</p>
 <p>使用封装对象Point存放点的坐标,再把他们存放到集合List中(ArrayList读取效率高),编写求距离和的函数和求两点距离和的函数,最后通过stream和Lambda组合获得距离最小值</p>
-<p><img src="/home/dzou/.config/Typora/typora-user-images/1562076624237.png" alt="1562076624237"></p>
+<p><img src="/images/1.png" alt="1562076624237"></p>
 <p>关键代码就一行</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> re = noBuildings.stream()</span><br><span class="line">    .map(x-&gt;distanceSum(x.x,x.y))</span><br><span class="line">    .min(Integer::compareTo)</span><br><span class="line">    .get();</span><br></pre></td></tr></table></figure>
 
@@ -537,8 +537,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/23/AbstractQueuedSynchronizer/" rel="next" title="AbstractQueuedSynchronizer AQS锁原理（原密码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">
-                <i class="fa fa-chevron-left"></i> AbstractQueuedSynchronizer AQS锁原理（原密码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁
+              <a href="/2019/07/23/AbstractQueuedSynchronizer/" rel="next" title="AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">
+                <i class="fa fa-chevron-left"></i> AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁
               </a>
             
           </div>
@@ -773,7 +773,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count"></span>
+    <span title="Site words total count">9.2k</span>
   
 </div>
 
@@ -787,7 +787,7 @@
 
         
 <div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
   
     <span class="site-uv">

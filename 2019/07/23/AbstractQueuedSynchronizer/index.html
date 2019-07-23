@@ -78,7 +78,7 @@
 
 
 
-  <meta name="keywords" content="Java,后端,并发编程,AQS,同步器，锁,">
+  <meta name="keywords" content="Java,后端,并发编程,AQS,同步器,锁,">
 
 
 
@@ -92,18 +92,18 @@
 
 
 <meta name="description" content="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现AbstractQueuedSynchronizer是基于一个FIFO双向链队列 ==CLH队列==，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。 你可以理解为银行ATM机取钱，一个人先去取，获取到了锁，">
-<meta name="keywords" content="Java,后端,并发编程,AQS,同步器，锁">
+<meta name="keywords" content="Java,后端,并发编程,AQS,同步器,锁">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AbstractQueuedSynchronizer AQS锁原理（原密码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">
+<meta property="og:title" content="AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">
 <meta property="og:url" content="http://yoursite.com/2019/07/23/AbstractQueuedSynchronizer/index.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现AbstractQueuedSynchronizer是基于一个FIFO双向链队列 ==CLH队列==，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。 你可以理解为银行ATM机取钱，一个人先去取，获取到了锁，">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://ifeve.com/wp-content/uploads/2013/10/21.png">
-<meta property="og:image" content="http://yoursite.com/home/dzou/.config/Typora/typora-user-images/1563697815749.png">
-<meta property="og:updated_time" content="2019-07-23T09:42:17.229Z">
+<meta property="og:image" content="http://yoursite.com/images/2.png">
+<meta property="og:updated_time" content="2019-07-23T10:03:50.156Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AbstractQueuedSynchronizer AQS锁原理（原密码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">
+<meta name="twitter:title" content="AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">
 <meta name="twitter:description" content="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现AbstractQueuedSynchronizer是基于一个FIFO双向链队列 ==CLH队列==，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。 你可以理解为银行ATM机取钱，一个人先去取，获取到了锁，">
 <meta name="twitter:image" content="http://ifeve.com/wp-content/uploads/2013/10/21.png">
 
@@ -141,7 +141,7 @@
 
 
 
-  <title>AbstractQueuedSynchronizer AQS锁原理（原密码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁 | Dzou's Blog</title>
+  <title>AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁 | Dzou's Blog</title>
   
 
 
@@ -327,7 +327,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">AbstractQueuedSynchronizer AQS锁原理（原密码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁</h1>
+          <h1 class="post-title" itemprop="name headline">AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁</h1>
         
 
         <div class="post-meta">
@@ -408,7 +408,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  
+                  2.3k字
                 </span>
               
 
@@ -424,7 +424,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  
+                  10分
                 </span>
               
             </div>
@@ -569,12 +569,12 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">unpark</span><span class="params">(Thread thread)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (thread != <span class="keyword">null</span>)</span><br><span class="line">            UNSAFE.unpark(thread);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="二、AQS实现ReentrantLock公平锁"><a href="#二、AQS实现ReentrantLock公平锁" class="headerlink" title="二、AQS实现ReentrantLock公平锁"></a>二、AQS实现ReentrantLock公平锁</h2><p>AQS实现ReentrantLock公平锁与非公平锁最大的区别在下面这段代码：</p>
-<p><img src="/home/dzou/.config/Typora/typora-user-images/1563697815749.png" alt="1563697815749"></p>
+<p><img src="/images/2.png" alt="1563697815749"></p>
 <p>源码如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">hasQueuedPredecessors</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// The correctness of this depends on head being initialized</span></span><br><span class="line">        <span class="comment">// before tail and on head.next being accurate if the current</span></span><br><span class="line">        <span class="comment">// thread is first in queue.</span></span><br><span class="line">        Node t = tail; <span class="comment">// Read fields in reverse initialization order</span></span><br><span class="line">        Node h = head;</span><br><span class="line">        Node s;</span><br><span class="line">        <span class="keyword">return</span> h != t &amp;&amp;</span><br><span class="line">            ((s = h.next) == <span class="keyword">null</span> || s.thread != Thread.currentThread());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 <blockquote>
-<p>==判断”当前线程”是不是在CLH队列的队首，来实现公平性==。</p>
+<p>判断”当前线程”是不是在CLH队列的队首，来实现公平性。</p>
 </blockquote>
 <h2 id="三、AQS实现的自定义锁"><a href="#三、AQS实现的自定义锁" class="headerlink" title="三、AQS实现的自定义锁"></a>三、AQS实现的自定义锁</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAQSLock</span> <span class="keyword">implements</span> <span class="title">Lock</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Sync sync;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyAQSLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        sync = <span class="keyword">new</span> Sync();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        sync.acquire(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lockInterruptibly</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        sync.acquireInterruptibly(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sync.tryAcquire(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(<span class="keyword">long</span> time, TimeUnit unit)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sync.tryAcquireNanos(<span class="number">1</span>,unit.toNanos(time));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        sync.release(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Condition <span class="title">newCondition</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sync.newCondition();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 把lock、unlock实现使用AQS构建为内部类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Sync</span> <span class="keyword">extends</span> <span class="title">AbstractQueuedSynchronizer</span></span>&#123;</span><br><span class="line">        <span class="function">Condition <span class="title">newCondition</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> ConditionObject();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//第一个线程进来拿到锁</span></span><br><span class="line">            <span class="keyword">int</span> state = getState();</span><br><span class="line">            <span class="comment">//用于重入锁判断</span></span><br><span class="line">            Thread current = Thread.currentThread();</span><br><span class="line">            <span class="keyword">if</span>(state==<span class="number">0</span>)&#123;</span><br><span class="line">                <span class="keyword">if</span>(compareAndSetState(<span class="number">0</span>,arg))&#123;</span><br><span class="line">                    setExclusiveOwnerThread(Thread.currentThread());</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//重入锁判断 当前线程和独占锁线程相同，则再次获取</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(current==getExclusiveOwnerThread())&#123;</span><br><span class="line">                <span class="keyword">int</span> next = state+arg;</span><br><span class="line">                <span class="keyword">if</span>(next&lt;<span class="number">0</span>)&#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException();</span><br><span class="line">                &#125;</span><br><span class="line">                setState(next);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 可重入释放锁</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> arg</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(Thread.currentThread()!=getExclusiveOwnerThread())&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">int</span> state = getState()-arg;</span><br><span class="line">            <span class="keyword">if</span>(state==<span class="number">0</span>)&#123;</span><br><span class="line">                setExclusiveOwnerThread(<span class="keyword">null</span>);</span><br><span class="line">                setState(<span class="number">0</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            setState(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -600,7 +600,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://yoursite.com/2019/07/23/AbstractQueuedSynchronizer/" title="AbstractQueuedSynchronizer AQS锁原理（原密码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">http://yoursite.com/2019/07/23/AbstractQueuedSynchronizer/</a>
+    <a href="http://yoursite.com/2019/07/23/AbstractQueuedSynchronizer/" title="AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">http://yoursite.com/2019/07/23/AbstractQueuedSynchronizer/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -623,7 +623,9 @@
           
             <a href="/tags/AQS/" rel="tag"># AQS</a>
           
-            <a href="/tags/同步器，锁/" rel="tag"># 同步器，锁</a>
+            <a href="/tags/同步器/" rel="tag"># 同步器</a>
+          
+            <a href="/tags/锁/" rel="tag"># 锁</a>
           
         </div>
       
@@ -891,7 +893,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count"></span>
+    <span title="Site words total count">9.2k</span>
   
 </div>
 
@@ -905,7 +907,7 @@
 
         
 <div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
   
     <span class="site-uv">
@@ -1053,7 +1055,7 @@
         var disqus_config = function () {
           this.page.url = 'http://yoursite.com/2019/07/23/AbstractQueuedSynchronizer/';
           this.page.identifier = '2019/07/23/AbstractQueuedSynchronizer/';
-          this.page.title = 'AbstractQueuedSynchronizer AQS锁原理（原密码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁';
+          this.page.title = 'AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://dzou.disqus.com/embed.js';

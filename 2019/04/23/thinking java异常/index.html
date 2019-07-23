@@ -99,7 +99,7 @@
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="异常不是所有的错误都可以在编译时获得，有些错误只能在运行时获得，Java使用异常报告错误，传递给某个接受者来处理，使得你的应用更加可靠 执行到异常时不能往下继续执行，要从当前环境跳出（抛出异常），给==异常处理程序==处理 异常使得我们可以把一件事当做一个事务 构造器：  默认构造器  字符串参数构造器  1throw new NullPointException（“t=null”）；  返回一个">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-23T09:42:05.097Z">
+<meta property="og:updated_time" content="2019-07-23T10:02:32.705Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java异常处理机制-Java编程思想">
 <meta name="twitter:description" content="异常不是所有的错误都可以在编译时获得，有些错误只能在运行时获得，Java使用异常报告错误，传递给某个接受者来处理，使得你的应用更加可靠 执行到异常时不能往下继续执行，要从当前环境跳出（抛出异常），给==异常处理程序==处理 异常使得我们可以把一件事当做一个事务 构造器：  默认构造器  字符串参数构造器  1throw new NullPointException（“t=null”）；  返回一个">
@@ -405,7 +405,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  
+                  844字
                 </span>
               
 
@@ -421,7 +421,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  
+                  3分
                 </span>
               
             </div>
@@ -457,13 +457,13 @@
 </ul>
 <p><strong>try，catch</strong></p>
 <p>如果不希望产生异常的时候结束可以使用try块，并通过catch语句来处理（异常处理程序）</p>
-<p>==只有匹配的catch语句才能被执行，匹配到不在查找其他cathc块==</p>
+<p>只有匹配的catch语句才能被执行，匹配到不在查找其他cathc块</p>
 <blockquote>
 <p>把越宽的异常类放在catch块最下面，防止范围过宽的基类被抢先执行，Exception</p>
 </blockquote>
 <p><strong>终止与恢复</strong></p>
 <p>终止：异常一旦被抛出，无法回来继续执行，错误已无法挽回</p>
-<p>恢复：异常处理程序的工作是修正错误，会重新尝试调用出问题的方法（==放到While块中==）</p>
+<p>恢复：异常处理程序的工作是修正错误，会重新尝试调用出问题的方法（放到While块中）</p>
 <h2 id="Throwable"><a href="#Throwable" class="headerlink" title="Throwable"></a>Throwable</h2><p>分为Error和Exception，一般我们只关心Exception</p>
 <p>==printStackTrace方法==输出==堆栈跟踪信息==：</p>
 <ul>
@@ -472,7 +472,7 @@
 <li>void printStackTrace(PrintWriter)</li>
 </ul>
 <h3 id="自定义异常"><a href="#自定义异常" class="headerlink" title="自定义异常"></a>自定义异常</h3><p>继承Exception类</p>
-<h3 id="日志记录异常"><a href="#日志记录异常" class="headerlink" title="日志记录异常"></a>日志记录异常</h3><p>在==catch块==调用如下</p>
+<h3 id="日志记录异常"><a href="#日志记录异常" class="headerlink" title="日志记录异常"></a>日志记录异常</h3><p>在catch块调用如下</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logger.error(e.getMessage(), e);</span><br></pre></td></tr></table></figure>
 
 <p><strong>getMessage()</strong></p>
@@ -482,7 +482,7 @@
 <p><em>这是一个规范写法，使得调用该方法的程序员知道该方法会捕获的异常</em></p>
 <h3 id="RuntimeException-不受检查异常"><a href="#RuntimeException-不受检查异常" class="headerlink" title="RuntimeException 不受检查异常"></a>RuntimeException 不受检查异常</h3><p>JVM自动捕获，运行时异常 ==无需异常说明==</p>
 <h3 id="使用finally清洗"><a href="#使用finally清洗" class="headerlink" title="使用finally清洗"></a>使用finally清洗</h3><p>对于Java有内存回收机制，需要它有什么用？</p>
-<p>==开关==：把某个资源恢复到初始状态 ex：已打开的连接，文件，画的图形</p>
+<p>开关：把某个资源恢复到初始状态 ex：已打开的连接，文件，画的图形</p>
 <p>没有异常捕获也会执行</p>
 <p>###　构造器异常</p>
 <p>当一个对象在执行构造函数时出现异常，那么它没有构造成功，我们无需close，所以我们可以使用==嵌套try-catch==来实现在需要的时候close</p>
@@ -805,7 +805,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count"></span>
+    <span title="Site words total count">9.2k</span>
   
 </div>
 
@@ -819,7 +819,7 @@
 
         
 <div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
   
     <span class="site-uv">

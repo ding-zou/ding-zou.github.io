@@ -78,7 +78,7 @@
 
 
 
-  <meta name="keywords" content="Java,并发编程,基础,学习笔记,锁,同步,多线程,线程安全性,Synchronized,volatile,原子类,CAS,ReentrantLoc,线程池,">
+  <meta name="keywords" content="Java,并发编程,锁,基础,学习笔记,同步,多线程,线程安全性,Synchronized,volatile,原子类,CAS,ReentrantLoc,线程池,">
 
 
 
@@ -92,14 +92,14 @@
 
 
 <meta name="description" content="一.创建线程方式 Thread Runnable 面向接口编程，函数式接口（其实就是一个任务，最终由Thread构造函数传入） Callable 带返回值线程 定时器 Timer Lambda表达式 线程池 ThreadExecutorPool 内部类  Spring 中 注解＠Aysnc   CPU分给每个线程一个时间片，很短，所以看起来是一起执行，切换过程就是==上下文切换==，会消耗一定的资">
-<meta name="keywords" content="Java,并发编程,基础,学习笔记,锁,同步,多线程,线程安全性,Synchronized,volatile,原子类,CAS,ReentrantLoc,线程池">
+<meta name="keywords" content="Java,并发编程,锁,基础,学习笔记,同步,多线程,线程安全性,Synchronized,volatile,原子类,CAS,ReentrantLoc,线程池">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java并发编程学习笔记-更新中">
 <meta property="og:url" content="http://yoursite.com/2019/07/23/Java并发/index.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="一.创建线程方式 Thread Runnable 面向接口编程，函数式接口（其实就是一个任务，最终由Thread构造函数传入） Callable 带返回值线程 定时器 Timer Lambda表达式 线程池 ThreadExecutorPool 内部类  Spring 中 注解＠Aysnc   CPU分给每个线程一个时间片，很短，所以看起来是一起执行，切换过程就是==上下文切换==，会消耗一定的资">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-23T09:42:13.637Z">
+<meta property="og:updated_time" content="2019-07-23T10:00:59.562Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发编程学习笔记-更新中">
 <meta name="twitter:description" content="一.创建线程方式 Thread Runnable 面向接口编程，函数式接口（其实就是一个任务，最终由Thread构造函数传入） Callable 带返回值线程 定时器 Timer Lambda表达式 线程池 ThreadExecutorPool 内部类  Spring 中 注解＠Aysnc   CPU分给每个线程一个时间片，很短，所以看起来是一起执行，切换过程就是==上下文切换==，会消耗一定的资">
@@ -405,7 +405,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  
+                  1.8k字
                 </span>
               
 
@@ -421,7 +421,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  
+                  7分
                 </span>
               
             </div>
@@ -473,7 +473,7 @@
 <p>锁是互斥的：你能执行我就不能执行</p>
 </blockquote>
 <ul>
-<li>synchronized放在方法上：该方法为同步方法（静态、普通） ==锁的对象时当前类实例==</li>
+<li>synchronized放在方法上：该方法为同步方法（静态、普通） 锁的对象时当前类实例</li>
 <li>放在方法内部修饰代码块：该代码块为同步代码块</li>
 </ul>
 <h2 id="四-锁的类型"><a href="#四-锁的类型" class="headerlink" title="四.锁的类型"></a>四.锁的类型</h2><h3 id="1-重入锁"><a href="#1-重入锁" class="headerlink" title="1.重入锁"></a>1.重入锁</h3><blockquote>
@@ -523,15 +523,15 @@
 
 <p>自增是一个非原子操作，包括取值，自增，和赋值三个步骤。在进行写数据时，会在内存中保留一份原来的旧值，写的时候判断当前要写的值和旧值是否相等，不相等就继续等待，直到相等才执行写操作。</p>
 <blockquote>
-<p>当调用==getAndAddInt==时，调用源码如下</p>
+<p>当调用getAndAddInt时，调用源码如下</p>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">            var5 = <span class="keyword">this</span>.getIntVolatile(var1, var2);</span><br><span class="line">        &#125; <span class="keyword">while</span>(!<span class="keyword">this</span>.compareAndSwapInt(var1, var2, var5, var5 + var4));</span><br><span class="line">        <span class="keyword">return</span> var5;</span><br></pre></td></tr></table></figure>
 
 <p>拿到内存最新值，使用CAS尝试将内存位置的值修改为目标值var5 + var4，如果修改失败，则获取该内存位置的新值v，然后继续尝试，直至修改成功。</p>
-<p>==compareAndSet==方法调用了==compareAndSwap==</p>
+<p>compareAndSet方法调用了compareAndSwap</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">compareAndSet</span><span class="params">(<span class="keyword">int</span> expect, <span class="keyword">int</span> update)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> unsafe.compareAndSwapInt(<span class="keyword">this</span>, valueOffset, expect, update);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
-<p>核心：原子类的方法进行操作都是使用==unsafe==调用了==compareAndSwap== CAS 这个本地方法实现</p>
+<p>核心：原子类的方法进行操作都是使用unsafe调用了compareAndSwap CAS 这个本地方法实现</p>
 <h3 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h3><p><strong>CompareAndSwap</strong> 比较并交换 根本是一个本地方法，有三个参数：内存地址、旧的值、即将更新的值</p>
 <p>如果旧的值与将要更新的值相等，则把内存地址的值改为更新的值</p>
 <p>利用CPU执行指令实现CAS</p>
@@ -618,11 +618,11 @@
           
             <a href="/tags/并发编程/" rel="tag"># 并发编程</a>
           
+            <a href="/tags/锁/" rel="tag"># 锁</a>
+          
             <a href="/tags/基础/" rel="tag"># 基础</a>
           
             <a href="/tags/学习笔记/" rel="tag"># 学习笔记</a>
-          
-            <a href="/tags/锁/" rel="tag"># 锁</a>
           
             <a href="/tags/同步/" rel="tag"># 同步</a>
           
@@ -908,7 +908,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count"></span>
+    <span title="Site words total count">9.2k</span>
   
 </div>
 
@@ -922,7 +922,7 @@
 
         
 <div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
   
     <span class="site-uv">
