@@ -91,20 +91,20 @@
 
 
 
-<meta name="description" content="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现AbstractQueuedSynchronizer是基于一个FIFO双向链队列 ==CLH队列==，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。 你可以理解为银行ATM机取钱，一个人先去取，获取到了锁，">
+<meta name="description" content="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现AbstractQueuedSynchronizer是基于一个FIFO双向链队列 CLH队列，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。 你可以理解为银行ATM机取钱，一个人先去取，获取到了锁，在这个时">
 <meta name="keywords" content="Java,后端,并发编程,AQS,同步器,锁">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">
 <meta property="og:url" content="http://yoursite.com/2019/07/23/AbstractQueuedSynchronizer/index.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
-<meta property="og:description" content="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现AbstractQueuedSynchronizer是基于一个FIFO双向链队列 ==CLH队列==，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。 你可以理解为银行ATM机取钱，一个人先去取，获取到了锁，">
+<meta property="og:description" content="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现AbstractQueuedSynchronizer是基于一个FIFO双向链队列 CLH队列，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。 你可以理解为银行ATM机取钱，一个人先去取，获取到了锁，在这个时">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://ifeve.com/wp-content/uploads/2013/10/21.png">
 <meta property="og:image" content="http://yoursite.com/images/2.png">
-<meta property="og:updated_time" content="2019-07-23T10:03:50.156Z">
+<meta property="og:updated_time" content="2019-07-23T11:18:57.670Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">
-<meta name="twitter:description" content="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现AbstractQueuedSynchronizer是基于一个FIFO双向链队列 ==CLH队列==，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。 你可以理解为银行ATM机取钱，一个人先去取，获取到了锁，">
+<meta name="twitter:description" content="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现AbstractQueuedSynchronizer是基于一个FIFO双向链队列 CLH队列，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。 你可以理解为银行ATM机取钱，一个人先去取，获取到了锁，在这个时">
 <meta name="twitter:image" content="http://ifeve.com/wp-content/uploads/2013/10/21.png">
 
 
@@ -445,7 +445,7 @@
       
 
       
-        <h1 id="AbstractQueuedSynchronizer-AQS锁原理及ReentrantLock非公平锁的实现"><a href="#AbstractQueuedSynchronizer-AQS锁原理及ReentrantLock非公平锁的实现" class="headerlink" title="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现"></a>AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现</h1><p>AbstractQueuedSynchronizer是基于一个FIFO双向链队列 ==CLH队列==，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。</p>
+        <h1 id="AbstractQueuedSynchronizer-AQS锁原理及ReentrantLock非公平锁的实现"><a href="#AbstractQueuedSynchronizer-AQS锁原理及ReentrantLock非公平锁的实现" class="headerlink" title="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现"></a>AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现</h1><p>AbstractQueuedSynchronizer是基于一个FIFO双向链队列 CLH队列，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。</p>
 <p>你可以理解为银行ATM机取钱，一个人先去取，获取到了锁，在这个时间内其他线程处于阻塞状态，只有等他取完钱了，他走了，释放了锁，排在它后面的人才可以获取到释放的锁并进行取钱。</p>
 <p><img src="http://ifeve.com/wp-content/uploads/2013/10/21.png" alt="img"></p>
 <p>该同步器利用一个int值表示状态，实现方式是==使用内部类继承该同步器的方式==实现它的tryRelease、tryAcquire等方法管理状态，管理状态使用以下三个方法：</p>
@@ -596,15 +596,18 @@
         <ul class="post-copyright">
   <li class="post-copyright-author">
     <strong>本文作者：</strong>
-    dzou
+    dzou  |  微信：17856530567
   </li>
   <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="http://yoursite.com/2019/07/23/AbstractQueuedSynchronizer/" title="AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">http://yoursite.com/2019/07/23/AbstractQueuedSynchronizer/</a>
-  </li>
+  <strong>本文链接：</strong>
+  <a href="http://www.dzou.top/2019/07/23/AbstractQueuedSynchronizer/" title="AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">http://www.dzou.top/2019/07/23/AbstractQueuedSynchronizer/</a>
+</li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
-    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+  <li class="post-copyright-license">
+    并保留本声明和上方二维码。感谢您的阅读和支持！
   </li>
 </ul>
 
@@ -825,9 +828,17 @@
             <div class="links-of-blogroll motion-element links-of-blogroll-block">
               <div class="links-of-blogroll-title">
                 <i class="fa  fa-fw fa-link"></i>
-                友情链接
+                推荐链接
               </div>
               <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/2019/07/23/AbstractQueuedSynchronizer/" title="Java并发之AQS源码分析" target="_blank">Java并发之AQS源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/2019/06/23/Stream%E5%92%8CCollection/" title="JDK8新特性——流和Lambda表达式" target="_blank">JDK8新特性——流和Lambda表达式</a>
+                  </li>
                 
                   <li class="links-of-blogroll-item">
                     <a href="https://music.163.com/#/user/home?id=564117665" title="网易云音乐" target="_blank">网易云音乐</a>
@@ -1132,7 +1143,7 @@
       
           pbOptions.boxForm = "horizontal";
       
-          pbOptions.position = "bottomCenter";
+          pbOptions.position = "topCenter";
       
           pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
       
@@ -1145,7 +1156,7 @@
       
           flOptions.boxForm = "horizontal";
       
-          flOptions.position = "middleRight";
+          flOptions.position = "topRight";
       
           flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
       
