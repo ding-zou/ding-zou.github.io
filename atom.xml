@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-07-23T09:57:15.316Z</updated>
+  <updated>2019-07-23T12:21:43.025Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁</title>
+    <link href="http://yoursite.com/2019/07/23/deepin%E4%B8%8Bdock%E6%A0%8F%E6%B6%88%E5%A4%B1/"/>
+    <id>http://yoursite.com/2019/07/23/deepin下dock栏消失/</id>
+    <published>2019-07-23T12:38:32.000Z</published>
+    <updated>2019-07-23T12:21:43.025Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="解决Deepin系统使用中dock栏消失不显示"><a href="#解决Deepin系统使用中dock栏消失不显示" class="headerlink" title="解决Deepin系统使用中dock栏消失不显示"></a>解决Deepin系统使用中dock栏消失不显示</h2><p>不需要卸载重新安装<strong>dde-dock</strong></p><p>只需要把进程kill</p><p>终端中输入：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">killall dde-dock</span><br></pre></td></tr></table></figure><p>dock栏就出现了</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;解决Deepin系统使用中dock栏消失不显示&quot;&gt;&lt;a href=&quot;#解决Deepin系统使用中dock栏消失不显示&quot; class=&quot;headerlink&quot; title=&quot;解决Deepin系统使用中dock栏消失不显示&quot;&gt;&lt;/a&gt;解决Deepin系统使用中dock
+      
+    
+    </summary>
+    
+      <category term="linux" scheme="http://yoursite.com/categories/linux/"/>
+    
+    
+      <category term="deepin" scheme="http://yoursite.com/tags/deepin/"/>
+    
+      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
+    
+  </entry>
   
   <entry>
     <title>牛客网算法编程题--物流中转站 解答</title>
