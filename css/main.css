@@ -1872,7 +1872,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #f91759;
+  background: #ffe;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3112,7 +3112,7 @@ hr {
   }
 }
 body {
-  background-image: url("http://static.simpledesktops.com/uploads/desktops/2014/04/04/floppies0005.png");
+  background-image: url("/images/3.png");
   background-attachment: fixed;
   background-repeat: no-repeat;
 }
@@ -3131,12 +3131,12 @@ body {
   min-height: 500px;
 }
 .header {
-  background: #f5cba7;
+  background: url("/images/Dawn.jpg");
   height: 120px;
 }
 .site-subtitle {
   font-size: 20px;
-  color: #5dade2;
+  color: #f1948a;
 }
 .main-inner {
   width: 800px;
@@ -3145,10 +3145,17 @@ body {
   float: right;
   margin: 20px 0 0 0;
 }
+.menu a {
+  color: #fdfefe;
+}
+#sidebar {
+  opacity: 0.8;
+  background: #17202a;
+}
 #sidebar p,
 #sidebar span,
 #sidebar a {
-  color: #17202a;
+  color: #d6eaf8;
 }
 #sidebar li {
   color: #e74c3c;
@@ -3161,8 +3168,15 @@ body {
   text-align: center;
 }
 .footer {
-  background: #aed6f1;
+  background: #f8f9f9;
+  opacity: 0.8;
 }
 #needsharebutton-float {
   bottom: 90px;
+}
+.sidebar-nav li:hover {
+  color: #a569bd;
+}
+.menu a:hover {
+  color: #7d3c98;
 }
