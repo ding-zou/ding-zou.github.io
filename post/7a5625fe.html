@@ -78,7 +78,7 @@
 
 
 
-  <meta name="keywords" content="Java,后端,并发编程,AQS,同步器,锁,">
+  <meta name="keywords" content="Java,后端,并发编程,AQS,同步器,CLH队列,双向链队列,Synchronized">
 
 
 
@@ -92,7 +92,7 @@
 
 
 <meta name="description" content="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现AbstractQueuedSynchronizer是基于一个FIFO双向链队列 CLH队列，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。 你可以理解为银行ATM机取钱，一个人先去取，获取到了锁，在这个时">
-<meta name="keywords" content="Java,后端,并发编程,AQS,同步器,锁">
+<meta name="keywords" content="Java,后端,并发编程,AQS,同步器,CLH队列,双向链队列,Synchronized">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">
 <meta property="og:url" content="https://www.dzou.top/post/7a5625fe.html">
@@ -101,7 +101,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://ifeve.com/wp-content/uploads/2013/10/21.png">
 <meta property="og:image" content="https://www.dzou.top/images/2.png">
-<meta property="og:updated_time" content="2019-07-23T11:18:57.670Z">
+<meta property="og:updated_time" content="2019-07-24T14:01:46.499Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁">
 <meta name="twitter:description" content="AbstractQueuedSynchronizer AQS锁原理及ReentrantLock非公平锁的实现AbstractQueuedSynchronizer是基于一个FIFO双向链队列 CLH队列，用于构建锁或者同步装置的类，也称为Java同步器，ReentrantLock的公平锁与非公平锁就是由该同步器构成，链队列结构图如下。 你可以理解为银行ATM机取钱，一个人先去取，获取到了锁，在这个时">
