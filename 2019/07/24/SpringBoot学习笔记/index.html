@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "d1f94239"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,分布式,SpringBoot,Web,后端,Spring,微服务,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dzou's Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="##SpringBoot 优点 无需配置xml，无代码生成 无需打包war，而是jar  微服务一组小型服务，通过http进行沟通每个单元度 单体应用传统web应用,所有功能和模块全部部署在一个应用里 jar包运行Spring-boot-maven-plugin可以用maven把springboot应用打jar pom文件探究 springboot-starter-dependencies：版本仲">
+<meta name="keywords" content="Java,分布式,SpringBoot,Web,后端,Spring,微服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot学习笔记--更新中">
+<meta property="og:url" content="https://www.dzou.top/2019/07/24/SpringBoot学习笔记/index.html">
+<meta property="og:site_name" content="Dzou&#39;s Blog">
+<meta property="og:description" content="##SpringBoot 优点 无需配置xml，无代码生成 无需打包war，而是jar  微服务一组小型服务，通过http进行沟通每个单元度 单体应用传统web应用,所有功能和模块全部部署在一个应用里 jar包运行Spring-boot-maven-plugin可以用maven把springboot应用打jar pom文件探究 springboot-starter-dependencies：版本仲">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019060510505348.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190605170117401.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-07-24T04:12:55.899Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot学习笔记--更新中">
+<meta name="twitter:description" content="##SpringBoot 优点 无需配置xml，无代码生成 无需打包war，而是jar  微服务一组小型服务，通过http进行沟通每个单元度 单体应用传统web应用,所有功能和模块全部部署在一个应用里 jar包运行Spring-boot-maven-plugin可以用maven把springboot应用打jar pom文件探究 springboot-starter-dependencies：版本仲">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/2019060510505348.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'Q66404JRFM',
+      apiKey: '27dd0e53d330bf96c9826662fc30055a',
+      indexName: 'dzou',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.dzou.top/2019/07/24/SpringBoot学习笔记/">
+
+
+
+
+
+  <title>SpringBoot学习笔记--更新中 | Dzou's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+  
+  <div class="bg_content">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dzou's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">No pains,no gains.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/2019/07/24/SpringBoot学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dzou">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dzou's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SpringBoot学习笔记--更新中</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-24T09:45:28+08:00">
+                2019-07-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java-Web/" itemprop="url" rel="index">
+                    <span itemprop="name">Java Web</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/07/24/SpringBoot学习笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/07/24/SpringBoot学习笔记/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>&nbsp浏览次数：
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.4k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5分
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>##SpringBoot</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
+<li>无需配置xml，无代码生成</li>
+<li>无需打包war，而是jar</li>
+</ul>
+<h3 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h3><p>一组小型服务，通过http进行沟通<br>每个单元度</p>
+<h3 id="单体应用"><a href="#单体应用" class="headerlink" title="单体应用"></a>单体应用</h3><p>传统web应用,所有功能和模块全部部署在一个应用里</p>
+<h3 id="jar包运行"><a href="#jar包运行" class="headerlink" title="jar包运行"></a>jar包运行</h3><p>Spring-boot-maven-plugin可以用maven把springboot应用打jar</p>
+<h3 id="pom文件探究"><a href="#pom文件探究" class="headerlink" title="pom文件探究"></a>pom文件探究</h3><ul>
+<li><p>springboot-starter-dependencies：版本仲裁中心，以后导入依赖不需要写版本，在父pom中声明</p>
+</li>
+<li><p>springboot-starter-web：场景启动器 帮我们导入运行需要的组件：tomcat springweb、webmvc</p>
+</li>
+</ul>
+<h3 id="主程序类"><a href="#主程序类" class="headerlink" title="主程序类"></a>主程序类</h3><ul>
+<li>@SprignbootAppliction 标志类（Springboot主配置类）</li>
+<li>@SpringbootConfiguration 类（Springboot一个配置类） 底层使用Configuration实现</li>
+<li>@EnableAutoConfiguration 类（开启自动配置） springboot帮我们自动配置    </li>
+<li>@AutoConfigurationPackage自动配置包（主配置类所在包下类扫描）</li>
+</ul>
+<blockquote>
+<p>@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})<br>@Configuration<br>@ComponentScan<br>这三个等同于@SpringBootApplication</p>
+</blockquote>
+<blockquote>
+<p>@RestController等同于 @ResponseBody和@Controller</p>
+</blockquote>
+<p>自动配置很强大<br>springboot下autoconfiguration包内存储我们需要的类，sringboot帮我们配置</p>
+<h3 id="创建SpringBoot项目"><a href="#创建SpringBoot项目" class="headerlink" title="创建SpringBoot项目"></a>创建SpringBoot项目</h3><p>Spring Initialize可以帮助我们创建SpringBoot项目</p>
+<h3 id="Springboot配置文件"><a href="#Springboot配置文件" class="headerlink" title="Springboot配置文件"></a>Springboot配置文件</h3><h4 id="全局配置文件"><a href="#全局配置文件" class="headerlink" title="全局配置文件"></a>全局配置文件</h4><p>命名固定</p>
+<ul>
+<li>application.properties</li>
+<li>application.yml<br>yaml： 以数据为中心，比xml和json更适合</li>
+</ul>
+<h4 id="配置文件注入值"><a href="#配置文件注入值" class="headerlink" title="配置文件注入值"></a>配置文件注入值</h4><ul>
+<li>1.@ConfigurationProperties（prefix=“”）支持jsr303数据校验</li>
+<li>2.属性上添加 @Value（￥{user.username}）复杂类型不能封装，只能使用基本数据类型</li>
+</ul>
+<h4 id="PropertySource使用路径下的配置文件"><a href="#PropertySource使用路径下的配置文件" class="headerlink" title="@PropertySource使用路径下的配置文件"></a>@PropertySource使用路径下的配置文件</h4><p>例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PropertySource</span>(value = <span class="string">"&#123;classpath:user.properties&#125;"</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="加入我们编写的配置文件"><a href="#加入我们编写的配置文件" class="headerlink" title="加入我们编写的配置文件"></a>加入我们编写的配置文件</h4><p>1.@ImportResource 标注在配置类上（不推荐）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ImportResource</span>(value = &#123;<span class="string">"classpath:bean.xml"</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>2.推荐使用注解给容器中添加组件（编写配置类）<br>@Bean 标注方法上 返回值为该组件 方法名为该组件id</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#YAML格式</span></span><br><span class="line"><span class="attr">environments:</span></span><br><span class="line"><span class="attr">    dev:</span></span><br><span class="line"><span class="attr">        url:</span> <span class="attr">http://dev.bar.com</span></span><br><span class="line"><span class="attr">        name:</span> <span class="string">Developer</span> <span class="string">Setup</span></span><br><span class="line"><span class="attr">    prod:</span></span><br><span class="line"><span class="attr">        url:</span> <span class="attr">http://foo.bar.com</span></span><br><span class="line"><span class="attr">        name:</span> <span class="string">My</span> <span class="string">Cool</span> <span class="string">App</span></span><br><span class="line"><span class="attr">my:</span></span><br><span class="line"><span class="attr">    servers:</span></span><br><span class="line"><span class="bullet">        -</span> <span class="string">dev.bar.com</span></span><br><span class="line"><span class="bullet">        -</span> <span class="string">foo.bar.com</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>处理器：写配置文件有提示<br>我们可以添加下面依赖</p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-configuration-processor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="SpringBoot占位符："><a href="#SpringBoot占位符：" class="headerlink" title="SpringBoot占位符："></a>SpringBoot占位符：</h3><ul>
+<li>随机数：可以在配置文件中使用#{random.uuif}等</li>
+<li>占位符获取之前设置的值，如果没有，可以使用默认值#{userAge：默认值}</li>
+</ul>
+<h3 id="profile"><a href="#profile" class="headerlink" title="profile"></a>profile</h3><p><strong>Spring对不同环境提供不同的配置功能的支持（发布、生产、测试等环境）</strong><br>例：</p>
+<ul>
+<li>application_dev.yml</li>
+<li>application_prod.yml</li>
+</ul>
+<p>yml、properties<br>可以使用spring.profiles.active=dev,prod也可以在命令行使用–spring.profiles.active=dev,prod参数</p>
+<h3 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h3><p>springboot能自动适应所有的日志框架 底层使用slf4j和logback</p>
+<p><img src="https://img-blog.csdnimg.cn/2019060510505348.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="日志级别"><a href="#日志级别" class="headerlink" title="日志级别"></a>日志级别</h4><p>springboot默认级别是info级别（只输出info和以后级别）</p>
+<ul>
+<li>trace</li>
+<li>debug</li>
+<li>info</li>
+<li>warn</li>
+<li>error</li>
+</ul>
+<h4 id="调整级别"><a href="#调整级别" class="headerlink" title="调整级别"></a>调整级别</h4><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#com.dingxiang下的日志都以trace级别输出</span></span><br><span class="line"><span class="string">logging.level.com.dingxiang=trace</span></span><br></pre></td></tr></table></figure>
+
+<p>springboot指定路径生成日志文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">logging.path=/spring/log</span><br><span class="line">logging.file=springboot_logging</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>设置自定义日志格式 logging.pattern.console</p>
+</blockquote>
+<h4 id="日志指定配置"><a href="#日志指定配置" class="headerlink" title="日志指定配置"></a>日志指定配置</h4><p>在指定路径下放置对应的日志文件 ex：在根目录下放置logback.xml<br>logback-spring.xm可以使用springboot的高级功能可以设置多profile环境配置</p>
+<h4 id="切换日志框架"><a href="#切换日志框架" class="headerlink" title="切换日志框架"></a>切换日志框架</h4><p>所有的日志都统一到slf4j的解决方案： </p>
+<ol>
+<li>将系统中其他日志框架先排除出去； </li>
+<li>用中间包来替换原有的日志框架； </li>
+<li>导入slf4j其他的实现。</li>
+</ol>
+<h2 id="SpringBoot-Web-开发"><a href="#SpringBoot-Web-开发" class="headerlink" title="SpringBoot Web 开发"></a>SpringBoot Web 开发</h2><h3 id="pom资源引入：webjars"><a href="#pom资源引入：webjars" class="headerlink" title="pom资源引入：webjars"></a>pom资源引入：webjars</h3><p><a href="https://www.webjars.org/" target="_blank" rel="noopener"><br>webjars maven</a></p>
+<h4 id="静态资源"><a href="#静态资源" class="headerlink" title="静态资源"></a>静态资源</h4><p>默认情况下，Spring Boot 将在 classpath 或者 ServletContext 根目录下从名为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/static </span><br><span class="line">/public</span><br><span class="line">/resources </span><br><span class="line">/META-INF/resources</span><br></pre></td></tr></table></figure>
+
+<p>目录中服务静态内容。它使用了 Spring MVC 的 ResourceHttpRequestHandler</p>
+<h3 id="模板引擎"><a href="#模板引擎" class="headerlink" title="模板引擎"></a>模板引擎</h3><blockquote>
+<p>模板引擎（这里特指用于Web开发的模板引擎）是为了使用户界面与业务数据（内容）分离而产生的，它可以生成特定格式的文档，用于网站的模板引擎就会生成一个标准的HTML文档。</p>
+</blockquote>
+<p>springboot 使用的thymeleaf<br>放在classpath：src/main/resources/templates</p>
+<p><img src="https://img-blog.csdnimg.cn/20190605170117401.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h4><p>(1)th任意html元素<br>th:text 文本  th:class th:id<br>(2)方法调用<br>语法案例：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>成功<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">th:text</span>=<span class="string">"$&#123;hello&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="扩展SpringMVC"><a href="#扩展SpringMVC" class="headerlink" title="扩展SpringMVC"></a>扩展SpringMVC</h3><p>编写配置类继承WebMvcConfigurerAdapter 实现对应的方法<br>使得springboot既可以使用自动配置，也可以使用我们的扩展配置</p>
+<p>eg 扩展controller：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addViewControllers</span><span class="params">(ViewControllerRegistry registry)</span> </span>&#123;</span><br><span class="line"><span class="comment">//        super.addViewControllers(registry);</span></span><br><span class="line">registry.addViewController(<span class="string">"/"</span>).setViewName(<span class="string">"success"</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Springboot-整合Mybatis"><a href="#Springboot-整合Mybatis" class="headerlink" title="Springboot 整合Mybatis"></a>Springboot 整合Mybatis</h2><h3 id="maven依赖"><a href="#maven依赖" class="headerlink" title="maven依赖"></a>maven依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 最重要的是这个POM配置，MyBatis相关操作都在这个包中 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- MySql数据库连接包 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>(1)application.yml或者properties配置datasource（Springboot自动帮你配置sqlsessionfactory 默认使用的是HikariDataSource）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">spring.datasource.url=jdbc:mysql://localhost:3306/springboot?serverTimezone=GMT&amp;autoReconnect=true</span><br><span class="line">spring.datasource.username=root</span><br><span class="line">spring.datasource.password=</span><br><span class="line">spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># mysql</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  datasource:</span></span><br><span class="line"><span class="attr">    url:</span> <span class="attr">jdbc:mysql://localhost:3306/springboot?serverTimezone=GMT&amp;autoReconnect=true</span></span><br><span class="line"><span class="attr">    username:</span> <span class="string">root</span></span><br><span class="line"><span class="attr">    password:</span> <span class="number">52</span><span class="string">zoufubo</span></span><br><span class="line"><span class="attr">    driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br></pre></td></tr></table></figure>
+
+<p>（2）配置mybatis扫描包别名和Mapper.xml文件路径</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mybatis.typeAliasesPackage=com.dingxiang.springboot_web_01.entities</span><br><span class="line">mybatis.mapperLocations=classpath:mapper/*.xml</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mybatis:</span></span><br><span class="line"><span class="attr">  type-aliases-package:</span> <span class="string">com.dingxiang.springboot_web_01.entities</span></span><br><span class="line"><span class="attr">  mapper-locations:</span> <span class="attr">classpath:mapper/*Mapper.xml</span></span><br></pre></td></tr></table></figure>
+
+<p>（3）在Springboot启动类中添加Mapper接口扫描注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@MapperScan</span>(basePackages = &#123;<span class="string">"com.dingxiang.springboot_web_01.mapper"</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="一些工具使用"><a href="#一些工具使用" class="headerlink" title="一些工具使用"></a>一些工具使用</h3><p><strong>dto转entity</strong>:使用spring中的BeanUtils</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BeanUtils.copyProperties(userInputDTO,user);</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    dzou  |  微信：17856530567
+  </li>
+  <li class="post-copyright-link">
+  <strong>本文链接：</strong>
+  <a href="http://www.dzou.top/2019/07/24/SpringBoot学习笔记/" title="SpringBoot学习笔记--更新中">http://www.dzou.top/2019/07/24/SpringBoot学习笔记/</a>
+</li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+  <li class="post-copyright-license">
+    并保留本声明和上方二维码。感谢您的阅读和支持！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/分布式/" rel="tag"># 分布式</a>
+          
+            <a href="/tags/SpringBoot/" rel="tag"># SpringBoot</a>
+          
+            <a href="/tags/Web/" rel="tag"># Web</a>
+          
+            <a href="/tags/后端/" rel="tag"># 后端</a>
+          
+            <a href="/tags/Spring/" rel="tag"># Spring</a>
+          
+            <a href="/tags/微服务/" rel="tag"># 微服务</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/24/linux学习笔记-更新中-基本知识和常用命令教程-Java程序员必备-较为详细-从基础开始-值得收藏/" rel="next" title="linux学习笔记--更新中 基本知识和常用命令教程 Java程序员必备 较为详细 从基础开始(值得收藏)">
+                <i class="fa fa-chevron-left"></i> linux学习笔记--更新中 基本知识和常用命令教程 Java程序员必备 较为详细 从基础开始(值得收藏)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/24/Java设计模式-单例模式-7种/" rel="prev" title="Java设计模式--单例模式(7种)">
+                Java设计模式--单例模式(7种) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/2.JPG" alt="dzou">
+            
+              <p class="site-author-name" itemprop="name">dzou</p>
+              <p class="site-description motion-element" itemprop="description">天赋不够，努力来补。学习Java后台开发，想进大厂。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ding-zou" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="dingxiang.zoufubo@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://me.csdn.net/qq_44760332" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                推荐链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/2019/07/23/AbstractQueuedSynchronizer/" title="Java并发之AQS源码分析" target="_blank">Java并发之AQS源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/2019/06/23/Stream%E5%92%8CCollection/" title="JDK8新特性——流和Lambda表达式" target="_blank">JDK8新特性——流和Lambda表达式</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://music.163.com/#/user/home?id=564117665" title="网易云音乐" target="_blank">网易云音乐</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微服务"><span class="nav-number">2.</span> <span class="nav-text">微服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单体应用"><span class="nav-number">3.</span> <span class="nav-text">单体应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jar包运行"><span class="nav-number">4.</span> <span class="nav-text">jar包运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pom文件探究"><span class="nav-number">5.</span> <span class="nav-text">pom文件探究</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主程序类"><span class="nav-number">6.</span> <span class="nav-text">主程序类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建SpringBoot项目"><span class="nav-number">7.</span> <span class="nav-text">创建SpringBoot项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Springboot配置文件"><span class="nav-number">8.</span> <span class="nav-text">Springboot配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#全局配置文件"><span class="nav-number">8.1.</span> <span class="nav-text">全局配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置文件注入值"><span class="nav-number">8.2.</span> <span class="nav-text">配置文件注入值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PropertySource使用路径下的配置文件"><span class="nav-number">8.3.</span> <span class="nav-text">@PropertySource使用路径下的配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加入我们编写的配置文件"><span class="nav-number">8.4.</span> <span class="nav-text">加入我们编写的配置文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringBoot占位符："><span class="nav-number">9.</span> <span class="nav-text">SpringBoot占位符：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#profile"><span class="nav-number">10.</span> <span class="nav-text">profile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日志"><span class="nav-number">11.</span> <span class="nav-text">日志</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#日志级别"><span class="nav-number">11.1.</span> <span class="nav-text">日志级别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调整级别"><span class="nav-number">11.2.</span> <span class="nav-text">调整级别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#日志指定配置"><span class="nav-number">11.3.</span> <span class="nav-text">日志指定配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#切换日志框架"><span class="nav-number">11.4.</span> <span class="nav-text">切换日志框架</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringBoot-Web-开发"><span class="nav-number"></span> <span class="nav-text">SpringBoot Web 开发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pom资源引入：webjars"><span class="nav-number">1.</span> <span class="nav-text">pom资源引入：webjars</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#静态资源"><span class="nav-number">1.1.</span> <span class="nav-text">静态资源</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模板引擎"><span class="nav-number">2.</span> <span class="nav-text">模板引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#语法"><span class="nav-number">2.1.</span> <span class="nav-text">语法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展SpringMVC"><span class="nav-number">3.</span> <span class="nav-text">扩展SpringMVC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Springboot-整合Mybatis"><span class="nav-number"></span> <span class="nav-text">Springboot 整合Mybatis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#maven依赖"><span class="nav-number">1.</span> <span class="nav-text">maven依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件"><span class="nav-number">2.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些工具使用"><span class="nav-number">3.</span> <span class="nav-text">一些工具使用</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dzou</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">29.8k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问用户：
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问次数：
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://dzou.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://www.dzou.top/2019/07/24/SpringBoot学习笔记/';
+          this.page.identifier = '2019/07/24/SpringBoot学习笔记/';
+          this.page.title = 'SpringBoot学习笔记--更新中';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://dzou.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "topCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "topRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

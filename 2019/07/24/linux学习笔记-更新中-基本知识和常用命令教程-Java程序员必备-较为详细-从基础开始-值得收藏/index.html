@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "d1f94239"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="deepin,linux,Ubuntu,ssh,服务器,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dzou's Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="Linux(Ubuntu/deepin)特点：没有磁盘的概念，每个用户只能操作根目录下的一个用户文件夹/home/ 代表根目录.代表当前目录或者隐藏文件文件夹..代表上一级目录*代表任意字符文件名和文件数据分开存储的 终端命令pwdprint work directory  输出当前目录 mkdirmake directory 创建文件夹mldir -p a/b/c/d 创建多个文件夹 在a下创建">
+<meta name="keywords" content="deepin,linux,Ubuntu,ssh,服务器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux学习笔记--更新中 基本知识和常用命令教程 Java程序员必备 较为详细 从基础开始(值得收藏)">
+<meta property="og:url" content="https://www.dzou.top/2019/07/24/linux学习笔记-更新中-基本知识和常用命令教程-Java程序员必备-较为详细-从基础开始-值得收藏/index.html">
+<meta property="og:site_name" content="Dzou&#39;s Blog">
+<meta property="og:description" content="Linux(Ubuntu/deepin)特点：没有磁盘的概念，每个用户只能操作根目录下的一个用户文件夹/home/ 代表根目录.代表当前目录或者隐藏文件文件夹..代表上一级目录*代表任意字符文件名和文件数据分开存储的 终端命令pwdprint work directory  输出当前目录 mkdirmake directory 创建文件夹mldir -p a/b/c/d 创建多个文件夹 在a下创建">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019050810380247.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190507171143420.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190508103816882.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-07-24T03:10:12.429Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux学习笔记--更新中 基本知识和常用命令教程 Java程序员必备 较为详细 从基础开始(值得收藏)">
+<meta name="twitter:description" content="Linux(Ubuntu/deepin)特点：没有磁盘的概念，每个用户只能操作根目录下的一个用户文件夹/home/ 代表根目录.代表当前目录或者隐藏文件文件夹..代表上一级目录*代表任意字符文件名和文件数据分开存储的 终端命令pwdprint work directory  输出当前目录 mkdirmake directory 创建文件夹mldir -p a/b/c/d 创建多个文件夹 在a下创建">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/2019050810380247.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'Q66404JRFM',
+      apiKey: '27dd0e53d330bf96c9826662fc30055a',
+      indexName: 'dzou',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.dzou.top/2019/07/24/linux学习笔记-更新中-基本知识和常用命令教程-Java程序员必备-较为详细-从基础开始-值得收藏/">
+
+
+
+
+
+  <title>linux学习笔记--更新中 基本知识和常用命令教程 Java程序员必备 较为详细 从基础开始(值得收藏) | Dzou's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+  
+  <div class="bg_content">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dzou's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">No pains,no gains.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/2019/07/24/linux学习笔记-更新中-基本知识和常用命令教程-Java程序员必备-较为详细-从基础开始-值得收藏/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dzou">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dzou's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">linux学习笔记--更新中 基本知识和常用命令教程 Java程序员必备 较为详细 从基础开始(值得收藏)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-24T09:36:09+08:00">
+                2019-07-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/07/24/linux学习笔记-更新中-基本知识和常用命令教程-Java程序员必备-较为详细-从基础开始-值得收藏/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/07/24/linux学习笔记-更新中-基本知识和常用命令教程-Java程序员必备-较为详细-从基础开始-值得收藏/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>&nbsp浏览次数：
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  7分
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Linux-Ubuntu-deepin"><a href="#Linux-Ubuntu-deepin" class="headerlink" title="Linux(Ubuntu/deepin)"></a>Linux(Ubuntu/deepin)</h2><p>特点：没有磁盘的概念，每个用户只能操作根目录下的一个用户文件夹/home<br>/ 代表根目录<br>.代表当前目录或者隐藏文件文件夹<br>..代表上一级目录<br>*代表任意字符<br>文件名和文件数据分开存储的</p>
+<h2 id="终端命令"><a href="#终端命令" class="headerlink" title="终端命令"></a>终端命令</h2><p><strong>pwd</strong><br>print work directory  输出当前目录</p>
+<p><strong>mkdir</strong><br>make directory 创建文件夹<br>mldir -p a/b/c/d 创建多个文件夹 在a下创建b，b下创建c，c下常见d</p>
+<p><strong>ls</strong><br>列出当前目录下的文件夹和文件<br>-lh 列出文件和文件夹的具体信息<br>-a 包括隐藏文件和文件夹<br>[]包含括号里的项（类似正则表达式）<br>？任意一个字符<br>*任意多个字符</p>
+<p><strong>clear</strong><br>清屏</p>
+<p><strong>cd</strong><br>change directory 变换目录<br>cd .       cd  ..      cd /<br>使用tab自动补全</p>
+<p><strong>touch</strong><br>当前目录下创建文件</p>
+<p><strong>–help</strong><br>命令的相关信息</p>
+<p><strong>rm</strong><br>rm使用须谨慎，删除的东西找不到，不要在根目录里使用rm<br>rm -r 删除文件夹和目录<br>rm 只能删除文件<br>rm -f删除文件夹和目录</p>
+<p><strong>cp</strong><br>cp -r<br>复制文件文件夹</p>
+<p><strong>mv</strong><br>重命名文件文件夹</p>
+<p><strong>grep</strong><br>查找文本中有某单词<br>grep -i忽略大小写<br>grep -n显示匹配行和行号<br>grep -v显示不包含文本的所有行（取反）<br>^匹配文本头<br>￥匹配文本尾</p>
+<p><strong>cat、more</strong><br>显示文本中内容<br>-b空行无序号<br>-n所有行有序号</p>
+<p><strong>ehco</strong><br>在终端显示输入的文本<br>与重定向联合使用（重定向&gt; or &gt;&gt;：把终端的文本追加或输出到文件中）<br>大于&gt; 输出到文本中<br>远大于&gt;&gt;追加到文本中</p>
+<p><strong>|（管道）</strong><br>一个命令的输出通过管道可以通过另一个命令输入<br>ls -lha | more<br>ls -lha | grep 文本</p>
+<p><strong>shutdown</strong><br>关机<br>-c取消</p>
+<h2 id="ssh（windows安装putty或者shellx）"><a href="#ssh（windows安装putty或者shellx）" class="headerlink" title="ssh（windows安装putty或者shellx）"></a>ssh（windows安装putty或者shellx）</h2><p>使用secure shell协议（数据传输是加密的，数据传输是压缩的）连接到远程计算机的软件程序（linux默认安装，win需要手动）<br>ip：找到该计算机<br>端口号：找到计算机（服务器）上运行的应用程序   ip：端口号<br>域名：ip地址别名，方便记忆<br>免密登录：<br>①ssh-keygen 生成ssh密匙<br>②上传公匙到服务器，让服务器记住 ssh-copy-id -p port user@remote<br>id_rsa是私钥，需要放在自己电脑上用来登陆,对数据加密，特别重要！！！<br>id_rsa.pub是公钥，部署在服务器上用来校验<br>非对称加密：<br><img src="https://img-blog.csdnimg.cn/2019050810380247.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>配置别名：<br>无需使用ssh -p port user@remote 只需使用ssh name</p>
+<p><strong>ifconfig、ping ip地址</strong><br>ipconfig：查看计算机网卡信息<br>ping IP地址：查看与目标ip是否连接<br>ctrl+c终止终端命令</p>
+<p><strong>scp</strong>（mac、windows使用ftp文件传输FileZilla）<br>在linux下远程拷贝文件<br>-p指定端口<br>scp -P port user/@remote:Desktop/01.txt<br>-r传送文件夹<br>scp -r demo user@remote:Desktop</p>
+<h2 id="用户和权限"><a href="#用户和权限" class="headerlink" title="用户和权限"></a>用户和权限</h2><p><strong>用户管理包括用户和组管理，linux系统中必需拥有一个账号，不同的用户有不同的权限管理文件</strong><br><strong>组：对相同权限的用户放在一个组里</strong><br>r可读，w可写，x可执行<br>文件拥有者、文件的组、其他用户（r–、r-x）</p>
+<p><strong>硬连接数：可通过几种方式访问文件</strong></p>
+<p><strong>chmod：</strong><br>chmod +/- rwx 文件名或者文件夹<br>ex：chmod -rw 123.txt 给123.txt减少可读可写权限<br>数字模式：<br>chmod -R 755 文件名或者目录 （三个数字分别对应拥有者、组、其他用户）<br>r-4 w-2 x-1<br><img src="https://img-blog.csdnimg.cn/20190507171143420.png" alt="在这里插入图片描述"></p>
+<p><strong>su、sudo</strong><br>su：substitute user<br>sudo使用超级权限来执行</p>
+<p><strong>组管理</strong><br>groupadd、groupdel、cat/etc/group 确认组信息<br>chgrp -P 组名 文件名或者目录 修改文件或者目录组</p>
+<p><strong>用户（创建用户、设置密码、删除用户）</strong><br>useradd -m -g (m自动创建家目录 -g指定所属组）<br>passwd 设置密码<br>userdel （-f强制 -p）<br>who、whoami（查看哪些用户登录、该用户是谁）</p>
+<p><strong>usermod</strong><br>-p 修改主组<br>-G 修改附加组<br>usermod -s /bin/bash 用户名    修改shell模式</p>
+<p><strong>chown</strong><br>修改拥有者<br>chown 用户名 文件名或者目录</p>
+<p><strong>Bash(GNU Bourne-Again Shell)是许多Linux平台的内定Shell<br>鉴于 bash 过于复杂，有人把 bash 从 NetBSD 移植到 Linux 并更名为 dash (Debian Almquist Shell)，并建议将 /bin/sh 指向它，以获得更快的脚本执行速度。</strong></p>
+<p><strong>/etc/passwd 用户保存用户信息的文件<br>/usr/bin/passwd 修改用户密码的程序</strong></p>
+<p><strong>which：查看命令所在位置</strong></p>
+<p><strong>/bin  二进制可执行文件<br>/sbin  系统管理员专用二进制管理文件<br>/usr/bin 后期安装的一些程序<br>usr/sbin  超级用户的一些管理程序</strong></p>
+<h2 id="与系统有关的终端命令"><a href="#与系统有关的终端命令" class="headerlink" title="与系统有关的终端命令"></a>与系统有关的终端命令</h2><p><strong>date：当前系统时间<br>cal：查看当前月的日历<br>df -h：diskfree 显示磁盘剩余空间<br>du -h目录：diskusage目录占有空间</strong></p>
+<p><strong>进程：当前正在运行的一个程序就一个进程</strong><br> ps aux显示详细进程信息<br> top 动态显示运行中的程序并排序（q退出）<br> kill  [-9] 进程代号  终止指定代号的进程 -9表示强行终止</p>
+<p><strong>查找文件</strong><br> find [路径] -name “*.py” 查找.py结尾的文件 -name后面跟指定条件</p>
+<p><strong>软链接、硬链接</strong><br>软链接：ln -s 被链接的源文件 链接文件 （类似windows下快捷方式，使用绝对路径）<br>硬链接：ln 被链接的源文件 链接文件 （硬链接即是一个文件的另一个文件名，只有硬链接数为0，文件才被删除）</p>
+<p><strong>打包压缩</strong><br>打包：tar -cvf 打包文件名.tar 被打包文件 （被打包文件空格隔开）<br>解包：tar -xvf 打包文件<br>压缩：（1）gzip  （生成.tar.gz结尾文件）-z（2）bzip2（生成tar.bz2结尾文件）-j<br>    tar -zcvf 打包文件名.tar.gz 被压缩文件    tar -jcvf 打包文件名.tar.bz2 被压缩文件<br>解压缩：-C 路径 表示解压缩到指定路径<br>    tar -zxvf 打包文件名.tar.gz                        tar -jxvf 打包文件名.tar.bz2</p>
+<p><strong>安装卸载软件</strong><br>apt（advanced packing tool）在终端中方便的安装/卸载/更新软件包<br>（1）安装： sudo apt install<br>（2）安装： sudo apt remove<br>（3）安装： sudo aptupgrade<br><img src="https://img-blog.csdnimg.cn/20190508103816882.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="Vim、Vi"><a href="#Vim、Vi" class="headerlink" title="Vim、Vi"></a>Vim、Vi</h2><p>三个模式：一般模式、命令模式、编辑模式<br>一般模式：只能上下左右移动（按a键进入编辑模式，shift+：进入命令模式）<br>命令模式：保存、退出等命令<br>编辑模式：增删改查（esc退出到一半模式）</p>
+<h2 id="curl、wget下载文件"><a href="#curl、wget下载文件" class="headerlink" title="curl、wget下载文件"></a>curl、wget下载文件</h2><p><strong>curl</strong><br>curl命令是个功能强大的网络工具，支持通过http、ftp等方式下载文件、上传文件。还可以用来抓取网页、网络监控等方面的开发<br>GET请求<br>curl <a href="http://www.baidu.com，回车之后，HTML内容打印在屏幕上；如果这里的URL指向的是一个文件或者一幅图都可以直接下载到本地。" target="_blank" rel="noopener">http://www.baidu.com，回车之后，HTML内容打印在屏幕上；如果这里的URL指向的是一个文件或者一幅图都可以直接下载到本地。</a><br>curl -i “<a href="http://www.baidu.com&quot;" target="_blank" rel="noopener">http://www.baidu.com&quot;</a>  显示全部信息<br>curl -l “<a href="http://www.baidu.com&quot;" target="_blank" rel="noopener">http://www.baidu.com&quot;</a> 只显示头部信息</p>
+<ul>
+<li>-v/–verbose 小写的v参数，用于打印更多信息，包括发送的请求信息，这在调试脚本是特别有用。</li>
+<li>-m/–max-time <seconds> 指定处理的最大时长</seconds></li>
+<li>-H/–header <header> 指定请求头参数</header></li>
+<li>-s/–slient 减少输出的信息，比如进度</li>
+<li>–connect-timeout <seconds> 指定尝试连接的最大时长</seconds></li>
+<li>-x/–proxy &lt;proxyhost[:port]&gt; 指定代理服务器地址和端口，端口默认为1080</li>
+<li>-T/–upload-file <file> 指定上传文件路径</file></li>
+<li>-o/–output <file> 指定输出文件名称</file></li>
+<li>-d/–data/–data-ascii <data> 指定POST的内容</data></li>
+<li>–retry <num> 指定重试次数</num></li>
+<li>-e/–referer <url> 指定引用地址</url></li>
+<li>-I/–head 仅返回头部信息，使用HEAD请求</li>
+</ul>
+<p><strong>wget</strong><br>用于从网络上下载资源，没有指定目录，下载资源回默认为当前目录</p>
+<p>启动参数：</p>
+<ul>
+<li><p>-V, –version 显示wget的版本后退出</p>
+</li>
+<li><p>-h, –help 打印语法帮助</p>
+</li>
+<li><p>-b, –background 启动后转入后台执行</p>
+</li>
+<li><p>-e, –execute=COMMAND 执行`.wgetrc’格式的命令，wgetrc格式参见/etc/wgetrc或~/.wgetrc</p>
+</li>
+</ul>
+<p>实例：使用wget下载单个文件</p>
+<p>wget <a href="http://www.minjieren.com/wordpress-3.1-zh_CN.zip" target="_blank" rel="noopener">http://www.minjieren.com/wordpress-3.1-zh_CN.zip</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    dzou  |  微信：17856530567
+  </li>
+  <li class="post-copyright-link">
+  <strong>本文链接：</strong>
+  <a href="http://www.dzou.top/2019/07/24/linux学习笔记-更新中-基本知识和常用命令教程-Java程序员必备-较为详细-从基础开始-值得收藏/" title="linux学习笔记--更新中 基本知识和常用命令教程 Java程序员必备 较为详细 从基础开始(值得收藏)">http://www.dzou.top/2019/07/24/linux学习笔记-更新中-基本知识和常用命令教程-Java程序员必备-较为详细-从基础开始-值得收藏/</a>
+</li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+  <li class="post-copyright-license">
+    并保留本声明和上方二维码。感谢您的阅读和支持！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/deepin/" rel="tag"># deepin</a>
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+          
+            <a href="/tags/ssh/" rel="tag"># ssh</a>
+          
+            <a href="/tags/服务器/" rel="tag"># 服务器</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/24/Mybatis框架教程-Mysql（SSM之Mybatis）适合初学者阅读-知识点较为全面-包括mybatis大部分语法-相关配置-值得收藏/" rel="next" title="Mybatis框架学习笔记--更新中 JavaWeb之Mysql（SSM之Mybatis）适合初学者阅读,知识点较为全面 包括mybatis大部分语法 相关配置(值得收藏)">
+                <i class="fa fa-chevron-left"></i> Mybatis框架学习笔记--更新中 JavaWeb之Mysql（SSM之Mybatis）适合初学者阅读,知识点较为全面 包括mybatis大部分语法 相关配置(值得收藏)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/24/SpringBoot学习笔记/" rel="prev" title="SpringBoot学习笔记--更新中">
+                SpringBoot学习笔记--更新中 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/2.JPG" alt="dzou">
+            
+              <p class="site-author-name" itemprop="name">dzou</p>
+              <p class="site-description motion-element" itemprop="description">天赋不够，努力来补。学习Java后台开发，想进大厂。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ding-zou" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="dingxiang.zoufubo@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://me.csdn.net/qq_44760332" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                推荐链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/2019/07/23/AbstractQueuedSynchronizer/" title="Java并发之AQS源码分析" target="_blank">Java并发之AQS源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/2019/06/23/Stream%E5%92%8CCollection/" title="JDK8新特性——流和Lambda表达式" target="_blank">JDK8新特性——流和Lambda表达式</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://music.163.com/#/user/home?id=564117665" title="网易云音乐" target="_blank">网易云音乐</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux-Ubuntu-deepin"><span class="nav-number">1.</span> <span class="nav-text">Linux(Ubuntu/deepin)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#终端命令"><span class="nav-number">2.</span> <span class="nav-text">终端命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssh（windows安装putty或者shellx）"><span class="nav-number">3.</span> <span class="nav-text">ssh（windows安装putty或者shellx）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户和权限"><span class="nav-number">4.</span> <span class="nav-text">用户和权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与系统有关的终端命令"><span class="nav-number">5.</span> <span class="nav-text">与系统有关的终端命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vim、Vi"><span class="nav-number">6.</span> <span class="nav-text">Vim、Vi</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#curl、wget下载文件"><span class="nav-number">7.</span> <span class="nav-text">curl、wget下载文件</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dzou</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">29.8k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问用户：
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问次数：
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://dzou.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://www.dzou.top/2019/07/24/linux学习笔记-更新中-基本知识和常用命令教程-Java程序员必备-较为详细-从基础开始-值得收藏/';
+          this.page.identifier = '2019/07/24/linux学习笔记-更新中-基本知识和常用命令教程-Java程序员必备-较为详细-从基础开始-值得收藏/';
+          this.page.title = 'linux学习笔记--更新中 基本知识和常用命令教程 Java程序员必备 较为详细 从基础开始(值得收藏)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://dzou.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "topCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "topRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
