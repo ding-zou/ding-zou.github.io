@@ -138,6 +138,10 @@
 
 
 
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
   <title>Mybatis框架学习笔记--更新中 JavaWeb之Mysql（SSM之Mybatis）适合初学者阅读,知识点较为全面 包括mybatis大部分语法 相关配置(值得收藏) | Dzou's Blog</title>
   
 
@@ -405,7 +409,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.2k字
+                  2.3k字
                 </span>
               
 
@@ -421,7 +425,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  9分
+                  10分
                 </span>
               
             </div>
@@ -461,8 +465,26 @@
 <li>4.结果集（resultset）遍历数据时对表的字段 硬编码（mybatis：查询的结果集映射成java对象）</li>
 </ul>
 <h2 id="SqlMapConfig"><a href="#SqlMapConfig" class="headerlink" title="SqlMapConfig"></a>SqlMapConfig</h2><p><strong>SqlMapConfig（配置文件、配置sql语句、mapper、mapper2…）</strong></p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span><br><span class="line">&lt;!DOCTYPE configuration</span><br><span class="line">  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"</span><br><span class="line">  "http://mybatis.org/dtd/mybatis-3-config.dtd"&gt;</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;environments default="development"&gt;</span><br><span class="line">    &lt;environment id="development"&gt;</span><br><span class="line">      &lt;transactionManager type="JDBC"/&gt;</span><br><span class="line">      &lt;dataSource type="POOLED"&gt;</span><br><span class="line">        &lt;property name="driver" value="$&#123;driver&#125;"/&gt;</span><br><span class="line">        &lt;property name="url" value="$&#123;url&#125;"/&gt;</span><br><span class="line">        &lt;property name="username" value="$&#123;username&#125;"/&gt;</span><br><span class="line">        &lt;property name="password" value="$&#123;password&#125;"/&gt;</span><br><span class="line">      &lt;/dataSource&gt;</span><br><span class="line">    &lt;/environment&gt;</span><br><span class="line">  &lt;/environments&gt;</span><br><span class="line">  &lt;mappers&gt;</span><br><span class="line">    &lt;mapper resource="org/mybatis/example/BlogMapper.xml"/&gt;</span><br><span class="line">  &lt;/mappers&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE configuration
+  PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+&lt;configuration&gt;
+  &lt;environments default=&quot;development&quot;&gt;
+    &lt;environment id=&quot;development&quot;&gt;
+      &lt;transactionManager type=&quot;JDBC&quot;/&gt;
+      &lt;dataSource type=&quot;POOLED&quot;&gt;
+        &lt;property name=&quot;driver&quot; value=&quot;${driver}&quot;/&gt;
+        &lt;property name=&quot;url&quot; value=&quot;${url}&quot;/&gt;
+        &lt;property name=&quot;username&quot; value=&quot;${username}&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;${password}&quot;/&gt;
+      &lt;/dataSource&gt;
+    &lt;/environment&gt;
+  &lt;/environments&gt;
+  &lt;mappers&gt;
+    &lt;mapper resource=&quot;org/mybatis/example/BlogMapper.xml&quot;/&gt;
+  &lt;/mappers&gt;
+&lt;/configuration&gt;</code></pre>
 <h3 id="SqlSessionFactory"><a href="#SqlSessionFactory" class="headerlink" title="SqlSessionFactory"></a>SqlSessionFactory</h3><p>（SqlSessionFactoryBuilder创建）:创建SqlSession</p>
 <h3 id="SqlSession"><a href="#SqlSession" class="headerlink" title="SqlSession"></a>SqlSession</h3><p>操作数据库</p>
 <h3 id="Excutor（执行器）"><a href="#Excutor（执行器）" class="headerlink" title="Excutor（执行器）"></a>Excutor（执行器）</h3><p>SqlSession内执行器操作数据库</p>
@@ -474,26 +496,33 @@
 <li><p>2.XML：较为复杂，但是便于阅读，功能强大</p>
 </li>
 </ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface BlogMapper &#123;</span><br><span class="line">  @<span class="keyword">Select</span>(<span class="string">"SELECT * FROM blog WHERE id = #&#123;id&#125;"</span>)</span><br><span class="line">  Blog selectBlog(<span class="built_in">int</span> <span class="keyword">id</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">public interface BlogMapper {
+  @Select(&quot;SELECT * FROM blog WHERE id = #{id}&quot;)
+  Blog selectBlog(int id);
+}</code></pre>
 <p><strong>2.XML配置</strong></p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;mapper namespace="org.mybatis.example.BlogMapper"&gt;</span><br><span class="line">  &lt;select id="selectBlog" resultType="Blog"&gt;</span><br><span class="line">    <span class="keyword">select</span> * <span class="keyword">from</span> Blog <span class="keyword">where</span> <span class="keyword">id</span> = <span class="comment">#&#123;id&#125;</span></span><br><span class="line">  &lt;/<span class="keyword">select</span>&gt;</span><br><span class="line">&lt;/mapper&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">&lt;mapper namespace=&quot;org.mybatis.example.BlogMapper&quot;&gt;
+  &lt;select id=&quot;selectBlog&quot; resultType=&quot;Blog&quot;&gt;
+    select * from Blog where id = #{id}
+  &lt;/select&gt;
+&lt;/mapper&gt;</code></pre>
 <h2 id="Mybatis中Mapper动态代理的实现原理"><a href="#Mybatis中Mapper动态代理的实现原理" class="headerlink" title="Mybatis中Mapper动态代理的实现原理"></a>Mybatis中Mapper动态代理的实现原理</h2><p><strong>定义一个接口 方法名，参数需要与XML定义保持一致。<br>namespace必须对应着map接口的全类名<br>思想：还不够深入，继续学习</strong></p>
 <p><strong>！！！学会了：Junit单元测试：添加注解@Test 测试单个函数、类</strong></p>
 <h2 id="SqlMapConfig主配置文件"><a href="#SqlMapConfig主配置文件" class="headerlink" title="SqlMapConfig主配置文件"></a>SqlMapConfig主配置文件</h2><h3 id="properties、property属性"><a href="#properties、property属性" class="headerlink" title="properties、property属性"></a>properties、property属性</h3><h4 id="三种方式设置property"><a href="#三种方式设置property" class="headerlink" title="三种方式设置property"></a>三种方式设置property</h4><ul>
 <li><strong>1.通过&lt;properties元素里面配置&lt;property元素</strong></li>
 <li><strong>2.单独编写property文件，通过properties导入</strong></li>
 </ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;properties resource=<span class="string">"mysql.properties"</span>&gt;</span><br><span class="line">	&lt;/properties&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">&lt;properties resource=&quot;mysql.properties&quot;&gt;
+    &lt;/properties&gt;</code></pre>
 <ul>
 <li><strong>3.人工编写property类</strong></li>
 </ul>
 <p>优先级次序如下：第三种方式&gt;第二种方式&gt;第一种方式。即如果三种方式都配置了同一个配置项，那么优先级高的配置方式的配置值生效。</p>
 <h3 id="typeAliases配置别名"><a href="#typeAliases配置别名" class="headerlink" title="typeAliases配置别名"></a>typeAliases配置别名</h3><p>我们在使用 com.demo.entity. UserEntity 的时候，我们可以直接配置一个别名user, 这样以后在配置文件中要使用到com.demo.entity. UserEntity的时候，直接使用User即可</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">以包名配置（多个bean）：</span><br><span class="line">&lt;typeAliases&gt;</span><br><span class="line">        &lt;<span class="keyword">package</span> name=<span class="string">"com.bean"</span>/&gt;</span><br><span class="line">&lt;/typeAliases&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">以包名配置（多个bean）：
+&lt;typeAliases&gt;
+        &lt;package name=&quot;com.bean&quot;/&gt;
+&lt;/typeAliases&gt;</code></pre>
 <h3 id="mappers（映射器）"><a href="#mappers（映射器）" class="headerlink" title="mappers（映射器）"></a>mappers（映射器）</h3><p><strong>配置多个mapper：尽量使用package name：mapper包<br>当mapper过多时，一个一个添加mapper太过麻烦</strong><br>告诉 MyBatis 到哪里去找到这些sql映射语句</p>
 <ol>
 <li><p>使用相对于类路径的资源引用 -<br>&lt;mapper resource=”org/mybatis/builder/AuthorMapper.xml”/</p>
@@ -512,38 +541,101 @@
 <li><p><strong>resultMap：手动映射，一般用于数据库和bean对象属性名不完全匹配</strong></p>
 </li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id="getAllCountry" resultMap="Map"&gt;</span><br><span class="line">        <span class="keyword">select</span> * <span class="keyword">from</span> country</span><br><span class="line">    &lt;/<span class="keyword">select</span>&gt;</span><br><span class="line">    &lt;resultMap <span class="keyword">id</span>=<span class="string">"Map"</span> <span class="keyword">type</span>=<span class="string">"Country"</span>&gt;</span><br><span class="line">    把bean对象的属性<span class="keyword">id</span>和数据库键名称c_id映射</span><br><span class="line">        &lt;<span class="keyword">result</span> property=<span class="string">"id"</span> <span class="keyword">column</span>=<span class="string">"c_id"</span>/&gt;</span><br><span class="line">    &lt;/resultMap&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">&lt;select id=&quot;getAllCountry&quot; resultMap=&quot;Map&quot;&gt;
+        select * from country
+    &lt;/select&gt;
+    &lt;resultMap id=&quot;Map&quot; type=&quot;Country&quot;&gt;
+    把bean对象的属性id和数据库键名称c_id映射
+        &lt;result property=&quot;id&quot; column=&quot;c_id&quot;/&gt;
+    &lt;/resultMap&gt;</code></pre>
 <h2 id="关联查询"><a href="#关联查询" class="headerlink" title="关联查询"></a>关联查询</h2><ul>
 <li>（1）一对一关联查询：查询一个对象时，把与该对象关联的一个对象查询出来</li>
 <li>（2）一对多关联查询：查询一个对象时，同时把与该对象关联的其他多个对象查询出来<br>一对一关联查询：查询用户表对应的与国家关联的所有信息 javaType普通类对象<br>需要使用resultMap里的association id一般指定主键，result指定其他任意键（提高性能）</li>
 </ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id="assioationSelect" resultMap="Uservo2"&gt;</span><br><span class="line">        <span class="keyword">select</span> user.u_id,</span><br><span class="line">        user.u_username,</span><br><span class="line">        user.u_sex,</span><br><span class="line">        country.c_id,</span><br><span class="line">        country.c_countryname</span><br><span class="line">        <span class="keyword">from</span> <span class="keyword">user</span></span><br><span class="line">        <span class="keyword">left</span> <span class="keyword">join</span></span><br><span class="line">        country <span class="keyword">on</span></span><br><span class="line">        user.u_id=country.c_id;</span><br><span class="line">    &lt;/select&gt;</span><br><span class="line">&lt;resultMap id="Uservo2" type="UserVo2"&gt;</span><br><span class="line">        &lt;id property="u_id" column="u_id"/&gt;</span><br><span class="line">        &lt;result property="u_sex" column="u_sex"/&gt;</span><br><span class="line">        &lt;result property="u_username" column="u_username"/&gt;</span><br><span class="line">        &lt;association property="country" javaType="Country"&gt;</span><br><span class="line">            &lt;id property="id" column="c_id"/&gt;</span><br><span class="line">            &lt;result property="c_countryname" column="c_countryname"/&gt;</span><br><span class="line">        &lt;/association&gt;</span><br><span class="line">    &lt;/resultMap&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">&lt;select id=&quot;assioationSelect&quot; resultMap=&quot;Uservo2&quot;&gt;
+        select user.u_id,
+        user.u_username,
+        user.u_sex,
+        country.c_id,
+        country.c_countryname
+        from user
+        left join
+        country on
+        user.u_id=country.c_id;
+    &lt;/select&gt;
+&lt;resultMap id=&quot;Uservo2&quot; type=&quot;UserVo2&quot;&gt;
+        &lt;id property=&quot;u_id&quot; column=&quot;u_id&quot;/&gt;
+        &lt;result property=&quot;u_sex&quot; column=&quot;u_sex&quot;/&gt;
+        &lt;result property=&quot;u_username&quot; column=&quot;u_username&quot;/&gt;
+        &lt;association property=&quot;country&quot; javaType=&quot;Country&quot;&gt;
+            &lt;id property=&quot;id&quot; column=&quot;c_id&quot;/&gt;
+            &lt;result property=&quot;c_countryname&quot; column=&quot;c_countryname&quot;/&gt;
+        &lt;/association&gt;
+    &lt;/resultMap&gt;</code></pre>
 <p>这里使用一个User的继承包装类，包装了国家类，包含国家对象和用户类的属性，重写了toString（）方法，查询u_id等于c_id的记录</p>
 <p><strong>一对多关联查询：查询国家表里与用户关联的所有信息<br>需要使用resultMap里的collection 其他与一对一关联查询一致 ofType:集合属性的泛型类型</strong></p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id="connectionSelect" resultMap="CountryVo"&gt;</span><br><span class="line">        <span class="keyword">select</span> country.c_id,</span><br><span class="line">        country.c_countryname,</span><br><span class="line">        user.u_id,</span><br><span class="line">        user.u_username,</span><br><span class="line">        user.u_sex</span><br><span class="line">        <span class="keyword">from</span> country</span><br><span class="line">        <span class="keyword">left</span> <span class="keyword">join</span> <span class="keyword">user</span> <span class="keyword">on</span></span><br><span class="line">        user.u_id=country.c_id;</span><br><span class="line">    &lt;/select&gt;</span><br><span class="line">    &lt;resultMap id="CountryVo" type="CountryVo"&gt;</span><br><span class="line">        &lt;id property="id" column="c_id"/&gt;</span><br><span class="line">        &lt;result property="c_countryname" column="c_countryname"/&gt;</span><br><span class="line">        &lt;collection property="userList" ofType="User"&gt;</span><br><span class="line">            &lt;id property="u_id" column="u_id"/&gt;</span><br><span class="line">            &lt;result property="u_username" column="u_username"/&gt;</span><br><span class="line">            &lt;result property="u_sex" column="u_sex"/&gt;</span><br><span class="line">        &lt;/collection&gt;</span><br><span class="line">    &lt;/resultMap&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="动态sql语句"><a href="#动态sql语句" class="headerlink" title="动态sql语句"></a>动态sql语句</h2><h3 id="多条件查询"><a href="#多条件查询" class="headerlink" title="多条件查询"></a>多条件查询</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> </span><br><span class="line"><span class="keyword">where</span> u_sex=<span class="comment">#&#123;u_sex&#125; </span></span><br><span class="line"><span class="keyword">and</span> u_username <span class="keyword">like</span> <span class="string">"%$&#123;u_username&#125;%"</span> </span><br><span class="line"><span class="keyword">and</span> u_cid=<span class="comment">#&#123;u_cid&#125;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="if"><a href="#if" class="headerlink" title="if"></a>if</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;if test="title != null"&gt;</span><br><span class="line">    AND title like <span class="comment">#&#123;title&#125;</span></span><br><span class="line">  &lt;/if&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">&lt;select id=&quot;connectionSelect&quot; resultMap=&quot;CountryVo&quot;&gt;
+        select country.c_id,
+        country.c_countryname,
+        user.u_id,
+        user.u_username,
+        user.u_sex
+        from country
+        left join user on
+        user.u_id=country.c_id;
+    &lt;/select&gt;
+    &lt;resultMap id=&quot;CountryVo&quot; type=&quot;CountryVo&quot;&gt;
+        &lt;id property=&quot;id&quot; column=&quot;c_id&quot;/&gt;
+        &lt;result property=&quot;c_countryname&quot; column=&quot;c_countryname&quot;/&gt;
+        &lt;collection property=&quot;userList&quot; ofType=&quot;User&quot;&gt;
+            &lt;id property=&quot;u_id&quot; column=&quot;u_id&quot;/&gt;
+            &lt;result property=&quot;u_username&quot; column=&quot;u_username&quot;/&gt;
+            &lt;result property=&quot;u_sex&quot; column=&quot;u_sex&quot;/&gt;
+        &lt;/collection&gt;
+    &lt;/resultMap&gt;</code></pre>
+<h2 id="动态sql语句"><a href="#动态sql语句" class="headerlink" title="动态sql语句"></a>动态sql语句</h2><h3 id="多条件查询"><a href="#多条件查询" class="headerlink" title="多条件查询"></a>多条件查询</h3><pre><code class="sql">select * from user 
+where u_sex=#{u_sex} 
+and u_username like &quot;%${u_username}%&quot; 
+and u_cid=#{u_cid}</code></pre>
+<h3 id="if"><a href="#if" class="headerlink" title="if"></a>if</h3><pre><code class="sql">&lt;if test=&quot;title != null&quot;&gt;
+    AND title like #{title}
+  &lt;/if&gt;</code></pre>
 <h3 id="where"><a href="#where" class="headerlink" title="where"></a>where</h3><p>解决and符号存在where之后造成sql语法错误</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;where&gt;</span><br><span class="line">            &lt;if test="u_sex!=null and u_sex!=''"&gt;</span><br><span class="line">                u_sex=<span class="comment">#&#123;u_sex&#125;</span></span><br><span class="line">            &lt;/if&gt;</span><br><span class="line">            &lt;if test="u_username!=null and u_username!=''"&gt;</span><br><span class="line">                and u_username like "%"<span class="comment">#&#123;u_username&#125;"%"</span></span><br><span class="line">            &lt;/if&gt;</span><br><span class="line">            &lt;if test="u_cid!=null"&gt;</span><br><span class="line">                and u_cid=<span class="comment">#&#123;u_cid&#125;</span></span><br><span class="line">            &lt;/if&gt;</span><br><span class="line">&lt;/where&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">&lt;where&gt;
+            &lt;if test=&quot;u_sex!=null and u_sex!=&#39;&#39;&quot;&gt;
+                u_sex=#{u_sex}
+            &lt;/if&gt;
+            &lt;if test=&quot;u_username!=null and u_username!=&#39;&#39;&quot;&gt;
+                and u_username like &quot;%&quot;#{u_username}&quot;%&quot;
+            &lt;/if&gt;
+            &lt;if test=&quot;u_cid!=null&quot;&gt;
+                and u_cid=#{u_cid}
+            &lt;/if&gt;
+&lt;/where&gt;</code></pre>
 <h3 id="trim"><a href="#trim" class="headerlink" title="trim"></a>trim</h3><p>prefix suffix prefixOverrides suffixOverrides 分别表示where的前后位置和and、or的前后位置</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;trim prefix="WHERE" prefixOverrides="AND |OR "&gt;</span><br><span class="line">  ...</span><br><span class="line">&lt;/trim&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">&lt;trim prefix=&quot;WHERE&quot; prefixOverrides=&quot;AND |OR &quot;&gt;
+  ...
+&lt;/trim&gt;</code></pre>
 <h3 id="set"><a href="#set" class="headerlink" title="set"></a>set</h3><p>用于动态包含需要更新的列，而舍去其它的。解决字段后逗号问题</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> Author</span><br><span class="line">    &lt;<span class="keyword">set</span>&gt;</span><br><span class="line">      &lt;<span class="keyword">if</span> <span class="keyword">test</span>=<span class="string">"username != null"</span>&gt;username=<span class="comment">#&#123;username&#125;,&lt;/if&gt;</span></span><br><span class="line">      &lt;<span class="keyword">if</span> <span class="keyword">test</span>=<span class="string">"password != null"</span>&gt;<span class="keyword">password</span>=<span class="comment">#&#123;password&#125;,&lt;/if&gt;</span></span><br><span class="line">      &lt;<span class="keyword">if</span> <span class="keyword">test</span>=<span class="string">"email != null"</span>&gt;email=<span class="comment">#&#123;email&#125;,&lt;/if&gt;</span></span><br><span class="line">      &lt;<span class="keyword">if</span> <span class="keyword">test</span>=<span class="string">"bio != null"</span>&gt;bio=<span class="comment">#&#123;bio&#125;&lt;/if&gt;</span></span><br><span class="line">    &lt;/<span class="keyword">set</span>&gt;</span><br><span class="line">  <span class="keyword">where</span> <span class="keyword">id</span>=<span class="comment">#&#123;id&#125;</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">update Author
+    &lt;set&gt;
+      &lt;if test=&quot;username != null&quot;&gt;username=#{username},&lt;/if&gt;
+      &lt;if test=&quot;password != null&quot;&gt;password=#{password},&lt;/if&gt;
+      &lt;if test=&quot;email != null&quot;&gt;email=#{email},&lt;/if&gt;
+      &lt;if test=&quot;bio != null&quot;&gt;bio=#{bio}&lt;/if&gt;
+    &lt;/set&gt;
+  where id=#{id}</code></pre>
 <h3 id="foreach"><a href="#foreach" class="headerlink" title="foreach"></a>foreach</h3><p>动态 SQL 的另外一个常用的操作需求是对一个集合进行遍历，通常是在构建 IN 条件语句的时候。 可以是数组或者集合 collection分别为array、list</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id="getByIds" resultType="User"&gt;</span><br><span class="line">        <span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> u_id <span class="keyword">in</span></span><br><span class="line">        &lt;foreach collection=<span class="string">"array"</span> item=<span class="string">"id"</span> <span class="keyword">open</span>=<span class="string">"("</span> <span class="keyword">close</span>=<span class="string">")"</span> separator=<span class="string">","</span>&gt;</span><br><span class="line">            <span class="comment">#&#123;id&#125;</span></span><br><span class="line">        &lt;/foreach&gt;</span><br><span class="line">    &lt;/<span class="keyword">select</span>&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">&lt;select id=&quot;getByIds&quot; resultType=&quot;User&quot;&gt;
+        select * from user where u_id in
+        &lt;foreach collection=&quot;array&quot; item=&quot;id&quot; open=&quot;(&quot; close=&quot;)&quot; separator=&quot;,&quot;&gt;
+            #{id}
+        &lt;/foreach&gt;
+    &lt;/select&gt;</code></pre>
 <p><strong>sql语句：缩减mapper语句 ，可以把重复的语句写在sql标签中，再在select等语句中通过include标签加入</strong></p>
 <h3 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h3><p>使用${}拼接字符串无法防止sql注入，bind标签可以解决这个问题</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;bind name="username" value="'%'+u_username+'%'"/&gt;</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> u_username <span class="keyword">like</span> <span class="comment">#&#123;username&#125;</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">&lt;bind name=&quot;username&quot; value=&quot;&#39;%&#39;+u_username+&#39;%&#39;&quot;/&gt;
+select * from user u_username like #{username}</code></pre>
 
       
     </div>
@@ -801,6 +893,10 @@
                   </li>
                 
                   <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
                     <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
                   </li>
                 
@@ -876,7 +972,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">31.2k</span>
+    <span title="Site words total count">31.4k</span>
   
 </div>
 
@@ -1159,6 +1255,7 @@
 
   
 
+
 </body>
 </html>
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
@@ -1167,3 +1264,10 @@
  <!-- 代码块复制功能 -->
   <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
   <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>

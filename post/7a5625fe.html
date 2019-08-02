@@ -141,6 +141,10 @@
 
 
 
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
   <title>AbstractQueuedSynchronizer AQS锁原理（源码分析）及ReentrantLock非公平锁的实现并实现自定义AQS锁 | Dzou's Blog</title>
   
 
@@ -408,7 +412,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.3k字
+                  2.2k字
                 </span>
               
 
@@ -497,51 +501,135 @@
 </li>
 </ul>
 <h2 id="共享锁"><a href="#共享锁" class="headerlink" title="共享锁"></a>共享锁</h2><p>锁在一个时间点可以被多个线程同时获取，AQS实现的CountDownLatch、ReadWriteLock</p>
-<h2 id="一、AQS实现ReentrantLock非公平锁"><a href="#一、AQS实现ReentrantLock非公平锁" class="headerlink" title="一、AQS实现ReentrantLock非公平锁"></a>一、AQS实现ReentrantLock非公平锁</h2><h3 id="ReentrantLock非公平锁获取锁"><a href="#ReentrantLock非公平锁获取锁" class="headerlink" title="ReentrantLock非公平锁获取锁"></a>ReentrantLock非公平锁获取锁</h3><h4 id="lock"><a href="#lock" class="headerlink" title="lock()"></a>lock()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (compareAndSetState(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">                setExclusiveOwnerThread(Thread.currentThread());</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                acquire(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
+<h2 id="一、AQS实现ReentrantLock非公平锁"><a href="#一、AQS实现ReentrantLock非公平锁" class="headerlink" title="一、AQS实现ReentrantLock非公平锁"></a>一、AQS实现ReentrantLock非公平锁</h2><h3 id="ReentrantLock非公平锁获取锁"><a href="#ReentrantLock非公平锁获取锁" class="headerlink" title="ReentrantLock非公平锁获取锁"></a>ReentrantLock非公平锁获取锁</h3><h4 id="lock"><a href="#lock" class="headerlink" title="lock()"></a>lock()</h4><pre><code class="java">final void lock() {
+            if (compareAndSetState(0, 1))
+                setExclusiveOwnerThread(Thread.currentThread());
+            else
+                acquire(1);
+        }</code></pre>
 <h4 id="acquire"><a href="#acquire" class="headerlink" title="acquire()"></a>acquire()</h4><blockquote>
 <p>根据指定状态获取，能获取到 执行compareAndSetState方法设置新状态</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line"><span class="comment">//tryAcquire成功的话 acquire结束；</span></span><br><span class="line">        <span class="keyword">if</span> (!tryAcquire(arg) &amp;&amp;</span><br><span class="line">            <span class="comment">//AcquireQueued方法进行阻塞等待,直到获取锁为止</span></span><br><span class="line">            <span class="comment">//addWaiter把当前线程添加到队列尾部</span></span><br><span class="line">            acquireQueued(addWaiter(Node.EXCLUSIVE), arg))</span><br><span class="line">            <span class="comment">//tryAcquire失败并且acquiredQueued成功的话把当前线程中断</span></span><br><span class="line">            selfInterrupt();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public final void acquire(int arg) {
+//tryAcquire成功的话 acquire结束；
+        if (!tryAcquire(arg) &amp;&amp;
+            //AcquireQueued方法进行阻塞等待,直到获取锁为止
+            //addWaiter把当前线程添加到队列尾部
+            acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
+            //tryAcquire失败并且acquiredQueued成功的话把当前线程中断
+            selfInterrupt();
+    }</code></pre>
 <ol>
 <li>尝试获取锁；</li>
 <li>如果获取不到，将当前线程构造成节点Node并加入队列；<br>addWaiter方法把节点加入队列，每个线程都是一个节点Node，从而形成了一个双向队列，类似CLH队列。</li>
 <li>再次尝试获取，如果没有获取到那么将当前线程从线程调度器上摘下，进入等待状态。</li>
 </ol>
-<h4 id="tryAcquire"><a href="#tryAcquire" class="headerlink" title="tryAcquire()"></a>tryAcquire()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">nonfairTryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">    <span class="comment">//获取状态</span></span><br><span class="line">            <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="comment">//如果该锁未被任何线程占有，该锁能被当前线程获取</span></span><br><span class="line">            <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (compareAndSetState(<span class="number">0</span>, acquires)) &#123;</span><br><span class="line">                    setExclusiveOwnerThread(current);</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">    <span class="comment">//若被获取到 查看是否被当前线程</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">                <span class="comment">//是当前线程的话再次获取，计数+1</span></span><br><span class="line">                <span class="keyword">int</span> nextc = c + acquires;</span><br><span class="line">                <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>) <span class="comment">// overflow</span></span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Maximum lock count exceeded"</span>);</span><br><span class="line">                setState(nextc);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
+<h4 id="tryAcquire"><a href="#tryAcquire" class="headerlink" title="tryAcquire()"></a>tryAcquire()</h4><pre><code class="java">final boolean nonfairTryAcquire(int acquires) {
+            final Thread current = Thread.currentThread();
+    //获取状态
+            int c = getState();
+    //如果该锁未被任何线程占有，该锁能被当前线程获取
+            if (c == 0) {
+                if (compareAndSetState(0, acquires)) {
+                    setExclusiveOwnerThread(current);
+                    return true;
+                }
+            }
+    //若被获取到 查看是否被当前线程
+            else if (current == getExclusiveOwnerThread()) {
+                //是当前线程的话再次获取，计数+1
+                int nextc = c + acquires;
+                if (nextc &lt; 0) // overflow
+                    throw new Error(&quot;Maximum lock count exceeded&quot;);
+                setState(nextc);
+                return true;
+            }
+            return false;
+        }</code></pre>
 <p>在tryAcquire方法中使用了同步器提供的对state操作的方法，利用CAS原理保证只有一个线程能够对状态进行成功修改，而没有成功修改的线程将进入队列排队。</p>
 <h4 id="acquireQueued"><a href="#acquireQueued" class="headerlink" title="acquireQueued()"></a>acquireQueued()</h4><p>AcquireQueued方法进行阻塞等待,直到获取锁为止</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//node为null，排他方式阻塞等待</span></span><br><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">acquireQueued</span><span class="params">(<span class="keyword">final</span> Node node, <span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> failed = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">boolean</span> interrupted = <span class="keyword">false</span>;</span><br><span class="line">            <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">                <span class="comment">//p为当前节点的前一个节点</span></span><br><span class="line">                <span class="keyword">final</span> Node p = node.predecessor();</span><br><span class="line">                <span class="comment">//如果p为头结点并且获取成功就把当前线节点设置为头结点</span></span><br><span class="line">                <span class="keyword">if</span> (p == head &amp;&amp; tryAcquire(arg)) &#123;</span><br><span class="line">                    setHead(node);</span><br><span class="line">                    p.next = <span class="keyword">null</span>; <span class="comment">// help GC</span></span><br><span class="line">                    failed = <span class="keyword">false</span>;</span><br><span class="line">                    <span class="keyword">return</span> interrupted;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//如果线程需要被阻塞 则interrputr为true</span></span><br><span class="line">                <span class="keyword">if</span> (shouldParkAfterFailedAcquire(p, node) &amp;&amp;</span><br><span class="line">                    parkAndCheckInterrupt())</span><br><span class="line">                    interrupted = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (failed)</span><br><span class="line">                cancelAcquire(node);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">//node为null，排他方式阻塞等待
+final boolean acquireQueued(final Node node, int arg) {
+        boolean failed = true;
+        try {
+            boolean interrupted = false;
+            for (;;) {
+                //p为当前节点的前一个节点
+                final Node p = node.predecessor();
+                //如果p为头结点并且获取成功就把当前线节点设置为头结点
+                if (p == head &amp;&amp; tryAcquire(arg)) {
+                    setHead(node);
+                    p.next = null; // help GC
+                    failed = false;
+                    return interrupted;
+                }
+                //如果线程需要被阻塞 则interrputr为true
+                if (shouldParkAfterFailedAcquire(p, node) &amp;&amp;
+                    parkAndCheckInterrupt())
+                    interrupted = true;
+            }
+        } finally {
+            if (failed)
+                cancelAcquire(node);
+        }
+    }</code></pre>
 <ol>
 <li>获取当前节点的前驱节点；</li>
 <li>当前驱节点是头结点并且能够获取状态，代表该当前节点占有锁；</li>
 <li>否则进入等待状态。</li>
 </ol>
 <h4 id="shouldParkAfterFailedAcquire"><a href="#shouldParkAfterFailedAcquire" class="headerlink" title="shouldParkAfterFailedAcquire()"></a>shouldParkAfterFailedAcquire()</h4><p>判断线程是否需要阻塞</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">shouldParkAfterFailedAcquire</span><span class="params">(Node pred, Node node)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ws = pred.waitStatus;</span><br><span class="line">        <span class="comment">//线程需要运行</span></span><br><span class="line">        <span class="keyword">if</span> (ws == Node.SIGNAL)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       <span class="comment">//ws&gt;0 处于CANCEL状态的线程</span></span><br><span class="line">        <span class="keyword">if</span> (ws &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//把这些线程从队列中清除</span></span><br><span class="line">            <span class="keyword">do</span> &#123;</span><br><span class="line">                node.prev = pred = pred.prev;</span><br><span class="line">            &#125; <span class="keyword">while</span> (pred.waitStatus &gt; <span class="number">0</span>);</span><br><span class="line">            pred.next = node;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">//把等待的设置为运行状态</span></span><br><span class="line">            compareAndSetWaitStatus(pred, ws, Node.SIGNAL);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
+        int ws = pred.waitStatus;
+        //线程需要运行
+        if (ws == Node.SIGNAL)
+            return true;
+       //ws&gt;0 处于CANCEL状态的线程
+        if (ws &gt; 0) {
+        //把这些线程从队列中清除
+            do {
+                node.prev = pred = pred.prev;
+            } while (pred.waitStatus &gt; 0);
+            pred.next = node;
+        } else {
+         //把等待的设置为运行状态
+            compareAndSetWaitStatus(pred, ws, Node.SIGNAL);
+        }
+        return false;
+    }</code></pre>
 <ol>
 <li>先判断线程是否处于运行状态</li>
 <li>如果处于CANCEL状态则把他们都从队列中清除</li>
 <li>把当前节点下一个节点等待状态设置为准备运行</li>
 </ol>
-<h4 id="parkAndCheckInterrupt"><a href="#parkAndCheckInterrupt" class="headerlink" title="parkAndCheckInterrupt()"></a>parkAndCheckInterrupt()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// park方法让其他线程处于等待状态</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">parkAndCheckInterrupt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        LockSupport.park(<span class="keyword">this</span>);</span><br><span class="line">        <span class="keyword">return</span> Thread.interrupted();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<h4 id="parkAndCheckInterrupt"><a href="#parkAndCheckInterrupt" class="headerlink" title="parkAndCheckInterrupt()"></a>parkAndCheckInterrupt()</h4><pre><code class="java">// park方法让其他线程处于等待状态
+private final boolean parkAndCheckInterrupt() {
+        LockSupport.park(this);
+        return Thread.interrupted();
+    }</code></pre>
 <ol>
 <li>调用阻塞线程本地方法park</li>
 <li>返回线程是否被阻塞</li>
 </ol>
 <h3 id="ReentrantLock非公平锁释放锁"><a href="#ReentrantLock非公平锁释放锁" class="headerlink" title="ReentrantLock非公平锁释放锁"></a>ReentrantLock非公平锁释放锁</h3><h4 id="unlock"><a href="#unlock" class="headerlink" title="unlock()"></a>unlock()</h4><p>调用release释放一个锁</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//释放一个锁</span></span><br><span class="line">        sync.release(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public void unlock() {
+    //释放一个锁
+        sync.release(1);
+    }</code></pre>
 <h4 id="release"><a href="#release" class="headerlink" title="release()"></a>release()</h4><blockquote>
 <p>释放锁</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">release</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line"><span class="comment">//调用tryRelease尝试释放一个锁 </span></span><br><span class="line">        <span class="keyword">if</span> (tryRelease(arg)) &#123;</span><br><span class="line">            Node h = head;</span><br><span class="line">            <span class="comment">//释放成功后</span></span><br><span class="line">            <span class="keyword">if</span> (h != <span class="keyword">null</span> &amp;&amp; h.waitStatus != <span class="number">0</span>)</span><br><span class="line">                unparkSuccessor(h);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public final boolean release(int arg) {
+//调用tryRelease尝试释放一个锁 
+        if (tryRelease(arg)) {
+            Node h = head;
+            //释放成功后
+            if (h != null &amp;&amp; h.waitStatus != 0)
+                unparkSuccessor(h);
+            return true;
+        }
+        return false;
+    }</code></pre>
 <ol>
 <li>调用tryRelease方法尝试释放锁，失败返回false</li>
 <li>释放成功判断头结点不为null并且状态不为等待获取锁状态</li>
@@ -550,8 +638,18 @@
 <h4 id="tryRelease"><a href="#tryRelease" class="headerlink" title="tryRelease()"></a>tryRelease()</h4><blockquote>
 <p>尝试释放当前锁</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> releases)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">int</span> c = getState() - releases;</span><br><span class="line">            <span class="keyword">if</span> (Thread.currentThread() != getExclusiveOwnerThread())</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalMonitorStateException();</span><br><span class="line">            <span class="keyword">boolean</span> free = <span class="keyword">false</span>;</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">                free = <span class="keyword">true</span>;</span><br><span class="line">                setExclusiveOwnerThread(<span class="keyword">null</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            setState(c);</span><br><span class="line">            <span class="keyword">return</span> free;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">protected final boolean tryRelease(int releases) {
+            int c = getState() - releases;
+            if (Thread.currentThread() != getExclusiveOwnerThread())
+                throw new IllegalMonitorStateException();
+            boolean free = false;
+            if (c == 0) {
+                free = true;
+                setExclusiveOwnerThread(null);
+            }
+            setState(c);
+            return free;
+        }</code></pre>
 <ol>
 <li>释放锁必需是当前线程，如果不是当前线程抛出异常</li>
 <li>如果获取锁的线程为当前线程则判断释放后的状态是否为0，即释放前为CANCEL状态，如果是，则设置独占模式线程为null，并设置状态为0，返回true。</li>
@@ -559,8 +657,24 @@
 <h4 id="unparkSuccessor"><a href="#unparkSuccessor" class="headerlink" title="unparkSuccessor()"></a>unparkSuccessor()</h4><blockquote>
 <p>锁释放后唤醒线程，一同竞争CPU资源</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">unparkSuccessor</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//获取当前节点状态</span></span><br><span class="line">        <span class="keyword">int</span> ws = node.waitStatus;</span><br><span class="line">        <span class="comment">//把状态设置为等待获取锁状态</span></span><br><span class="line">        <span class="keyword">if</span> (ws &lt; <span class="number">0</span>)</span><br><span class="line">            compareAndSetWaitStatus(node, ws, <span class="number">0</span>);</span><br><span class="line">        <span class="comment">//如果没有下一个节点或者下一个节点状态为CANCEL，则把它们清除</span></span><br><span class="line">        Node s = node.next;</span><br><span class="line">        <span class="keyword">if</span> (s == <span class="keyword">null</span> || s.waitStatus &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            s = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">for</span> (Node t = tail; t != <span class="keyword">null</span> &amp;&amp; t != node; t = t.prev)</span><br><span class="line">                <span class="keyword">if</span> (t.waitStatus &lt;= <span class="number">0</span>)</span><br><span class="line">                    s = t;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//否则调用LockSupport中unpark方法，唤醒后一个节点</span></span><br><span class="line">        <span class="keyword">if</span> (s != <span class="keyword">null</span>)</span><br><span class="line">            LockSupport.unpark(s.thread);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">private void unparkSuccessor(Node node) {
+        //获取当前节点状态
+        int ws = node.waitStatus;
+        //把状态设置为等待获取锁状态
+        if (ws &lt; 0)
+            compareAndSetWaitStatus(node, ws, 0);
+        //如果没有下一个节点或者下一个节点状态为CANCEL，则把它们清除
+        Node s = node.next;
+        if (s == null || s.waitStatus &gt; 0) {
+            s = null;
+            for (Node t = tail; t != null &amp;&amp; t != node; t = t.prev)
+                if (t.waitStatus &lt;= 0)
+                    s = t;
+        }
+        //否则调用LockSupport中unpark方法，唤醒后一个节点
+        if (s != null)
+            LockSupport.unpark(s.thread);
+    }</code></pre>
 <ol>
 <li>获取当前节点状态</li>
 <li>判断如果状态&lt;0，即不为等待获取锁状态，则把状态设置为等待获取锁状态</li>
@@ -570,20 +684,137 @@
 <h4 id="unpark"><a href="#unpark" class="headerlink" title="unpark()"></a>unpark()</h4><blockquote>
 <p>调用UNSAFE的本地方法unpark唤醒线程</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">unpark</span><span class="params">(Thread thread)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (thread != <span class="keyword">null</span>)</span><br><span class="line">            UNSAFE.unpark(thread);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public static void unpark(Thread thread) {
+        if (thread != null)
+            UNSAFE.unpark(thread);
+    }</code></pre>
 <h2 id="二、AQS实现ReentrantLock公平锁"><a href="#二、AQS实现ReentrantLock公平锁" class="headerlink" title="二、AQS实现ReentrantLock公平锁"></a>二、AQS实现ReentrantLock公平锁</h2><p>AQS实现ReentrantLock公平锁与非公平锁最大的区别在下面这段代码：</p>
 <p><img src="/images/2.png" alt="1563697815749"></p>
 <p>源码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">hasQueuedPredecessors</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// The correctness of this depends on head being initialized</span></span><br><span class="line">        <span class="comment">// before tail and on head.next being accurate if the current</span></span><br><span class="line">        <span class="comment">// thread is first in queue.</span></span><br><span class="line">        Node t = tail; <span class="comment">// Read fields in reverse initialization order</span></span><br><span class="line">        Node h = head;</span><br><span class="line">        Node s;</span><br><span class="line">        <span class="keyword">return</span> h != t &amp;&amp;</span><br><span class="line">            ((s = h.next) == <span class="keyword">null</span> || s.thread != Thread.currentThread());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public final boolean hasQueuedPredecessors() {
+        // The correctness of this depends on head being initialized
+        // before tail and on head.next being accurate if the current
+        // thread is first in queue.
+        Node t = tail; // Read fields in reverse initialization order
+        Node h = head;
+        Node s;
+        return h != t &amp;&amp;
+            ((s = h.next) == null || s.thread != Thread.currentThread());
+    }</code></pre>
 <blockquote>
 <p>判断”当前线程”是不是在CLH队列的队首，来实现公平性。</p>
 </blockquote>
-<h2 id="三、AQS实现的自定义锁"><a href="#三、AQS实现的自定义锁" class="headerlink" title="三、AQS实现的自定义锁"></a>三、AQS实现的自定义锁</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAQSLock</span> <span class="keyword">implements</span> <span class="title">Lock</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Sync sync;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyAQSLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        sync = <span class="keyword">new</span> Sync();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        sync.acquire(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lockInterruptibly</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        sync.acquireInterruptibly(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sync.tryAcquire(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(<span class="keyword">long</span> time, TimeUnit unit)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sync.tryAcquireNanos(<span class="number">1</span>,unit.toNanos(time));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        sync.release(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Condition <span class="title">newCondition</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sync.newCondition();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 把lock、unlock实现使用AQS构建为内部类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Sync</span> <span class="keyword">extends</span> <span class="title">AbstractQueuedSynchronizer</span></span>&#123;</span><br><span class="line">        <span class="function">Condition <span class="title">newCondition</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> ConditionObject();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//第一个线程进来拿到锁</span></span><br><span class="line">            <span class="keyword">int</span> state = getState();</span><br><span class="line">            <span class="comment">//用于重入锁判断</span></span><br><span class="line">            Thread current = Thread.currentThread();</span><br><span class="line">            <span class="keyword">if</span>(state==<span class="number">0</span>)&#123;</span><br><span class="line">                <span class="keyword">if</span>(compareAndSetState(<span class="number">0</span>,arg))&#123;</span><br><span class="line">                    setExclusiveOwnerThread(Thread.currentThread());</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//重入锁判断 当前线程和独占锁线程相同，则再次获取</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(current==getExclusiveOwnerThread())&#123;</span><br><span class="line">                <span class="keyword">int</span> next = state+arg;</span><br><span class="line">                <span class="keyword">if</span>(next&lt;<span class="number">0</span>)&#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException();</span><br><span class="line">                &#125;</span><br><span class="line">                setState(next);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 可重入释放锁</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> arg</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(Thread.currentThread()!=getExclusiveOwnerThread())&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">int</span> state = getState()-arg;</span><br><span class="line">            <span class="keyword">if</span>(state==<span class="number">0</span>)&#123;</span><br><span class="line">                setExclusiveOwnerThread(<span class="keyword">null</span>);</span><br><span class="line">                setState(<span class="number">0</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            setState(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="三、AQS实现的自定义锁"><a href="#三、AQS实现的自定义锁" class="headerlink" title="三、AQS实现的自定义锁"></a>三、AQS实现的自定义锁</h2><pre><code class="java">public class MyAQSLock implements Lock {
+    private final Sync sync;
+    public MyAQSLock() {
+        sync = new Sync();
+    }
+    @Override
+    public void lock() {
+        sync.acquire(1);
+    }
+    @Override
+    public void lockInterruptibly() throws InterruptedException {
+        sync.acquireInterruptibly(1);
+    }
+    @Override
+    public boolean tryLock() {
+        return sync.tryAcquire(1);
+    }
+    @Override
+    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+        return sync.tryAcquireNanos(1,unit.toNanos(time));
+    }
+    @Override
+    public void unlock() {
+        sync.release(1);
+    }
+    @Override
+    public Condition newCondition() {
+        return sync.newCondition();
+    }
+    /**
+     * 把lock、unlock实现使用AQS构建为内部类
+     */
+    private class Sync extends AbstractQueuedSynchronizer{
+        Condition newCondition(){
+            return new ConditionObject();
+        }
+        @Override
+        protected boolean tryAcquire(int arg) {
+            //第一个线程进来拿到锁
+            int state = getState();
+            //用于重入锁判断
+            Thread current = Thread.currentThread();
+            if(state==0){
+                if(compareAndSetState(0,arg)){
+                    setExclusiveOwnerThread(Thread.currentThread());
+                    return true;
+                }
+            }
+            //重入锁判断 当前线程和独占锁线程相同，则再次获取
+            else if(current==getExclusiveOwnerThread()){
+                int next = state+arg;
+                if(next&lt;0){
+                    throw new RuntimeException();
+                }
+                setState(next);
+                return true;
+            }
+            return false;
+        }
+        /**
+         * 可重入释放锁
+         * @param arg
+         * @return
+         */
+        @Override
+        protected boolean tryRelease(int arg) {
+            if(Thread.currentThread()!=getExclusiveOwnerThread()){
+                throw new RuntimeException();
+            }
+            int state = getState()-arg;
+            if(state==0){
+                setExclusiveOwnerThread(null);
+                setState(0);
+                return true;
+            }
+            setState(0);
+            return false;
+        }
 
-<h3 id="测试（可重入锁）"><a href="#测试（可重入锁）" class="headerlink" title="测试（可重入锁）"></a>测试（可重入锁）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestAQSLock2</span> </span>&#123;</span><br><span class="line">    MyAQSLock myLock = <span class="keyword">new</span> MyAQSLock();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> value;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> value2;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">a</span><span class="params">()</span></span>&#123;</span><br><span class="line">        myLock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            b();</span><br><span class="line">            <span class="keyword">return</span> value++;</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            myLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">b</span><span class="params">()</span></span>&#123;</span><br><span class="line">        myLock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(++value2);</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            myLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        TestAQSLock2 myLock = <span class="keyword">new</span> TestAQSLock2();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">50</span>;i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName() + <span class="string">":"</span> + myLock.a());</span><br><span class="line">            &#125;).start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+    }
+}</code></pre>
+<h3 id="测试（可重入锁）"><a href="#测试（可重入锁）" class="headerlink" title="测试（可重入锁）"></a>测试（可重入锁）</h3><pre><code class="java">public class TestAQSLock2 {
+    MyAQSLock myLock = new MyAQSLock();
+    private int value;
+    private int value2;
+    public int a(){
+        myLock.lock();
+        try {
+            b();
+            return value++;
+        }finally {
+            myLock.unlock();
+        }
+    }
+    public void b(){
+        myLock.lock();
+        try {
+            System.out.println(++value2);
+        }finally {
+            myLock.unlock();
+        }
+    }
+    public static void main(String[] args) {
+        TestAQSLock2 myLock = new TestAQSLock2();
+        for(int i=0;i&lt;50;i++) {
+            new Thread(() -&gt; {
+                System.out.println(Thread.currentThread().getName() + &quot;:&quot; + myLock.a());
+            }).start();
+        }
+    }
+}</code></pre>
 
       
     </div>
@@ -841,6 +1072,10 @@
                   </li>
                 
                   <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
                     <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
                   </li>
                 
@@ -916,7 +1151,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">31.2k</span>
+    <span title="Site words total count">31.4k</span>
   
 </div>
 
@@ -1199,6 +1434,7 @@
 
   
 
+
 </body>
 </html>
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
@@ -1207,3 +1443,10 @@
  <!-- 代码块复制功能 -->
   <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
   <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>

@@ -138,6 +138,10 @@
 
 
 
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
   <title>Java中使用servlet内置对象request获取IP地址 | Dzou's Blog</title>
   
 
@@ -405,7 +409,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  79字
+                  85字
                 </span>
               
 
@@ -447,8 +451,16 @@
 
       
         <h2 id="Java中使用servlet内置对象request获取IP地址"><a href="#Java中使用servlet内置对象request获取IP地址" class="headerlink" title="Java中使用servlet内置对象request获取IP地址"></a>Java中使用servlet内置对象request获取IP地址</h2><p>Controller中获取HttpServletRequest对象request，调用下面代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">String ip = request.getHeader(<span class="string">"x-forwarded-for"</span>);</span><br><span class="line">                <span class="keyword">if</span>(ip == <span class="keyword">null</span> || ip.length() == <span class="number">0</span> || <span class="string">"unknown"</span>.equalsIgnoreCase(ip))&#123;</span><br><span class="line">                    ip = request.getHeader(<span class="string">"Proxy-Client-IP"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(ip == <span class="keyword">null</span> || ip.length() == <span class="number">0</span> || <span class="string">"unknown"</span>.equalsIgnoreCase(ip))&#123;</span><br><span class="line">                    ip = request.getHeader(<span class="string">"WL-Proxy-Client-IP"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(ip == <span class="keyword">null</span> || ip.length() == <span class="number">0</span> || <span class="string">"unknown"</span>.equalsIgnoreCase(ip))&#123;</span><br><span class="line">                    ip = request.getRemoteAddr();</span><br><span class="line">                &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">String ip = request.getHeader(&quot;x-forwarded-for&quot;);
+                if(ip == null || ip.length() == 0 || &quot;unknown&quot;.equalsIgnoreCase(ip)){
+                    ip = request.getHeader(&quot;Proxy-Client-IP&quot;);
+                }
+                if(ip == null || ip.length() == 0 || &quot;unknown&quot;.equalsIgnoreCase(ip)){
+                    ip = request.getHeader(&quot;WL-Proxy-Client-IP&quot;);
+                }
+                if(ip == null || ip.length() == 0 || &quot;unknown&quot;.equalsIgnoreCase(ip)){
+                    ip = request.getRemoteAddr();
+                }</code></pre>
 
       
     </div>
@@ -489,9 +501,9 @@
           
             <a href="/tags/Java/" rel="tag"># Java</a>
           
-            <a href="/tags/基础/" rel="tag"># 基础</a>
-          
             <a href="/tags/Web/" rel="tag"># Web</a>
+          
+            <a href="/tags/基础/" rel="tag"># 基础</a>
           
             <a href="/tags/servlet/" rel="tag"># servlet</a>
           
@@ -704,6 +716,10 @@
                   </li>
                 
                   <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
                     <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
                   </li>
                 
@@ -779,7 +795,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">31.2k</span>
+    <span title="Site words total count">31.4k</span>
   
 </div>
 
@@ -1062,6 +1078,7 @@
 
   
 
+
 </body>
 </html>
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
@@ -1070,3 +1087,10 @@
  <!-- 代码块复制功能 -->
   <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
   <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>

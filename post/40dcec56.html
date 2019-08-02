@@ -138,6 +138,10 @@
 
 
 
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
   <title>Java反射机制基础--理解与使用 | Dzou's Blog</title>
   
 
@@ -405,7 +409,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  641字
+                  644字
                 </span>
               
 
@@ -450,8 +454,14 @@
 <p> <strong>JAVA反射（放射）机制：“程序运行时，允许改变程序结构或变量类型，这种语言称为动态语言”。<br>反射最重要的用途就是开发各种通用框架。很多框架（比如 Spring）都是配置化的（比如通过 XML 文件配置 Bean），为了保证框架的通用性，它们可能需要根据配置文件加载不同的对象或类，调用不同的方法，这个时候就必须用到反射，运行时动态加载需要加载的对象。</strong></p>
 <p>一般地，我们用 instanceof 关键字来判断是否为某个类的实例。同时我们也可以借助反射中 Class 对象的 isInstance() 方法来判断是否为某个类的实例，它是一个 native 方法。</p>
 <p><strong>创建实例</strong><br>先通过Class对象获取指定的Constructor对象，再调用Constructor对象的newInstance()方法来创建实例。这种方法可以用指定的构造器构造类的实例。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取String所对应的Class对象</span></span><br><span class="line">Class&lt;?&gt; c = String.class;</span><br><span class="line"><span class="comment">//获取String类带一个String参数的构造器</span></span><br><span class="line">Constructor constructor = c.getConstructor(String.class);</span><br><span class="line"><span class="comment">//根据构造器创建实例</span></span><br><span class="line">Object obj = constructor.newInstance(<span class="string">"23333"</span>);</span><br><span class="line">System.out.println(obj);</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">boolean</span> <span class="title">isInstance</span><span class="params">(Object obj)</span></span>;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">    //获取String所对应的Class对象
+    Class&lt;?&gt; c = String.class;
+    //获取String类带一个String参数的构造器
+    Constructor constructor = c.getConstructor(String.class);
+    //根据构造器创建实例
+    Object obj = constructor.newInstance(&quot;23333&quot;);
+    System.out.println(obj);
+    public native boolean isInstance(Object obj);</code></pre>
 <h2 id="获取反射入口三种方式（Class）："><a href="#获取反射入口三种方式（Class）：" class="headerlink" title="获取反射入口三种方式（Class）："></a>获取反射入口三种方式（Class）：</h2><ul>
 <li><p>Class.forname(全类名) 需要异常捕获 </p>
 </li>
@@ -725,6 +735,10 @@ getFileds 和 getDeclaredFields 方法用法同上（参照 Method）。</code><
                   </li>
                 
                   <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
                     <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
                   </li>
                 
@@ -800,7 +814,7 @@ getFileds 和 getDeclaredFields 方法用法同上（参照 Method）。</code><
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">31.2k</span>
+    <span title="Site words total count">31.4k</span>
   
 </div>
 
@@ -1083,6 +1097,7 @@ getFileds 和 getDeclaredFields 方法用法同上（参照 Method）。</code><
 
   
 
+
 </body>
 </html>
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
@@ -1091,3 +1106,10 @@ getFileds 和 getDeclaredFields 方法用法同上（参照 Method）。</code><
  <!-- 代码块复制功能 -->
   <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
   <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>

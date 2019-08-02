@@ -140,6 +140,10 @@
 
 
 
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
   <title>牛客网算法编程题--物流中转站 解答 | Dzou's Blog</title>
   
 
@@ -407,7 +411,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  810字
+                  792字
                 </span>
               
 
@@ -452,11 +456,15 @@
 <p>假设给你一个二维平面网格，每个格子是房子则为1，或者是空地则为0。找到一个空地修建一个物流中转站，使得这个物流中转站到所有的房子的距离之和最小。 能修建，则返回最小的距离和。如果无法修建，则返回 -1。</p>
 <p>若范围限制在100*100以内的网格，如何计算出最小的距离和？</p>
 <p>当平面网格非常大的情况下，如何避免不必要的计算？</p>
-<h2 id="输入描述"><a href="#输入描述" class="headerlink" title="输入描述"></a>输入描述</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">4</span><br><span class="line">0 1 1 0</span><br><span class="line">1 1 0 1</span><br><span class="line">0 0 1 0</span><br><span class="line">0 0 0 0</span><br><span class="line"></span><br><span class="line">先输入方阵阶数，然后逐行输入房子和空地的数据，以空格分隔。</span><br></pre></td></tr></table></figure>
+<h2 id="输入描述"><a href="#输入描述" class="headerlink" title="输入描述"></a>输入描述</h2><pre><code>4
+0 1 1 0
+1 1 0 1
+0 0 1 0
+0 0 0 0
 
-<h2 id="输出描述"><a href="#输出描述" class="headerlink" title="输出描述"></a>输出描述</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">8</span><br><span class="line"></span><br><span class="line">能修建，则返回最小的距离和。如果无法修建，则返回 -1。</span><br></pre></td></tr></table></figure>
+先输入方阵阶数，然后逐行输入房子和空地的数据，以空格分隔。</code></pre><h2 id="输出描述"><a href="#输出描述" class="headerlink" title="输出描述"></a>输出描述</h2><pre><code>8
 
-<hr>
+能修建，则返回最小的距离和。如果无法修建，则返回 -1。</code></pre><hr>
 <blockquote>
 <p>相信大家都会使用二维数组和循环遍历,下面我讲这道题将使用大家一些比较不熟悉或者陌生的知识</p>
 </blockquote>
@@ -465,13 +473,65 @@
 <p>使用封装对象Point存放点的坐标,再把他们存放到集合List中(ArrayList读取效率高),编写求距离和的函数和求两点距离和的函数,最后通过stream和Lambda组合获得距离最小值</p>
 <p><img src="/images/1.png" alt="1562076624237"></p>
 <p>关键代码就一行</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> re = noBuildings.stream()</span><br><span class="line">    .map(x-&gt;distanceSum(x.x,x.y))</span><br><span class="line">    .min(Integer::compareTo)</span><br><span class="line">    .get();</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">        int re = noBuildings.stream()
+            .map(x-&gt;distanceSum(x.x,x.y))
+            .min(Integer::compareTo)
+            .get();</code></pre>
 <p><strong>这段代码中stream就是获取一个流对象,map把参数x与求解距离总和的方法映射得到该方法的返回值min就是在这些返回值中获得最小的值(使用了Integer中的ComparaTo方法 最后通过get获得这个最小值)</strong></p>
 <h3 id="如果又看不懂的可以看一下我的另外一篇关于Lambda和Stream的博客"><a href="#如果又看不懂的可以看一下我的另外一篇关于Lambda和Stream的博客" class="headerlink" title="如果又看不懂的可以看一下我的另外一篇关于Lambda和Stream的博客"></a>如果又看不懂的可以看一下我的另外一篇关于Lambda和Stream的博客</h3><p>我们在输入点的时候就把点封装add到集合中,我们只需要从没有建筑的点中查取出与空地的距离的最小值</p>
 <p>源代码:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> List&lt;Point&gt; buildings;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    buildings = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    List&lt;Point&gt; noBuildings = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    Scanner scanner = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">    <span class="keyword">int</span> l = scanner.nextInt();</span><br><span class="line">    <span class="keyword">int</span>[][] sites = <span class="keyword">new</span> <span class="keyword">int</span>[l][l];</span><br><span class="line">    scanner.nextLine();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;l;i++)&#123;</span><br><span class="line">        String[] str;</span><br><span class="line">        str = scanner.nextLine().split(<span class="string">" "</span>);</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> m=<span class="number">0</span>;m&lt;l;m++)&#123;</span><br><span class="line">                sites[i][m] = Integer.parseInt(str[m].trim());</span><br><span class="line">                <span class="keyword">if</span>(sites[i][m]==<span class="number">0</span>)&#123;</span><br><span class="line">                    noBuildings.add(<span class="keyword">new</span> Point(i,m));</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    buildings.add(<span class="keyword">new</span> Point(i,m));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(noBuildings.isEmpty())&#123;</span><br><span class="line">        System.out.println(<span class="string">"-1"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> re = noBuildings.stream().map(x-&gt;distanceSum(x.x,x.y)).min(Integer::compareTo).get();</span><br><span class="line">    System.out.println(re);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">distanceSum</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> line)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (Point point : buildings) &#123;</span><br><span class="line">        sum+=twoPoint(row,line,point.x,point.y);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">twoPoint</span><span class="params">(<span class="keyword">int</span> row1,<span class="keyword">int</span> line1,<span class="keyword">int</span> row2,<span class="keyword">int</span> line2)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Math.abs(row2-row1)+Math.abs(line2-line1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Point</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> x;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> y;</span><br><span class="line">    Point(<span class="keyword">int</span> row,<span class="keyword">int</span> line)&#123;</span><br><span class="line">        x=row;</span><br><span class="line">        y=line;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setX</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.x = x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setY</span><span class="params">(<span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.y = y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    private static List&lt;Point&gt; buildings;
+    public static void main(String[] args) {
+        buildings = new ArrayList&lt;&gt;();
+        List&lt;Point&gt; noBuildings = new ArrayList&lt;&gt;();
+        Scanner scanner = new Scanner(System.in);
+        int l = scanner.nextInt();
+        int[][] sites = new int[l][l];
+        scanner.nextLine();
+        for(int i=0;i&lt;l;i++){
+            String[] str;
+            str = scanner.nextLine().split(&quot; &quot;);
+                for(int m=0;m&lt;l;m++){
+                    sites[i][m] = Integer.parseInt(str[m].trim());
+                    if(sites[i][m]==0){
+                        noBuildings.add(new Point(i,m));
+                    }else{
+                        buildings.add(new Point(i,m));
+                    }
+                }
+        }
+        if(noBuildings.isEmpty()){
+            System.out.println(&quot;-1&quot;);
+            return;
+        }
+        int re = noBuildings.stream().map(x-&gt;distanceSum(x.x,x.y)).min(Integer::compareTo).get();
+        System.out.println(re);
+    }
+    private static int distanceSum(int row, int line) {
+        int sum = 0;
+        for (Point point : buildings) {
+            sum+=twoPoint(row,line,point.x,point.y);
+        }
+        return sum;
+    }
+    private static int twoPoint(int row1,int line1,int row2,int line2){
+        return Math.abs(row2-row1)+Math.abs(line2-line1);
+    }
 
+    private static class Point{
+        private int x;
+        private int y;
+        Point(int row,int line){
+            x=row;
+            y=line;
+        }
+        public void setX(int x) {
+            this.x = x;
+        }
+        public void setY(int y) {
+            this.y = y;
+        }
+    }</code></pre>
 
       
     </div>
@@ -725,6 +785,10 @@
                   </li>
                 
                   <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
                     <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
                   </li>
                 
@@ -800,7 +864,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">31.2k</span>
+    <span title="Site words total count">31.4k</span>
   
 </div>
 
@@ -1083,6 +1147,7 @@
 
   
 
+
 </body>
 </html>
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
@@ -1091,3 +1156,10 @@
  <!-- 代码块复制功能 -->
   <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
   <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>

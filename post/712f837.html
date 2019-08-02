@@ -150,6 +150,10 @@
 
 
 
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
   <title>Shiro Java安全框架 （认证、授权）--更新中 | Dzou's Blog</title>
   
 
@@ -532,8 +536,13 @@
 </ul>
 </li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">         * anon:所有url都都可以匿名访问</span></span><br><span class="line"><span class="comment">         * authc: 需要认证才能进行访问</span></span><br><span class="line"><span class="comment">         * user: 如果使用 rememberme 可以直接访问</span></span><br><span class="line"><span class="comment">         * perms：该资源必须得到资源权限才可以访问</span></span><br><span class="line"><span class="comment">         * role：该资源必须得到角色权限才可以访问</span></span><br><span class="line"><span class="comment">         */</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">/**
+         * anon:所有url都都可以匿名访问
+         * authc: 需要认证才能进行访问
+         * user: 如果使用 rememberme 可以直接访问
+         * perms：该资源必须得到资源权限才可以访问
+         * role：该资源必须得到角色权限才可以访问
+         */</code></pre>
 <ul>
 <li>（2）创建DefaultWebSecurityManager（主要关联自定义realm）</li>
 <li>（3）创建自定义Realm</li>
@@ -543,17 +552,17 @@
 <li><p>（1）可实现自定义的Credentials匹配类（实现自定义密码验证，通过添加到PostContruct作为类初始化执行）</p>
 </li>
 <li><p>（2）实现用户授权添加过程</p>
-  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> AuthorizationInfo doGetAuthorizationInfo</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    protected AuthorizationInfo doGetAuthorizationInfo</code></pre>
 </li>
 <li><p>（3）实现用户认证过程</p>
-  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> AuthenticationInfo doGetAuthenticationInfo</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">  protected AuthenticationInfo doGetAuthenticationInfo</code></pre>
 </li>
 </ul>
 <hr>
 <h4 id="自定义密码验证和加密（双MD5加盐salt-随机数）"><a href="#自定义密码验证和加密（双MD5加盐salt-随机数）" class="headerlink" title="自定义密码验证和加密（双MD5加盐salt 随机数）"></a><strong>自定义密码验证和加密（双MD5加盐salt 随机数）</strong></h4><p>Realm在验证用户身份的时候，要进行密码匹配。最简单的情况就是明文直接匹配，然后就是加密匹配，这里的匹配工作则就是交给CredentialsMatcher来完成的。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CredentialsMatcher</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">doCredentialsMatch</span><span class="params">(AuthenticationToken token, AuthenticationInfo info)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public interface CredentialsMatcher {
+    boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info);
+}</code></pre>
 <p>在涉及到密码存储问题上，应该加密 / 生成密码摘要存储，而不是存储明文密码。比如之前的 600w csdn 账号泄露对用户可能造成很大损失，因此应加密 / 生成不可逆的摘要方式存储。<br><strong>这时就需要自定义一个CustomCredentialsMatcher 继承SimpleCredentialsMatcher 实现密码验证</strong></p>
 <hr>
 <h2 id="RememberMe"><a href="#RememberMe" class="headerlink" title="RememberMe"></a>RememberMe</h2><ul>
@@ -845,6 +854,10 @@
                   </li>
                 
                   <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
                     <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
                   </li>
                 
@@ -920,7 +933,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">31.2k</span>
+    <span title="Site words total count">31.4k</span>
   
 </div>
 
@@ -1203,6 +1216,7 @@
 
   
 
+
 </body>
 </html>
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
@@ -1211,3 +1225,10 @@
  <!-- 代码块复制功能 -->
   <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
   <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>

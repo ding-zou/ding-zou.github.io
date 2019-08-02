@@ -138,6 +138,10 @@
 
 
 
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
   <title>Java并发编程学习笔记-更新中 | Dzou's Blog</title>
   
 
@@ -488,19 +492,64 @@
 <li>ReentrantLock</li>
 </ul>
 <p>例：当a、b方法都被synchronized修饰时，在a方法中调用b方法是可以在一个线程进入的</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">a</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(Thread.currentThread().getName()+<span class="string">":"</span>+<span class="string">"a"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">500</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        b();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">b</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(Thread.currentThread().getName()+<span class="string">":"</span>+<span class="string">"b"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo3 d = <span class="keyword">new</span> Demo3();</span><br><span class="line">        ExecutorService threadPool = Executors.newFixedThreadPool(<span class="number">30</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">30</span>;i++)&#123;</span><br><span class="line">            threadPool.execute(d::a);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public synchronized void a(){
+        System.out.println(Thread.currentThread().getName()+&quot;:&quot;+&quot;a&quot;);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        b();
+    }
 
+    public synchronized void b(){
+        System.out.println(Thread.currentThread().getName()+&quot;:&quot;+&quot;b&quot;);
+    }
+
+    public static void main(String[] args) {
+        Demo3 d = new Demo3();
+        ExecutorService threadPool = Executors.newFixedThreadPool(30);
+        for(int i=0;i&lt;30;i++){
+            threadPool.execute(d::a);
+        }
+    }</code></pre>
 <h3 id="2-自旋锁"><a href="#2-自旋锁" class="headerlink" title="2.自旋锁"></a>2.自旋锁</h3><blockquote>
 <p>当一个线程要获取锁时，该锁已经被其他线程获取了，那么它会一直等待该线程释放锁，不但判断所能否被成功获取，直到成功</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(Thread.activeCount()!=)&#123;</span><br><span class="line">            <span class="comment">//自旋</span></span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"线程执行完毕！"</span>);</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">while(Thread.activeCount()!=){
+            //自旋
+        }
+        System.out.println(&quot;线程执行完毕！&quot;);</code></pre>
 <p>没有执行任何有效的任务，会造成 busy-waiting</p>
 <h3 id="3-死锁"><a href="#3-死锁" class="headerlink" title="3.死锁"></a>3.死锁</h3><blockquote>
 <p>互相等待 两个线程互相持有对方需要的资源并都不释放</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Object o1 = <span class="keyword">new</span> Object();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object o2 = <span class="keyword">new</span> Object();</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">a</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (o1)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (o2)&#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName()+<span class="string">":"</span>+<span class="string">"a"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">b</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (o2)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (o1)&#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName()+<span class="string">":"</span>+<span class="string">"b"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo d = <span class="keyword">new</span> Demo();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++)&#123;</span><br><span class="line">            <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">                d.a();</span><br><span class="line">                d.b();</span><br><span class="line">            &#125;).start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">private final Object o1 = new Object();
+    private final Object o2 = new Object();
+    public void a(){
+        synchronized (o1){
+            synchronized (o2){
+                System.out.println(Thread.currentThread().getName()+&quot;:&quot;+&quot;a&quot;);
+            }
+        }
+    }
+    public void b(){
+        synchronized (o2){
+            synchronized (o1){
+                System.out.println(Thread.currentThread().getName()+&quot;:&quot;+&quot;b&quot;);
+            }
+        }
+    }
 
+    public static void main(String[] args) {
+        Demo d = new Demo();
+        for(int i=0;i&lt;10;i++){
+            new Thread(()-&gt;{
+                d.a();
+                d.b();
+            }).start();
+        }
+    }</code></pre>
 <h2 id="五-volatile"><a href="#五-volatile" class="headerlink" title="五.volatile"></a>五.volatile</h2><blockquote>
 <p>volatile是一种轻量级锁，被volatile修饰的变量在线程中是可见的，一个线程修改了变量的值，两一个变量可以读取</p>
 </blockquote>
@@ -523,18 +572,22 @@
 <blockquote>
 <p>我们举AtomicInteger为例，当它执行==getAndIncrement()==自增时，它调用源码如下</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">do</span> &#123;   var5 = <span class="keyword">this</span>.getIntVolatile(var1, var2);</span><br><span class="line">    &#125; <span class="keyword">while</span>(!<span class="keyword">this</span>.compareAndSwapInt(var1, var2, var5, var5 + var4));</span><br><span class="line">        <span class="keyword">return</span> var5;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">do {   var5 = this.getIntVolatile(var1, var2);
+    } while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));
+        return var5;</code></pre>
 <p>自增是一个非原子操作，包括取值，自增，和赋值三个步骤。在进行写数据时，会在内存中保留一份原来的旧值，写的时候判断当前要写的值和旧值是否相等，不相等就继续等待，直到相等才执行写操作。</p>
 <blockquote>
 <p>当调用getAndAddInt时，调用源码如下</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">            var5 = <span class="keyword">this</span>.getIntVolatile(var1, var2);</span><br><span class="line">        &#125; <span class="keyword">while</span>(!<span class="keyword">this</span>.compareAndSwapInt(var1, var2, var5, var5 + var4));</span><br><span class="line">        <span class="keyword">return</span> var5;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">do {
+            var5 = this.getIntVolatile(var1, var2);
+        } while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));
+        return var5;</code></pre>
 <p>拿到内存最新值，使用CAS尝试将内存位置的值修改为目标值var5 + var4，如果修改失败，则获取该内存位置的新值v，然后继续尝试，直至修改成功。</p>
 <p>compareAndSet方法调用了compareAndSwap</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">compareAndSet</span><span class="params">(<span class="keyword">int</span> expect, <span class="keyword">int</span> update)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> unsafe.compareAndSwapInt(<span class="keyword">this</span>, valueOffset, expect, update);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public final boolean compareAndSet(int expect, int update) {
+        return unsafe.compareAndSwapInt(this, valueOffset, expect, update);
+    }</code></pre>
 <p>核心：原子类的方法进行操作都是使用unsafe调用了compareAndSwap CAS 这个本地方法实现</p>
 <h3 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h3><p><strong>CompareAndSwap</strong> 比较并交换 根本是一个本地方法，有三个参数：内存地址、旧的值、即将更新的值</p>
 <p>如果旧的值与将要更新的值相等，则把内存地址的值改为更新的值</p>
@@ -566,8 +619,13 @@
 </li>
 </ul>
 <h3 id="ReentrantLock"><a href="#ReentrantLock" class="headerlink" title="ReentrantLock"></a>ReentrantLock</h3><p>ReentrantLock是唯一实现了Lock接口的类，并且ReentrantLock提供了更多的方法，是一个可重入锁</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">lock.lock();</span><br><span class="line">         <span class="keyword">try</span>&#123;</span><br><span class="line">            <span class="comment">//处理任务</span></span><br><span class="line">         &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">             <span class="comment">//finally防止死锁</span></span><br><span class="line">             lock.unlock();</span><br><span class="line">         &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">            lock.lock();
+            try{
+               //处理任务
+            }finally {
+                //finally防止死锁
+                lock.unlock();
+            }</code></pre>
 <h3 id="lock与synchronized比较"><a href="#lock与synchronized比较" class="headerlink" title="lock与synchronized比较"></a>lock与synchronized比较</h3><p>lock需要自行获取和释放，synchronized不需要</p>
 <p>lock可以提高读操作的效率，也可以知道是否获取到锁</p>
 <h3 id="自定义锁"><a href="#自定义锁" class="headerlink" title="自定义锁"></a>自定义锁</h3><blockquote>
@@ -576,13 +634,58 @@
 <ul>
 <li>不可重入自定义锁</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> isLocked = <span class="keyword">false</span>;</span><br><span class="line">   </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//如果锁被获取到则等待释放</span></span><br><span class="line">        <span class="keyword">while</span> (isLocked)&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                wait();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//等到unlock释放锁后 获取锁</span></span><br><span class="line">        isLocked = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ......................</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//设置获取锁的标志为未获取</span></span><br><span class="line">        isLocked = <span class="keyword">false</span>;</span><br><span class="line">        <span class="comment">//通知其他线程获取锁</span></span><br><span class="line">        notify();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">private boolean isLocked = false;
 
+    public synchronized void lock() {
+        //如果锁被获取到则等待释放
+        while (isLocked){
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        //等到unlock释放锁后 获取锁
+        isLocked = true;
+    }
+    ......................
+public synchronized void unlock() {
+        //设置获取锁的标志为未获取
+        isLocked = false;
+        //通知其他线程获取锁
+        notify();
+    }</code></pre>
 <ul>
 <li>可重入自定义锁</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Thread lockThread = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> lockCount = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isLocked = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//第二个条件判断被锁的线程与当前贤臣过是否为同一个`，同一个的话可重入</span></span><br><span class="line">        <span class="keyword">while</span>(isLocked&amp;&amp;Thread.currentThread()!=lockThread)&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                wait();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        isLocked = <span class="keyword">true</span>;</span><br><span class="line">        lockCount++;</span><br><span class="line">        lockThread = Thread.currentThread();</span><br><span class="line">    &#125;</span><br><span class="line">    ..........................</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(Thread.currentThread()==lockThread)&#123;</span><br><span class="line">            lockCount--;</span><br><span class="line">            <span class="keyword">if</span>(lockCount==<span class="number">0</span>)&#123;</span><br><span class="line">                isLocked = <span class="keyword">false</span>;</span><br><span class="line">                notify();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">private Thread lockThread = null;
+    private int lockCount = 0;
+    private boolean isLocked = false;
 
+    @Override
+    public synchronized void lock() {
+        //第二个条件判断被锁的线程与当前贤臣过是否为同一个`，同一个的话可重入
+        while(isLocked&amp;&amp;Thread.currentThread()!=lockThread){
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        isLocked = true;
+        lockCount++;
+        lockThread = Thread.currentThread();
+    }
+    ..........................
+public synchronized void unlock() {
+        if(Thread.currentThread()==lockThread){
+            lockCount--;
+            if(lockCount==0){
+                isLocked = false;
+                notify();
+            }
+        }
+    }</code></pre>
 <h2 id="八-AbstractQueuedSynchronizer-AQS"><a href="#八-AbstractQueuedSynchronizer-AQS" class="headerlink" title="八.AbstractQueuedSynchronizer(AQS)"></a>八.AbstractQueuedSynchronizer(AQS)</h2>
       
     </div>
@@ -856,6 +959,10 @@
                   </li>
                 
                   <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
                     <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
                   </li>
                 
@@ -931,7 +1038,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">31.2k</span>
+    <span title="Site words total count">31.4k</span>
   
 </div>
 
@@ -1214,6 +1321,7 @@
 
   
 
+
 </body>
 </html>
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
@@ -1222,3 +1330,10 @@
  <!-- 代码块复制功能 -->
   <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
   <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>

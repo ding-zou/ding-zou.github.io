@@ -140,6 +140,10 @@
 
 
 
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
   <title>JDK8新特性-流Stream，Lambda表达式以及Comparator和Comparable使用 | Dzou's Blog</title>
   
 
@@ -453,27 +457,49 @@
 <h3 id="与内部类比较"><a href="#与内部类比较" class="headerlink" title="与内部类比较"></a>与内部类比较</h3><p>内部类this关键字指向内部类本身,Lambda中this指向lambda所处在的类</p>
 <p>Java编译器将lambda表达式编译成类的私有方法。使用了Java 7的 <strong>invokedynamic</strong> 字节码指令来动态绑定这个方法。</p>
 <h3 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h3><p>引入了-&gt;新操作符:参数表加操作体</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Parameters)-&gt;&#123;expressions&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="方法引用"><a href="#方法引用" class="headerlink" title="方法引用"></a>方法引用</h3><p>类名 :: 方法名</p>
+<pre><code>(Parameters)-&gt;{expressions}</code></pre><h3 id="方法引用"><a href="#方法引用" class="headerlink" title="方法引用"></a>方法引用</h3><p>类名 :: 方法名</p>
 <h3 id="功能接口-使用要求"><a href="#功能接口-使用要求" class="headerlink" title="功能接口(使用要求)"></a>功能接口(使用要求)</h3><p>使用@FunctionalInterface注解</p>
 <p>接口中的抽象方法只能是一个(函数式接口)</p>
 <h4 id="Predicate"><a href="#Predicate" class="headerlink" title="Predicate"></a><strong>Predicate</strong></h4><p>java.util.function.Predicate函数式接口,向API方法添加逻辑,非常适合做过滤器</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">    List&lt;String&gt; names=Arrays.asList(<span class="string">"dx"</span>,<span class="string">"wdt"</span>,<span class="string">"zfb"</span>,<span class="string">"wuguangyao"</span>,<span class="string">"nihaoshiw"</span>));</span><br><span class="line">    Predicate&lt;String&gt; filter1 = str-&gt;str.length()&gt;<span class="number">5</span>;</span><br><span class="line">    Predicate&lt;String&gt; filter2 = str-&gt;str.endsWith(<span class="string">"yao"</span>);</span><br><span class="line">   <span class="comment">// filter(names,(n)-&gt;((String)n).startsWith("d"));</span></span><br><span class="line">    filter(names,filter2);</span><br><span class="line">    names.stream().filter(filter1.and(filter2))</span><br><span class="line">            .forEach(System.out::println);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">filter</span><span class="params">(List&lt;String&gt; list, Predicate condition)</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(String str:list)&#123;</span><br><span class="line">        <span class="keyword">if</span>(condition.test(str))&#123;</span><br><span class="line">            System.out.println(str);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">        List&lt;String&gt; names=Arrays.asList(&quot;dx&quot;,&quot;wdt&quot;,&quot;zfb&quot;,&quot;wuguangyao&quot;,&quot;nihaoshiw&quot;));
+        Predicate&lt;String&gt; filter1 = str-&gt;str.length()&gt;5;
+        Predicate&lt;String&gt; filter2 = str-&gt;str.endsWith(&quot;yao&quot;);
+       // filter(names,(n)-&gt;((String)n).startsWith(&quot;d&quot;));
+        filter(names,filter2);
+        names.stream().filter(filter1.and(filter2))
+                .forEach(System.out::println);
+    }
 
-<h4 id="Runnable"><a href="#Runnable" class="headerlink" title="Runnable"></a>Runnable</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Runnable t = ()-&gt; System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">        t.run();</span><br></pre></td></tr></table></figure>
-
+    public static void filter(List&lt;String&gt; list, Predicate condition){
+        for(String str:list){
+            if(condition.test(str)){
+                System.out.println(str);
+            }
+        }
+    }</code></pre>
+<h4 id="Runnable"><a href="#Runnable" class="headerlink" title="Runnable"></a>Runnable</h4><pre><code class="java">Runnable t = ()-&gt; System.out.println(&quot;hello&quot;);
+        t.run();</code></pre>
 <p>s</p>
 <h2 id="Collections"><a href="#Collections" class="headerlink" title="Collections"></a>Collections</h2><p>根接口</p>
 <h3 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h3><h4 id="implements-Comparable"><a href="#implements-Comparable" class="headerlink" title="implements Comparable"></a>implements Comparable</h4><p>实体类实现Comparable接口</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">Student</span>&gt; </span>&#123;</span><br><span class="line">~~~~</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Student o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> stuId.compareTo(o.getStuId());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public class Student implements Comparable&lt;Student&gt; {
+~~~~
+@Override
+    public int compareTo(Student o) {
+        return stuId.compareTo(o.getStuId());
+    }</code></pre>
 <h4 id="Collections-sort-List-lt-gt-new-Comparator"><a href="#Collections-sort-List-lt-gt-new-Comparator" class="headerlink" title="Collections.sort(List&lt;?&gt;,new Comparator())"></a>Collections.sort(List&lt;?&gt;,new Comparator())</h4><p>创建一个比较器实现Comparator接口</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Collections.sort(list, <span class="keyword">new</span> Comparator&lt;StudentNoSort&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(StudentNoSort o1, StudentNoSort o2)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> o1.getStuId().compareTo(o2.getStuId());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">Collections.sort(list, new Comparator&lt;StudentNoSort&gt;() {
+            @Override
+            public int compare(StudentNoSort o1, StudentNoSort o2) {
+                return o1.getStuId().compareTo(o2.getStuId());
+            }
+        });</code></pre>
 <h3 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h3><p>使用Jdk8 Stream更加简单</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">List&lt;StudentNoSort&gt; streamList = list.stream()</span><br><span class="line">                .filter(w -&gt; w.getClass()==StudentNoSort.class)</span><br><span class="line">                .sorted(((o1, o2) -&gt; o1.getStuId().compareTo(o2.getStuId())))</span><br><span class="line">                .collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">List&lt;StudentNoSort&gt; streamList = list.stream()
+                .filter(w -&gt; w.getClass()==StudentNoSort.class)
+                .sorted(((o1, o2) -&gt; o1.getStuId().compareTo(o2.getStuId())))
+                .collect(Collectors.toList());</code></pre>
 <hr>
 <h2 id="Stream-1"><a href="#Stream-1" class="headerlink" title="Stream"></a>Stream</h2><p>Stream 不是集合元素，它不是数据结构并不保存数据，它是有关算法和计算的，它更像一个高级版本的 Iterator。原始版本的 Iterator，用户只能显式地一个一个遍历元素并对其执行某些操作；高级版本的 Stream，用户只要给出需要对其包含的元素执行什么操作，比如 “过滤掉长度大于 10 的字符串”、“获取每个字符串的首字母”等，Stream 会隐式地在内部进行遍历，做出相应的数据转换。</p>
 <h3 id="Stream构成"><a href="#Stream构成" class="headerlink" title="Stream构成"></a>Stream构成</h3><p>获取一个数据源（source）→ 数据转换→执行操作(返回新的Stream对象)，这就允许对其操作可以像链条一样排列，变成一个管道</p>
@@ -492,16 +518,22 @@
 <h6 id="还有以下"><a href="#还有以下" class="headerlink" title="还有以下"></a>还有以下</h6><p>mapToInt (转换为int), summaryStatistics(int型变量统计) ,sum(int型求和)</p>
 <h5 id="Terminal"><a href="#Terminal" class="headerlink" title="Terminal"></a>Terminal</h5><p>一个流只能有一个 terminal 操作，当这个操作执行后，流就被使用“光”了，无法再被操作。</p>
 <h4 id="构造Stream"><a href="#构造Stream" class="headerlink" title="构造Stream"></a>构造Stream</h4><p>Collections</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Collections</span><br><span class="line">List&lt;String&gt; list = Arrays.asList(strArray);</span><br><span class="line">stream = list.stream();</span><br></pre></td></tr></table></figure>
-
-<h3 id="example"><a href="#example" class="headerlink" title="example:"></a>example:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; list = new ArrayList&lt;&gt;(Arrays.asList(1, 2, 12, 1, 1, 2, 3, 2, 432, 4, 32, 54, 3, 3));</span><br><span class="line">        int sum = list.stream().map(x -&gt; x * x)</span><br><span class="line">                .reduce((x, y) -&gt; x + y)</span><br><span class="line">                .get();</span><br></pre></td></tr></table></figure>
-
-<h4 id="遍历文件-nio-lambda"><a href="#遍历文件-nio-lambda" class="headerlink" title="遍历文件(nio+lambda)"></a>遍历文件(nio+lambda)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Path start = FileSystems.getDefault().getPath(&quot;/home/dzou/报告/模电&quot;);</span><br><span class="line">        Files.walk(start)</span><br><span class="line">                .filter(path -&gt; path.toFile().isFile())</span><br><span class="line">                .filter(path -&gt; path.toString().endsWith(&quot;.jpg&quot;))</span><br><span class="line">                .forEach(System.out::println);</span><br></pre></td></tr></table></figure>
-
-<h3 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h3><p>Stream 里有个操作函数的集合，每次转换操作就是把转换函数放入这个集合中，在 Terminal 操作的时候循环 Stream 对应的集合，然后对每个元素执行所有的函数</p>
+<pre><code class="java">Collections
+List&lt;String&gt; list = Arrays.asList(strArray);
+stream = list.stream();</code></pre>
+<h3 id="example"><a href="#example" class="headerlink" title="example:"></a>example:</h3><pre><code class="ava">List&lt;Integer&gt; list = new ArrayList&lt;&gt;(Arrays.asList(1, 2, 12, 1, 1, 2, 3, 2, 432, 4, 32, 54, 3, 3));
+        int sum = list.stream().map(x -&gt; x * x)
+                .reduce((x, y) -&gt; x + y)
+                .get();</code></pre>
+<h4 id="遍历文件-nio-lambda"><a href="#遍历文件-nio-lambda" class="headerlink" title="遍历文件(nio+lambda)"></a>遍历文件(nio+lambda)</h4><pre><code>Path start = FileSystems.getDefault().getPath(&quot;/home/dzou/报告/模电&quot;);
+        Files.walk(start)
+                .filter(path -&gt; path.toFile().isFile())
+                .filter(path -&gt; path.toString().endsWith(&quot;.jpg&quot;))
+                .forEach(System.out::println);</code></pre><h3 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h3><p>Stream 里有个操作函数的集合，每次转换操作就是把转换函数放入这个集合中，在 Terminal 操作的时候循环 Stream 对应的集合，然后对每个元素执行所有的函数</p>
 <h2 id="并行parallelStream"><a href="#并行parallelStream" class="headerlink" title="并行parallelStream"></a>并行parallelStream</h2><p>我们看这个代码,输出不是顺序的</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; numbers = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>);</span><br><span class="line">        numbers.parallelStream()</span><br><span class="line">                .forEach(out::println);</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">List&lt;Integer&gt; numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        numbers.parallelStream()
+                .forEach(out::println);</code></pre>
 <p>底层使用ForkJoinPool,相比于ThreadPoolExecutor,可以让线程创建新的任务,并挂起当前任务,此时线程可以在队列中选择子任务执行</p>
 
       
@@ -758,6 +790,10 @@
                   </li>
                 
                   <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
                     <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
                   </li>
                 
@@ -833,7 +869,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">31.2k</span>
+    <span title="Site words total count">31.4k</span>
   
 </div>
 
@@ -1116,6 +1152,7 @@
 
   
 
+
 </body>
 </html>
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
@@ -1124,3 +1161,10 @@
  <!-- 代码块复制功能 -->
   <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
   <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>

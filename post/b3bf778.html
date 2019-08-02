@@ -140,6 +140,10 @@
 
 
 
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
   <title>动态规划算法基本案例 | Dzou's Blog</title>
   
 
@@ -407,7 +411,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  341字
+                  309字
                 </span>
               
 
@@ -454,10 +458,47 @@
 <p>思路:</p>
 <p>每个值对应一个最优解,每个值对应两种情况,一种是选,则结果是它前面两个数的最优解加上它本身,另外一种是不选,结果是它前面一个元素的最优解.</p>
 <p><img src="/images/3.png" alt="1562071409803"></p>
-<h4 id="递归法"><a href="#递归法" class="headerlink" title="递归法"></a>递归法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] array = &#123;<span class="number">4</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">9</span>,<span class="number">1</span>&#125;;</span><br><span class="line">        System.out.println(opt(array,<span class="number">0</span>,array.length-<span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">opt</span><span class="params">(<span class="keyword">int</span>[] diguiArray,<span class="keyword">int</span> s,<span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(i==<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> s+diguiArray[<span class="number">0</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(i==<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(diguiArray[<span class="number">0</span>]&gt;diguiArray[<span class="number">1</span>])&#123;</span><br><span class="line">                <span class="keyword">return</span> opt(diguiArray,s,<span class="number">0</span>);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> s+diguiArray[<span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> a = opt(diguiArray,s+diguiArray[i],i-<span class="number">2</span>);</span><br><span class="line">            <span class="keyword">int</span> b = opt(diguiArray,s,i-<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">return</span> Math.max(a,b);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="动态规划法"><a href="#动态规划法" class="headerlink" title="动态规划法"></a>动态规划法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] array = &#123;<span class="number">4</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">9</span>,<span class="number">1</span>&#125;;</span><br><span class="line">        System.out.println(dp(array,array.length-<span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">dp</span><span class="params">(<span class="keyword">int</span>[] array,<span class="keyword">int</span> m)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[array.length];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;array.length;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(i==<span class="number">0</span>)&#123;</span><br><span class="line">                dp[i] = array[i];</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(i==<span class="number">1</span>)&#123;</span><br><span class="line">                <span class="keyword">if</span>(dp[i-<span class="number">1</span>]&gt;dp[i])&#123;</span><br><span class="line">                    dp[i] = dp[i-<span class="number">1</span>];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">int</span> a = dp[i-<span class="number">2</span>]+array[i];</span><br><span class="line">                <span class="keyword">int</span> b = dp[i-<span class="number">1</span>];</span><br><span class="line">                dp[i] = Math.max(a,b);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[m];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<h4 id="递归法"><a href="#递归法" class="headerlink" title="递归法"></a>递归法</h4><pre><code class="java">public void test(){
+        int[] array = {4,1,1,9,1};
+        System.out.println(opt(array,0,array.length-1));
+    }
+    public int opt(int[] diguiArray,int s,int i){
+        if(i==0){
+            return s+diguiArray[0];
+        }
+        if(i==1){
+            if(diguiArray[0]&gt;diguiArray[1]){
+                return opt(diguiArray,s,0);
+            }else {
+                return s+diguiArray[1];
+            }
+        }else {
+            int a = opt(diguiArray,s+diguiArray[i],i-2);
+            int b = opt(diguiArray,s,i-1);
+            return Math.max(a,b);
+        }
+    }</code></pre>
+<h4 id="动态规划法"><a href="#动态规划法" class="headerlink" title="动态规划法"></a>动态规划法</h4><pre><code class="java">public static void main(String[] args) {
+        int[] array = {4,1,1,9,1};
+        System.out.println(dp(array,array.length-1));
+    }
+    public static int dp(int[] array,int m){
+        int[] dp = new int[array.length];
+        for(int i=0;i&lt;array.length;i++){
+            if(i==0){
+                dp[i] = array[i];
+            }else if(i==1){
+                if(dp[i-1]&gt;dp[i]){
+                    dp[i] = dp[i-1];
+                }
+            }else {
+                int a = dp[i-2]+array[i];
+                int b = dp[i-1];
+                dp[i] = Math.max(a,b);
+            }
+        }
+        return dp[m];
+    }</code></pre>
 
       
     </div>
@@ -713,6 +754,10 @@
                   </li>
                 
                   <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
                     <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
                   </li>
                 
@@ -788,7 +833,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">31.2k</span>
+    <span title="Site words total count">31.4k</span>
   
 </div>
 
@@ -1071,6 +1116,7 @@
 
   
 
+
 </body>
 </html>
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
@@ -1079,3 +1125,10 @@
  <!-- 代码块复制功能 -->
   <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
   <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>

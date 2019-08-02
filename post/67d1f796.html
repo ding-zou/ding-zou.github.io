@@ -138,6 +138,10 @@
 
 
 
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
   <title>转发和重定向的区别 | Dzou's Blog</title>
   
 
@@ -405,7 +409,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  419字
+                  424字
                 </span>
               
 
@@ -447,11 +451,12 @@
 
       
         <h2 id="转发和重定向区别"><a href="#转发和重定向区别" class="headerlink" title="转发和重定向区别"></a>转发和重定向区别</h2><h3 id="转发"><a href="#转发" class="headerlink" title="转发"></a>转发</h3><p>forward，由服务器发出，把request、response处理权转交给其他客户端，并不会失效<br>客户首先发送一个请求到服务器端，服务器端发现匹配的servlet，并指定它去执行，当这个servlet执行完之后，它要调用getRequestDispacther()方法，把请求转发给指定的页面，在一个请求里完成</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//转发,转发是在服务器端转发的，客户端是不知道的</span></span><br><span class="line">request.getRequestDispatcher(<span class="string">"/index.jsp"</span>).forward(request, response);</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">//转发,转发是在服务器端转发的，客户端是不知道的
+request.getRequestDispatcher(&quot;/index.jsp&quot;).forward(request, response);</code></pre>
 <h3 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h3><p>sendRedirect，由客户端发出，请求servlet，request会失效<br> 客户发送一个请求到服务器，服务器匹配servlet，这都和请求转发一样，servlet处理完之后调用了sendRedirect()这个方法，这个方法是response的方法，所以，当这个servlet处理完之后，看到response.senRedirect()方法，立即向客户端返回这个响应，响应行告诉客户端你必须要再发送一个请求，去访问新页面，紧接着客户端受到这个请求后，立刻发出一个新的请求</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//重定向，不会共享request</span></span><br><span class="line">response.sendRedirect(<span class="string">"/student_list.jsp"</span>);</span><br><span class="line">response.sendRedirect(request.getContextPath() + <span class="string">"/student_list.jsp"</span>);</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">//重定向，不会共享request
+response.sendRedirect(&quot;/student_list.jsp&quot;);
+response.sendRedirect(request.getContextPath() + &quot;/student_list.jsp&quot;);</code></pre>
 <ul>
 <li><p>转发在服务器端完成的；重定向是在客户端完成的<br>转发的速度快；重定向速度慢</p>
 </li>
@@ -504,9 +509,9 @@
           
             <a href="/tags/Java/" rel="tag"># Java</a>
           
-            <a href="/tags/基础/" rel="tag"># 基础</a>
-          
             <a href="/tags/Web/" rel="tag"># Web</a>
+          
+            <a href="/tags/基础/" rel="tag"># 基础</a>
           
         </div>
       
@@ -715,6 +720,10 @@
                   </li>
                 
                   <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
                     <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
                   </li>
                 
@@ -790,7 +799,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">31.2k</span>
+    <span title="Site words total count">31.4k</span>
   
 </div>
 
@@ -1073,6 +1082,7 @@
 
   
 
+
 </body>
 </html>
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
@@ -1081,3 +1091,10 @@
  <!-- 代码块复制功能 -->
   <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
   <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>

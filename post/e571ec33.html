@@ -142,6 +142,10 @@
 
 
 
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
   <title>NIO学习笔记（IO、AIO、BIO）--更新中 | Dzou's Blog</title>
   
 
@@ -456,8 +460,8 @@
 <h2 id="传统BIO（blocking-IO）"><a href="#传统BIO（blocking-IO）" class="headerlink" title="传统BIO（blocking IO）"></a>传统BIO（blocking IO）</h2><p>阻塞：accept方法，除非有socket返回，读写不能同时进行<br>当对Socket的输入流进行读取操作的时候，它会一直阻塞下去。<br>一个场景，由于网络延迟，导致数据发送缓慢。而由于使用的是阻塞IO，那么read方法一直处于阻塞状态，要等到数据传送完成才结束（返回-1）。那么这种场景下，在高并发。直接导致线程暴增、服务器宕机。<br><img src="https://img-blog.csdnimg.cn/20190604092946420.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <p><strong>在bio基础上，把传统多线程改为使用一定muxnum的线程池，形成伪异步IO模型，<br>实现一个或多个线程处理n个客户端，但是底层还是同步阻塞IO</strong></p>
 <p><img src="https://img-blog.csdnimg.cn/20190604093325953.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//线程池 懒汉式的单例</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> ExecutorService executorService = Executors.newFixedThreadPool(<span class="number">60</span>);</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">//线程池 懒汉式的单例
+    private static ExecutorService executorService = Executors.newFixedThreadPool(60);</code></pre>
 <p>CachedThreadPool线程池</p>
 <p><strong>根本上无法解决高并发：因为限制了线程数量，如果发生大量并发请求，超过最大数量的线程就只能等待，直到线程池中的有空闲的线程可以被复用。</strong></p>
 <h3 id="bio问题："><a href="#bio问题：" class="headerlink" title="bio问题："></a>bio问题：</h3><ul>
@@ -479,13 +483,37 @@
 <li>4.创建selector 把channel注册到selector上，监听我感兴趣的accept请求</li>
 <li>5.开始listen：<br>   （1）轮询selector访问准备就绪的SelectionKey</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">            selector.select();</span><br><span class="line">            <span class="comment">//selector轮询准备就绪的key</span></span><br><span class="line">            Set&lt;SelectionKey&gt; selectionKeys = selector.selectedKeys();</span><br><span class="line">            Iterator&lt;SelectionKey&gt; iterator = selectionKeys.iterator();</span><br><span class="line">            <span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">                SelectionKey selectionKey = iterator.next();</span><br><span class="line">                iterator.remove();</span><br><span class="line">                handlekey(selectionKey);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
-<pre><code>（2）监听到新的客户端接入，处理新的接入请求，将读写数据放在Buffer中</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(selectionKey.isAcceptable())&#123;</span><br><span class="line">            serverSocketChannel = (ServerSocketChannel) selectionKey.channel();</span><br><span class="line">            client = serverSocketChannel.accept();</span><br><span class="line">            client.configureBlocking(<span class="keyword">false</span>);</span><br><span class="line">            client.register(selector,SelectionKey.OP_READ);</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(selectionKey.isReadable())&#123;</span><br><span class="line">            client = (SocketChannel) selectionKey.channel();</span><br><span class="line">            receiveBuffer.clear();</span><br><span class="line">            -------------------------</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(selectionKey.isWritable())&#123;</span><br><span class="line">            sendBuffer.clear();</span><br><span class="line">            <span class="comment">//服务端向客户端发送数据</span></span><br><span class="line">            client = (SocketChannel) selectionKey.channel();</span><br><span class="line">            sendText = <span class="string">"message from server:"</span>+flag++;</span><br><span class="line">            sendBuffer.put(sendText.getBytes());</span><br><span class="line">            sendBuffer.flip();</span><br><span class="line">            client.write(sendBuffer)；</span><br><span class="line">            client.register(selector,SelectionKey.OP_READ);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="客户端："><a href="#客户端：" class="headerlink" title="客户端："></a><strong>客户端：</strong></h3><ul>
+<pre><code class="java">while(true){
+            selector.select();
+            //selector轮询准备就绪的key
+            Set&lt;SelectionKey&gt; selectionKeys = selector.selectedKeys();
+            Iterator&lt;SelectionKey&gt; iterator = selectionKeys.iterator();
+            while(iterator.hasNext()){
+                SelectionKey selectionKey = iterator.next();
+                iterator.remove();
+                handlekey(selectionKey);
+            }
+        }</code></pre>
+<pre><code> （2）监听到新的客户端接入，处理新的接入请求，将读写数据放在Buffer中</code></pre><pre><code class="java">if(selectionKey.isAcceptable()){
+            serverSocketChannel = (ServerSocketChannel) selectionKey.channel();
+            client = serverSocketChannel.accept();
+            client.configureBlocking(false);
+            client.register(selector,SelectionKey.OP_READ);
+        }else if(selectionKey.isReadable()){
+            client = (SocketChannel) selectionKey.channel();
+            receiveBuffer.clear();
+            -------------------------
+        }else if(selectionKey.isWritable()){
+            sendBuffer.clear();
+            //服务端向客户端发送数据
+            client = (SocketChannel) selectionKey.channel();
+            sendText = &quot;message from server:&quot;+flag++;
+            sendBuffer.put(sendText.getBytes());
+            sendBuffer.flip();
+            client.write(sendBuffer)；
+            client.register(selector,SelectionKey.OP_READ);
+        }</code></pre>
+<pre><code></code></pre><h3 id="客户端："><a href="#客户端：" class="headerlink" title="客户端："></a><strong>客户端：</strong></h3><ul>
 <li>1.打开socket通道</li>
 <li>2.设置非阻塞</li>
 <li>3.创建选择器selector 注册通道 SelectionKey.connect</li>
@@ -493,8 +521,52 @@
 <li>5.轮询selector已就绪的通道</li>
 <li>6.处理通道请求的数据</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            selector.select();</span><br><span class="line">            selectionKeys = selector.selectedKeys();</span><br><span class="line">            iterator = selectionKeys.iterator();</span><br><span class="line">            <span class="keyword">while</span> (iterator.hasNext()) &#123;</span><br><span class="line">                selectionKey = iterator.next();</span><br><span class="line">                <span class="keyword">if</span> (selectionKey.isConnectable()) &#123;</span><br><span class="line">                    System.out.println(<span class="string">"client connect"</span>);</span><br><span class="line">                    client = (SocketChannel) selectionKey.channel();</span><br><span class="line">                    <span class="comment">// 判断此通道上是否正在进行连接操作。</span></span><br><span class="line">                    <span class="comment">// 完成套接字通道的连接过程。</span></span><br><span class="line">                    <span class="keyword">if</span> (client.isConnectionPending()) &#123;</span><br><span class="line">                        client.finishConnect();</span><br><span class="line">                        System.out.println(<span class="string">"完成连接!"</span>);</span><br><span class="line">                        sendBuffer.clear();</span><br><span class="line">                        sendBuffer.put(<span class="string">"Hello,Server"</span>.getBytes());</span><br><span class="line">                        sendBuffer.flip();</span><br><span class="line">                        client.write(sendBuffer);</span><br><span class="line">                    &#125;</span><br><span class="line">                    client.register(selector, SelectionKey.OP_READ);</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (selectionKey.isReadable()) &#123;</span><br><span class="line">                    client = (SocketChannel) selectionKey.channel();</span><br><span class="line">                    <span class="comment">//将缓冲区清空以备下次读取</span></span><br><span class="line">                    receiveBuffer.clear();</span><br><span class="line">                    <span class="comment">//读取服务器发送来的数据到缓冲区中</span></span><br><span class="line">                    count = client.read(receiveBuffer);</span><br><span class="line">                    <span class="keyword">if</span> (count &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                        receiveText = <span class="keyword">new</span> String(receiveBuffer.array(), <span class="number">0</span>, count);</span><br><span class="line">                        System.out.println(<span class="string">"客户端接受服务器端数据--:"</span> + receiveText);</span><br><span class="line">                        client.register(selector, SelectionKey.OP_WRITE);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (selectionKey.isWritable()) &#123;</span><br><span class="line">                    sendBuffer.clear();</span><br><span class="line">                    client = (SocketChannel) selectionKey.channel();</span><br><span class="line">                    sendText = <span class="string">"message from client--"</span> + (flag++);</span><br><span class="line">                    sendBuffer.put(sendText.getBytes());</span><br><span class="line">                    <span class="comment">//将缓冲区各标志复位,因为向里面put了数据标志被改变要想从中读取数据发向服务器,就要复位</span></span><br><span class="line">                    sendBuffer.flip();</span><br><span class="line">                    client.write(sendBuffer);</span><br><span class="line">                    System.out.println(<span class="string">"客户端向服务器端发送数据--："</span> + sendText);</span><br><span class="line">                    client.register(selector, SelectionKey.OP_READ);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            selectionKeys.clear();</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">while (true) {
+            selector.select();
+            selectionKeys = selector.selectedKeys();
+            iterator = selectionKeys.iterator();
+            while (iterator.hasNext()) {
+                selectionKey = iterator.next();
+                if (selectionKey.isConnectable()) {
+                    System.out.println(&quot;client connect&quot;);
+                    client = (SocketChannel) selectionKey.channel();
+                    // 判断此通道上是否正在进行连接操作。
+                    // 完成套接字通道的连接过程。
+                    if (client.isConnectionPending()) {
+                        client.finishConnect();
+                        System.out.println(&quot;完成连接!&quot;);
+                        sendBuffer.clear();
+                        sendBuffer.put(&quot;Hello,Server&quot;.getBytes());
+                        sendBuffer.flip();
+                        client.write(sendBuffer);
+                    }
+                    client.register(selector, SelectionKey.OP_READ);
+                } else if (selectionKey.isReadable()) {
+                    client = (SocketChannel) selectionKey.channel();
+                    //将缓冲区清空以备下次读取
+                    receiveBuffer.clear();
+                    //读取服务器发送来的数据到缓冲区中
+                    count = client.read(receiveBuffer);
+                    if (count &gt; 0) {
+                        receiveText = new String(receiveBuffer.array(), 0, count);
+                        System.out.println(&quot;客户端接受服务器端数据--:&quot; + receiveText);
+                        client.register(selector, SelectionKey.OP_WRITE);
+                    }
 
+                } else if (selectionKey.isWritable()) {
+                    sendBuffer.clear();
+                    client = (SocketChannel) selectionKey.channel();
+                    sendText = &quot;message from client--&quot; + (flag++);
+                    sendBuffer.put(sendText.getBytes());
+                    //将缓冲区各标志复位,因为向里面put了数据标志被改变要想从中读取数据发向服务器,就要复位
+                    sendBuffer.flip();
+                    client.write(sendBuffer);
+                    System.out.println(&quot;客户端向服务器端发送数据--：&quot; + sendText);
+                    client.register(selector, SelectionKey.OP_READ);
+                }
+            }
+            selectionKeys.clear();
+        }</code></pre>
 <p><img src="https://img-blog.csdnimg.cn/20190604203114930.png" alt="在这里插入图片描述"></p>
 <h2 id="AIO、BIO、NIO理解"><a href="#AIO、BIO、NIO理解" class="headerlink" title="AIO、BIO、NIO理解"></a>AIO、BIO、NIO理解</h2><ul>
 <li><p>AIO的做法是，每个水壶上装一个开关，当水开了以后会提醒对应的线程去处理。</p>
@@ -757,6 +829,10 @@
                   </li>
                 
                   <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
                     <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
                   </li>
                 
@@ -832,7 +908,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">31.2k</span>
+    <span title="Site words total count">31.4k</span>
   
 </div>
 
@@ -1115,6 +1191,7 @@
 
   
 
+
 </body>
 </html>
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
@@ -1123,3 +1200,10 @@
  <!-- 代码块复制功能 -->
   <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
   <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>
