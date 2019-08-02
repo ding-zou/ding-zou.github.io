@@ -260,11 +260,11 @@
     
       <category term="安全" scheme="https://www.dzou.top/tags/%E5%AE%89%E5%85%A8/"/>
     
-      <category term="Redis" scheme="https://www.dzou.top/tags/Redis/"/>
-    
       <category term="记住我" scheme="https://www.dzou.top/tags/%E8%AE%B0%E4%BD%8F%E6%88%91/"/>
     
       <category term="单点登录" scheme="https://www.dzou.top/tags/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/"/>
+    
+      <category term="Redis" scheme="https://www.dzou.top/tags/Redis/"/>
     
   </entry>
   
@@ -446,9 +446,9 @@
     
       <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
-      <category term="NoSql" scheme="https://www.dzou.top/tags/NoSql/"/>
-    
       <category term="Redis" scheme="https://www.dzou.top/tags/Redis/"/>
+    
+      <category term="NoSql" scheme="https://www.dzou.top/tags/NoSql/"/>
     
   </entry>
   
