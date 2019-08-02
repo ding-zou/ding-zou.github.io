@@ -2,8 +2,10 @@
 
 
 
+  
 
-<html class="theme-next mist" lang="zh-Hans">
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -89,21 +91,21 @@
 
 
 
-<meta name="description" content="Srping一个轻量级java开发框架，为解决应用开发的业务逻辑层和其他层耦合问题，full-stack一站式框架专注于应用程序的开发 Spring不取代框架，而是把他们无缝连接新的编程思想：  IOC反转：由我们自己执行反转给Spring帮我们执行 IOC控制：由Spring帮我们创建、掌控对象周期，在我们需要的时候向Spring申请即可 DI：依赖注入  DI依赖注入理解DI的关键是：“谁依赖">
+<meta name="description" content="Srping,一个轻量级java开发框架，为解决应用开发的业务逻辑层和其他层耦合问题，full-stack一站式框架专注于应用程序的开发">
 <meta name="keywords" content="Spring,解耦,依赖注入,IOC,DI,控制反转,bean,注解,XML">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spring框架学习笔记--更新中(SSM第一部分) 从介绍Spring以及理解实现方法到Spring核心知识 教你上手使用Spring(适合收藏)">
 <meta property="og:url" content="https://www.dzou.top/post/c519ea2a.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
-<meta property="og:description" content="Srping一个轻量级java开发框架，为解决应用开发的业务逻辑层和其他层耦合问题，full-stack一站式框架专注于应用程序的开发 Spring不取代框架，而是把他们无缝连接新的编程思想：  IOC反转：由我们自己执行反转给Spring帮我们执行 IOC控制：由Spring帮我们创建、掌控对象周期，在我们需要的时候向Spring申请即可 DI：依赖注入  DI依赖注入理解DI的关键是：“谁依赖">
+<meta property="og:description" content="Srping,一个轻量级java开发框架，为解决应用开发的业务逻辑层和其他层耦合问题，full-stack一站式框架专注于应用程序的开发">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/201905141958557.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190514200142990.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2019051713311677.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
-<meta property="og:updated_time" content="2019-07-24T14:03:21.452Z">
+<meta property="og:updated_time" content="2019-08-02T11:52:37.428Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring框架学习笔记--更新中(SSM第一部分) 从介绍Spring以及理解实现方法到Spring核心知识 教你上手使用Spring(适合收藏)">
-<meta name="twitter:description" content="Srping一个轻量级java开发框架，为解决应用开发的业务逻辑层和其他层耦合问题，full-stack一站式框架专注于应用程序的开发 Spring不取代框架，而是把他们无缝连接新的编程思想：  IOC反转：由我们自己执行反转给Spring帮我们执行 IOC控制：由Spring帮我们创建、掌控对象周期，在我们需要的时候向Spring申请即可 DI：依赖注入  DI依赖注入理解DI的关键是：“谁依赖">
+<meta name="twitter:description" content="Srping,一个轻量级java开发框架，为解决应用开发的业务逻辑层和其他层耦合问题，full-stack一站式框架专注于应用程序的开发">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/201905141958557.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
 
 
@@ -117,7 +119,7 @@
     sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
       author: '博主'
@@ -430,6 +432,10 @@
           
 
           
+              <div class="post-description">
+                  Srping,一个轻量级java开发框架，为解决应用开发的业务逻辑层和其他层耦合问题，full-stack一站式框架专注于应用程序的开发
+              </div>
+          
 
         </div>
       </header>
@@ -598,7 +604,7 @@
 <li>PROPAGATION_REQUIRED  支持当前事务，如果不存在 就新建一个(默认)</li>
 <li>read-only=”false” 表示该方法可以修改数据库</li>
 </ul>
-<p><strong>xml配置事务：</strong><br>基于 <tx> 命名空间的实现</tx></p>
+<p><strong>xml配置事务</strong><br>基于 <tx> 命名空间的实现</tx></p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="number">1</span>)将mybatis核心事务管理器DataSourceTransactionManager配置到spring容器，依赖连接池。</span><br><span class="line">	&lt;bean name=<span class="string">"transaction"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"org.springframework.jdbc.datasource.DataSourceTransactionManager"</span>&gt;</span><br><span class="line">        &lt;property name=<span class="string">"dataSource"</span> ref=<span class="string">"dataSource"</span>/&gt;</span><br><span class="line">    &lt;/bean&gt;</span><br><span class="line">（<span class="number">2</span>）由txAdvice切面定义事务增强处理</span><br><span class="line">    &lt;tx:advice id=<span class="string">"txAdvice"</span> transaction-manager=<span class="string">"transaction"</span>&gt;</span><br><span class="line">        &lt;tx:attributes&gt;</span><br><span class="line">            &lt;tx:method name=<span class="string">"transfer"</span> isolation=<span class="string">"DEFAULT"</span> propagation=<span class="string">"REQUIRED"</span> read-only=<span class="string">"false"</span>/&gt;</span><br><span class="line">        &lt;/tx:attributes&gt;</span><br><span class="line">    &lt;/tx:advice&gt;</span><br><span class="line">（<span class="number">3</span>）配置事务增强处理的切入点，以保证其被恰当的织入</span><br><span class="line">    &lt;aop:config&gt;</span><br><span class="line">        &lt;aop:pointcut id=<span class="string">"myadvice"</span> expression=<span class="string">"execution(* com.dingxiang.service.impl.IAccountServiceImpl.*(..))"</span>/&gt;</span><br><span class="line">        &lt;aop:advisor advice-ref=<span class="string">"txAdvice"</span> pointcut-ref=<span class="string">"myadvice"</span>/&gt;</span><br><span class="line">    &lt;/aop:config&gt;</span><br></pre></td></tr></table></figure>
 
 <p><strong>注解配置事务：</strong><br>基于 @Transactional 的实现<br>为需要加强的方法添加注解</p>
@@ -666,9 +672,9 @@
           
             <a href="/tags/Java/" rel="tag"># Java</a>
           
-            <a href="/tags/后端/" rel="tag"># 后端</a>
-          
             <a href="/tags/Web/" rel="tag"># Web</a>
+          
+            <a href="/tags/后端/" rel="tag"># 后端</a>
           
             <a href="/tags/Spring/" rel="tag"># Spring</a>
           
@@ -710,8 +716,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/post/3c21ad0c.html" rel="prev" title="Mybatis框架学习笔记--更新中 JavaWeb之Mysql（SSM之Mybatis）适合初学者阅读,知识点较为全面 包括mybatis大部分语法 相关配置(值得收藏)">
-                Mybatis框架学习笔记--更新中 JavaWeb之Mysql（SSM之Mybatis）适合初学者阅读,知识点较为全面 包括mybatis大部分语法 相关配置(值得收藏) <i class="fa fa-chevron-right"></i>
+              <a href="/post/19e1cc75.html" rel="prev" title="linux学习笔记--更新中 基本知识和常用命令教程 Java程序员必备 较为详细 从基础开始(值得收藏)">
+                linux学习笔记--更新中 基本知识和常用命令教程 Java程序员必备 较为详细 从基础开始(值得收藏) <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -801,7 +807,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -823,7 +829,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -956,7 +962,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">29.8k</span>
+    <span title="Site words total count">25.7k</span>
   
 </div>
 
@@ -1031,6 +1037,8 @@
   
 
 
+  
+
 
 
 
@@ -1069,6 +1077,11 @@
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
   
 
 
@@ -1237,3 +1250,6 @@
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
 <!-- 页面点击小红心 -->
 <script type="text/javascript" src="/js/src/clicklove.js"></script>
+ <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>

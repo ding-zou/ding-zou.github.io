@@ -2,8 +2,10 @@
 
 
 
+  
 
-<html class="theme-next mist" lang="zh-Hans">
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -89,19 +91,19 @@
 
 
 
-<meta name="description" content="NoSql（Not Only Sql）非关系型数据库这类型数据存储不需要固定的模式，key-value cache persistent存储易扩展把反复查询的数据放到缓存里，减少过多查询数据库读写分离：写（主数据库），读（副数据库）表锁，行锁（高并发下使用时把数据锁起来，一次只能一个使用）分表分库：减小数据库压力无需事先创建对应字段，灵活性高 出现原因：关系型数据库无法解决过于复杂的关系（例如亲戚">
+<meta name="description" content="redis非关系型数据库，redis实现缓存存储，高效查询">
 <meta name="keywords" content="NoSql,Redis,键值对,CAP,持久化,AOF,RDB,集合,zset,set,list,hash,分布式">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis非关系型数据库学习笔记--更新中">
 <meta property="og:url" content="https://www.dzou.top/post/7c806d9b.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
-<meta property="og:description" content="NoSql（Not Only Sql）非关系型数据库这类型数据存储不需要固定的模式，key-value cache persistent存储易扩展把反复查询的数据放到缓存里，减少过多查询数据库读写分离：写（主数据库），读（副数据库）表锁，行锁（高并发下使用时把数据锁起来，一次只能一个使用）分表分库：减小数据库压力无需事先创建对应字段，灵活性高 出现原因：关系型数据库无法解决过于复杂的关系（例如亲戚">
+<meta property="og:description" content="redis非关系型数据库，redis实现缓存存储，高效查询">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190612152347346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
-<meta property="og:updated_time" content="2019-07-24T14:03:09.228Z">
+<meta property="og:updated_time" content="2019-08-02T11:51:47.436Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis非关系型数据库学习笔记--更新中">
-<meta name="twitter:description" content="NoSql（Not Only Sql）非关系型数据库这类型数据存储不需要固定的模式，key-value cache persistent存储易扩展把反复查询的数据放到缓存里，减少过多查询数据库读写分离：写（主数据库），读（副数据库）表锁，行锁（高并发下使用时把数据锁起来，一次只能一个使用）分表分库：减小数据库压力无需事先创建对应字段，灵活性高 出现原因：关系型数据库无法解决过于复杂的关系（例如亲戚">
+<meta name="twitter:description" content="redis非关系型数据库，redis实现缓存存储，高效查询">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190612152347346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
 
 
@@ -115,7 +117,7 @@
     sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
       author: '博主'
@@ -428,6 +430,10 @@
           
 
           
+              <div class="post-description">
+                  redis非关系型数据库，redis实现缓存存储，高效查询
+              </div>
+          
 
         </div>
       </header>
@@ -463,7 +469,7 @@
 <hr>
 <p><strong>命令：</strong><br>select 获取数据库（0-15）<br>get key 获取key<br>set key value 设置键值<br>DSBSIZE 当前表容量<br>FLUSHDB、FLUSHALL清空当前库和所有库<br>exists key 存在key（1） 没有（0）<br>ttl 过期时间（-1永不过期 -2 已经过期）<br>expire key time（设置过期时间）</p>
 <hr>
-<p><strong>哈希（hash）</strong>：<br>String类型的field和value的映射表，hash特别适合用于存储对象</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p><strong>哈希（hash）</strong>：<br>String类型的field和value的映射表，hash特别适合用于存储对象</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">redis 127.0.0.1:6379&gt; HMSET user:1 username</span><br><span class="line">OK</span><br><span class="line">redis 127.0.0.1:6379&gt; HGETALL user:1</span><br><span class="line">1) &quot;username&quot;</span><br></pre></td></tr></table></figure>
 
 <p><strong>列表（list）</strong><br>列表是简单的字符串列表，按照插入顺序排序。你可以添加一个元素导列表的头部（左边）或者尾部（右边）。</p>
@@ -532,9 +538,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/后端/" rel="tag"># 后端</a>
-          
             <a href="/tags/分布式/" rel="tag"># 分布式</a>
+          
+            <a href="/tags/后端/" rel="tag"># 后端</a>
           
             <a href="/tags/Redis/" rel="tag"># Redis</a>
           
@@ -667,7 +673,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -689,7 +695,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -781,7 +787,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NoSql（Not-Only-Sql）非关系型数据库"><span class="nav-number">1.</span> <span class="nav-text">NoSql（Not Only Sql）非关系型数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis持久化"><span class="nav-number">2.</span> <span class="nav-text">Redis持久化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis事务"><span class="nav-number">3.</span> <span class="nav-text">Redis事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis发布和订阅（少用）-有专门的消息中间件"><span class="nav-number">4.</span> <span class="nav-text">Redis发布和订阅（少用） 有专门的消息中间件</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NoSql（Not-Only-Sql）非关系型数据库"><span class="nav-number">1.</span> <span class="nav-text">NoSql（Not Only Sql）非关系型数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型"><span class="nav-number">2.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis持久化"><span class="nav-number">3.</span> <span class="nav-text">Redis持久化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis事务"><span class="nav-number">4.</span> <span class="nav-text">Redis事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis发布和订阅（少用）-有专门的消息中间件"><span class="nav-number">5.</span> <span class="nav-text">Redis发布和订阅（少用） 有专门的消息中间件</span></a></li></ol></div>
             
 
           </div>
@@ -822,7 +828,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">29.8k</span>
+    <span title="Site words total count">25.7k</span>
   
 </div>
 
@@ -897,6 +903,8 @@
   
 
 
+  
+
 
 
 
@@ -935,6 +943,11 @@
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
   
 
 
@@ -1103,3 +1116,6 @@
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
 <!-- 页面点击小红心 -->
 <script type="text/javascript" src="/js/src/clicklove.js"></script>
+ <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>

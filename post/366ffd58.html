@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "d1f94239"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="‘SpringBoot,Java Web,自动配置，配置类,微服务,分布式’">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dzou's Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="我们都知道一个SpringBoot主配置类只要标注上@SpringBootApplication的注解，Spring就会帮我们自动配置各个组件和实例化Bean，我们来通过源码分析一下SpringBoot自动配置原理。">
+<meta name="keywords" content="‘SpringBoot,Java Web,自动配置，配置类,微服务,分布式’">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot自动配置源码分析及详解">
+<meta property="og:url" content="https://www.dzou.top/post/366ffd58.html">
+<meta property="og:site_name" content="Dzou&#39;s Blog">
+<meta property="og:description" content="我们都知道一个SpringBoot主配置类只要标注上@SpringBootApplication的注解，Spring就会帮我们自动配置各个组件和实例化Bean，我们来通过源码分析一下SpringBoot自动配置原理。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/9.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/2.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/3.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/4.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/10.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/8.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/7.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/1.1.png">
+<meta property="og:updated_time" content="2019-08-02T11:42:53.122Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot自动配置源码分析及详解">
+<meta name="twitter:description" content="我们都知道一个SpringBoot主配置类只要标注上@SpringBootApplication的注解，Spring就会帮我们自动配置各个组件和实例化Bean，我们来通过源码分析一下SpringBoot自动配置原理。">
+<meta name="twitter:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/9.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'Q66404JRFM',
+      apiKey: '27dd0e53d330bf96c9826662fc30055a',
+      indexName: 'dzou',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.dzou.top/post/366ffd58.html">
+
+
+
+
+
+  <title>SpringBoot自动配置源码分析及详解 | Dzou's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+  
+  <div class="bg_content">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dzou's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">No pains,no gains.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/366ffd58.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dzou">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dzou's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">SpringBoot自动配置源码分析及详解</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-02T19:32:01+08:00">
+                2019-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java-Web/" itemprop="url" rel="index">
+                    <span itemprop="name">Java Web</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/366ffd58.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/366ffd58.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>&nbsp浏览次数：
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.4k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5分
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  我们都知道一个SpringBoot主配置类只要标注上<u>@SpringBootApplication</u>的注解，Spring就会帮我们自动配置各个组件和实例化Bean，我们来通过源码分析一下SpringBoot自动配置原理。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="SpringBoot自动配置"><a href="#SpringBoot自动配置" class="headerlink" title="SpringBoot自动配置"></a>SpringBoot自动配置</h2><p>我们都知道一个SpringBoot主配置类只要标注上<u>@SpringBootApplication</u>的注解，Spring就会帮我们自动配置各个组件和实例化Bean，我们来通过源码分析一下SpringBoot自动配置原理。</p>
+<p>首先我们要知道，SpringBoot将符合条件的@Configuration类都加载到Spring容器中，就像一只八爪鱼，我们的启动类就是一个典型的@Configuration类。</p>
+<h3 id="SpringBootApplication"><a href="#SpringBootApplication" class="headerlink" title="@SpringBootApplication"></a>@SpringBootApplication</h3><p>包括下面两个关键的注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootConfiguration</span></span><br><span class="line"><span class="meta">@EnableAutoConfiguration</span></span><br></pre></td></tr></table></figure>
+
+<p>其中@SpringBootConfiguration 就是get主配置类添加上@Configuration 注解让主配置类的自动配置能被扫描到</p>
+<p>下面我们主要分析一下@EnableAutoConfiguration 注解</p>
+<h3 id="EnableAutoConfiguration"><a href="#EnableAutoConfiguration" class="headerlink" title="@EnableAutoConfiguration"></a>@EnableAutoConfiguration</h3><p>其中也包含两个关键注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AutoConfigurationPackage</span></span><br><span class="line"><span class="meta">@Import</span>(&#123;AutoConfigurationImportSelector.class&#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第一个用作包扫描自动配置</li>
+<li>第二个导入AutoConfigurationImportSelector类用作SpringBoot提供的其他组件的自动配置选择器</li>
+</ul>
+<p>我们先看一下第一个</p>
+<h4 id="AutoConfigurationPackage"><a href="#AutoConfigurationPackage" class="headerlink" title="@AutoConfigurationPackage"></a>@AutoConfigurationPackage</h4><p>这个注解导入了SpringBoot中的Registrar类 用作包路径下的Bean扫描并注册到BeanFactory中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Import</span>(&#123;Registrar.class&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>详细看一下这个类</p>
+<h4 id="Registrar注册类"><a href="#Registrar注册类" class="headerlink" title="Registrar注册类"></a>Registrar注册类</h4><p>其中主要的方法是registerBeanDefinitions</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Registrar</span> <span class="keyword">implements</span> <span class="title">ImportBeanDefinitionRegistrar</span>, <span class="title">DeterminableImports</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerBeanDefinitions</span><span class="params">(AnnotationMetadata metadata, BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//获取到元信息的包名传入注册器</span></span><br><span class="line">        AutoConfigurationPackages.register(registry, (<span class="keyword">new</span> AutoConfigurationPackages.PackageImport(metadata)).getPackageName());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>传入两个参数：</p>
+<ul>
+<li>metadata 启动类元信息</li>
+<li>registry 用作注册的Bean注册器</li>
+</ul>
+<p>目录结构如下：</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/9.png">
+
+
+
+<p>元信息如下：</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/2.png">
+
+
+
+
+
+<p>new AutoConfigurationPackages.PackageImport(metadata)).getPackageName()获取到该启动类所在路径的包名，传如register方法注册该包名下的所有需要注册并实例化的Bean（包括@Component @Service @Mapper @Repository等）</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/3.png">
+
+
+
+
+<h5 id="AutoConfigurationPackages中register方法"><a href="#AutoConfigurationPackages中register方法" class="headerlink" title="AutoConfigurationPackages中register方法"></a>AutoConfigurationPackages中register方法</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(BeanDefinitionRegistry registry, String... packageNames)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>根据传入的register和包名packageName注册该包名下的所有需要注册并实例化的Bean</p>
+<p>其中我们要关注的是下面这段代码：</p>
+<ul>
+<li>GenericBeanDefinition 创建Bean的一站式组件，包括Bean的参数、属性、类的信息</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//新建一个GenericBeanDefinition描述Bean的实例</span></span><br><span class="line">GenericBeanDefinition beanDefinition = <span class="keyword">new</span> GenericBeanDefinition();       <span class="comment">//设置bean的类名称</span></span><br><span class="line">beanDefinition.setBeanClass(AutoConfigurationPackages.BasePackages.class);</span><br><span class="line"><span class="comment">//获取构造器参数并保存</span></span><br><span class="line">beanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(<span class="number">0</span>, packageNames);</span><br><span class="line"><span class="comment">//Bean的角色 感兴趣的可以去了解一下，有0,1,2对应三种不同角色</span></span><br><span class="line">beanDefinition.setRole(<span class="number">2</span>);</span><br><span class="line"><span class="comment">//参数设置完调用registerBeanDefinition注册并实例化Bean</span></span><br><span class="line">registry.registerBeanDefinition(BEAN, beanDefinition);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="getConstructorArgumentValues"><a href="#getConstructorArgumentValues" class="headerlink" title="getConstructorArgumentValues"></a>getConstructorArgumentValues</h6><p>这个方法用于获取构造器参数并保存</p>
+<ul>
+<li>ConstructorArgumentValues 是一个构造器参数保存器，保存Bean的构造方法的参数</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ConstructorArgumentValues <span class="title">getConstructorArgumentValues</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.constructorArgumentValues == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//创建一个新的构造器参数保存器</span></span><br><span class="line">        <span class="keyword">this</span>.constructorArgumentValues = <span class="keyword">new</span> ConstructorArgumentValues();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.constructorArgumentValues;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="DefaultListableBeanFactory中实现的registerBeanDefinition方法"><a href="#DefaultListableBeanFactory中实现的registerBeanDefinition方法" class="headerlink" title="DefaultListableBeanFactory中实现的registerBeanDefinition方法"></a>DefaultListableBeanFactory中实现的registerBeanDefinition方法</h6><p>该方法对GenericBeanDefinition创建的Bean进行注册到BeanFactory</p>
+<p>传入beanName和beanDefinition</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerBeanDefinition</span><span class="params">(String beanName, BeanDefinition beanDefinition)</span></span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>检查完Bean是否合法后先判断是否存在相同Bean的注册，存在抛出异常，不存在执行如下</li>
+</ul>
+<p>其中主要代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//开始注册Bean</span></span><br><span class="line"><span class="comment">//如果已启动注册状态则要加锁注册单例singleton</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.hasBeanCreationStarted()) &#123;</span><br><span class="line">    <span class="keyword">synchronized</span>(<span class="keyword">this</span>.beanDefinitionMap) &#123;</span><br><span class="line">        <span class="comment">//把Bean存入beanDefinitionMap</span></span><br><span class="line">        <span class="keyword">this</span>.beanDefinitionMap.put(beanName, beanDefinition);</span><br><span class="line">        List&lt;String&gt; updatedDefinitions = <span class="keyword">new</span> ArrayList(<span class="keyword">this</span>.beanDefinitionNames.size() + <span class="number">1</span>);</span><br><span class="line">        <span class="comment">//把需要注册的Bean添加到map中</span></span><br><span class="line">        updatedDefinitions.addAll(<span class="keyword">this</span>.beanDefinitionNames);</span><br><span class="line">        updatedDefinitions.add(beanName);</span><br><span class="line">        <span class="keyword">this</span>.beanDefinitionNames = updatedDefinitions;</span><br><span class="line">        <span class="comment">//默认为单例</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.manualSingletonNames.contains(beanName)) &#123;</span><br><span class="line">            Set&lt;String&gt; updatedSingletons = <span class="keyword">new</span> LinkedHashSet(<span class="keyword">this</span>.manualSingletonNames);</span><br><span class="line">            updatedSingletons.remove(beanName);</span><br><span class="line">            <span class="keyword">this</span>.manualSingletonNames = updatedSingletons;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//如果未启动直接注册无需加锁</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.beanDefinitionMap.put(beanName, beanDefinition);</span><br><span class="line">    <span class="keyword">this</span>.beanDefinitionNames.add(beanName);</span><br><span class="line">    <span class="keyword">this</span>.manualSingletonNames.remove(beanName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下图就是beanDefinitionMap返回的值，里面除了Spring框架提供的一些必要的Bean需要注册外，就是我们主启动类所在包下的所有需要扫描的Bean，我只有一个主启动类和一个controller 下面标出</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/4.png">
+
+
+
+
+
+<p>当我尝试把写的HelloWorldController的@RestController注解注释掉以后，SpringBoot没有扫描到这个Controller，也就没有把它注册到BeanFactory中</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/10.png">
+
+
+
+
+
+<h4 id="AutoConfigurationImportSelector"><a href="#AutoConfigurationImportSelector" class="headerlink" title="AutoConfigurationImportSelector"></a>AutoConfigurationImportSelector</h4><p>看完@AutoConfigurationPackage 注解我们看一下 @EnableAutoConfiguration另一个注解@Import({AutoConfigurationImportSelector.class}) 该注解导入了SpringBoot中AutoConfigurationImportSelector类（自动配置选择器）用作选择SpringBoot提供的所需组件Bean的选择并自动配置</p>
+<p>主要是下面的方法</p>
+<h5 id="getAutoConfigurationEntry方法"><a href="#getAutoConfigurationEntry方法" class="headerlink" title="getAutoConfigurationEntry方法"></a>getAutoConfigurationEntry方法</h5><p>传入两个参数</p>
+<ul>
+<li>autoConfigurationMetadata自顶配置元信息</li>
+<li>annotationMetadata注解元信息</li>
+</ul>
+<p>注解元信息的参数（配置类上添加的@ComponentScan(Exclude)）：</p>
+<p>excludeName和exclude表示需要排除扫描自动配置的类，String[0]表示了没有需要排除的</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/8.png">
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取注解元信息参数</span></span><br><span class="line">AnnotationAttributes attributes = <span class="keyword">this</span>.getAttributes(annotationMetadata);</span><br><span class="line"><span class="comment">//调用getCandidateConfigurations获取需要自动配置的类或者功能</span></span><br><span class="line">List&lt;String&gt; configurations = <span class="keyword">this</span>.getCandidateConfigurations(annotationMetadata, attributes);</span><br><span class="line"><span class="comment">//去重</span></span><br><span class="line">configurations = <span class="keyword">this</span>.removeDuplicates(configurations);</span><br><span class="line"><span class="comment">//检查并排除exclude类</span></span><br><span class="line">Set&lt;String&gt; exclusions = <span class="keyword">this</span>.getExclusions(annotationMetadata, attributes);</span><br><span class="line"><span class="keyword">this</span>.checkExcludedClasses(configurations, exclusions);</span><br><span class="line">configurations.removeAll(exclusions);</span><br><span class="line">configurations = <span class="keyword">this</span>.filter(configurations, autoConfigurationMetadata);</span><br><span class="line"><span class="keyword">this</span>.fireAutoConfigurationImportEvents(configurations, exclusions);</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> AutoConfigurationImportSelector.AutoConfigurationEntry(configurations, exclusions);</span><br></pre></td></tr></table></figure>
+
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/7.png">
+
+
+
+
+
+<h5 id="getCandidateConfigurations"><a href="#getCandidateConfigurations" class="headerlink" title="getCandidateConfigurations"></a>getCandidateConfigurations</h5><p>负责加载META-INF/spring.factories中的配置的类，这些类就是SpringBoot提供的所需要加载的那些*AutoConfiguration类，也就是要注册的Bean或功能，获取到候选类的BeanName返回一个List</p>
+<p>借助SpringFactoriesLoader类实现加载自动配置类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> List&lt;String&gt; <span class="title">getCandidateConfigurations</span><span class="params">(AnnotationMetadata metadata, AnnotationAttributes attributes)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//加载类路径下META-INF/spring.factories中的自动配置类</span></span><br><span class="line">        List&lt;String&gt; configurations = SpringFactoriesLoader.loadFactoryNames(<span class="keyword">this</span>.getSpringFactoriesLoaderFactoryClass(), <span class="keyword">this</span>.getBeanClassLoader());</span><br><span class="line">        Assert.notEmpty(configurations, <span class="string">"No auto configuration classes found in META-INF/spring.factories. If you are using a custom packaging, make sure that file is correct."</span>);</span><br><span class="line">        <span class="keyword">return</span> configurations;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>返回结果如下:</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/1.1.png">
+
+
+
+
+
+<h6 id="loadFactoryNames"><a href="#loadFactoryNames" class="headerlink" title="loadFactoryNames"></a>loadFactoryNames</h6><p>SpringBoot使用ClassLoader类加载机制加载META-INF/spring.factories</p>
+<p>将根据EnableAutoConfiguration类名称去加载需要的类或者功能</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">loadFactoryNames</span><span class="params">(Class&lt;?&gt; factoryClass, @Nullable ClassLoader classLoader)</span> </span>&#123;</span><br><span class="line">        String factoryClassName = factoryClass.getName();</span><br><span class="line">        <span class="keyword">return</span> (List)loadSpringFactories(classLoader).getOrDefault(factoryClassName, Collections.emptyList());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>SpringFactoriesLoader的实现机制跟util包下的 ServiceLoader（SPL）实现机制类似，是一种服务查找机制，为接口查找服务实现类，感兴趣的可以去了解一下</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    dzou  |  微信：17856530567
+  </li>
+  <li class="post-copyright-link">
+  <strong>本文链接：</strong>
+  <a href="http://www.dzou.top/post/366ffd58.html" title="SpringBoot自动配置源码分析及详解">http://www.dzou.top/post/366ffd58.html</a>
+</li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noopener noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+  <li class="post-copyright-license">
+    并保留本声明和上方二维码。感谢您的阅读和支持！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/分布式/" rel="tag"># 分布式</a>
+          
+            <a href="/tags/SpringBoot/" rel="tag"># SpringBoot</a>
+          
+            <a href="/tags/Web/" rel="tag"># Web</a>
+          
+            <a href="/tags/后端/" rel="tag"># 后端</a>
+          
+            <a href="/tags/Spring/" rel="tag"># Spring</a>
+          
+            <a href="/tags/微服务/" rel="tag"># 微服务</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/616dc7a4.html" rel="next" title="java序列化Serializable和反序列化状态修饰符transient">
+                <i class="fa fa-chevron-left"></i> java序列化Serializable和反序列化状态修饰符transient
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" rel="external nofollow noopener noreferrer" target="_blank">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/2.JPG" alt="dzou">
+            
+              <p class="site-author-name" itemprop="name">dzou</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ding-zou" target="_blank" title="GitHub" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="dingxiang.zoufubo@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://me.csdn.net/qq_44760332" target="_blank" title="CSDN" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                推荐链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/7a5625fe.html" title="Java并发之AQS源码分析" target="_blank">Java并发之AQS源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/19e1cc75.html" title="Linux基础命令" target="_blank">Linux基础命令</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/8184a8fd.html" title="JDK8新特性——流和Lambda表达式" target="_blank">JDK8新特性——流和Lambda表达式</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://music.163.com/#/user/home?id=564117665" title="网易云音乐" target="_blank" rel="external nofollow noopener noreferrer">网易云音乐</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringBoot自动配置"><span class="nav-number">1.</span> <span class="nav-text">SpringBoot自动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringBootApplication"><span class="nav-number">1.1.</span> <span class="nav-text">@SpringBootApplication</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EnableAutoConfiguration"><span class="nav-number">1.2.</span> <span class="nav-text">@EnableAutoConfiguration</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AutoConfigurationPackage"><span class="nav-number">1.2.1.</span> <span class="nav-text">@AutoConfigurationPackage</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Registrar注册类"><span class="nav-number">1.2.2.</span> <span class="nav-text">Registrar注册类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AutoConfigurationPackages中register方法"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">AutoConfigurationPackages中register方法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#getConstructorArgumentValues"><span class="nav-number">1.2.2.1.1.</span> <span class="nav-text">getConstructorArgumentValues</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#DefaultListableBeanFactory中实现的registerBeanDefinition方法"><span class="nav-number">1.2.2.1.2.</span> <span class="nav-text">DefaultListableBeanFactory中实现的registerBeanDefinition方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AutoConfigurationImportSelector"><span class="nav-number">1.2.3.</span> <span class="nav-text">AutoConfigurationImportSelector</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#getAutoConfigurationEntry方法"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">getAutoConfigurationEntry方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#getCandidateConfigurations"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">getCandidateConfigurations</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#loadFactoryNames"><span class="nav-number">1.2.3.2.1.</span> <span class="nav-text">loadFactoryNames</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dzou</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">25.7k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问用户：
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问次数：
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://dzou.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://www.dzou.top/post/366ffd58.html';
+          this.page.identifier = 'post/366ffd58.html';
+          this.page.title = 'SpringBoot自动配置源码分析及详解';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://dzou.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "topCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "topRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+ <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>

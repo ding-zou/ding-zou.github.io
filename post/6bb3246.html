@@ -2,8 +2,10 @@
 
 
 
+  
 
-<html class="theme-next mist" lang="zh-Hans">
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -89,19 +91,19 @@
 
 
 
-<meta name="description" content="Docker将应用程序自动部署到容器 GO语言开发  Docker使用 开发、测试、部署服务  容器技术直接运行在操作系统之上，一直虚拟化方案 虚拟机和Linux容器虚拟机还需要操作系统，占用太多的内存 DockerFile 构建镜像Dockerfile 是一个文本文件，其内包含了一条条的 指令(Instruction)，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。  do">
+<meta name="description" content="将应用程序自动部署到容器,DockerHub是Docker官方提供的镜像仓库，你可以把你写的项目打包成镜像上传到Dockerhub，别人也就可以使用Docker命令运行你的镜像；当然各个官方镜像都可以在DockerHub获取并有详细使用方法。">
 <meta name="keywords" content="Java,Docker,分布式,SpringBoot,Web,容器,集装箱,虚拟机,后端">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker基础知识以及使用Docker部署Springboot项目">
 <meta property="og:url" content="https://www.dzou.top/post/6bb3246.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
-<meta property="og:description" content="Docker将应用程序自动部署到容器 GO语言开发  Docker使用 开发、测试、部署服务  容器技术直接运行在操作系统之上，一直虚拟化方案 虚拟机和Linux容器虚拟机还需要操作系统，占用太多的内存 DockerFile 构建镜像Dockerfile 是一个文本文件，其内包含了一条条的 指令(Instruction)，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。  do">
+<meta property="og:description" content="将应用程序自动部署到容器,DockerHub是Docker官方提供的镜像仓库，你可以把你写的项目打包成镜像上传到Dockerhub，别人也就可以使用Docker命令运行你的镜像；当然各个官方镜像都可以在DockerHub获取并有详细使用方法。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://7xo6kd.com1.z0.glb.clouddn.com/upload-ueditor-image-20170425-1493117446353024350.jpg">
-<meta property="og:updated_time" content="2019-07-24T14:02:04.355Z">
+<meta property="og:updated_time" content="2019-08-02T11:47:36.129Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker基础知识以及使用Docker部署Springboot项目">
-<meta name="twitter:description" content="Docker将应用程序自动部署到容器 GO语言开发  Docker使用 开发、测试、部署服务  容器技术直接运行在操作系统之上，一直虚拟化方案 虚拟机和Linux容器虚拟机还需要操作系统，占用太多的内存 DockerFile 构建镜像Dockerfile 是一个文本文件，其内包含了一条条的 指令(Instruction)，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。  do">
+<meta name="twitter:description" content="将应用程序自动部署到容器,DockerHub是Docker官方提供的镜像仓库，你可以把你写的项目打包成镜像上传到Dockerhub，别人也就可以使用Docker命令运行你的镜像；当然各个官方镜像都可以在DockerHub获取并有详细使用方法。">
 <meta name="twitter:image" content="http://7xo6kd.com1.z0.glb.clouddn.com/upload-ueditor-image-20170425-1493117446353024350.jpg">
 
 
@@ -115,7 +117,7 @@
     sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
       author: '博主'
@@ -428,6 +430,10 @@
           
 
           
+              <div class="post-description">
+                  将应用程序自动部署到容器,DockerHub是Docker官方提供的镜像仓库，你可以把你写的项目打包成镜像上传到Dockerhub，别人也就可以使用Docker命令运行你的镜像；当然各个官方镜像都可以在DockerHub获取并有详细使用方法。
+              </div>
+          
 
         </div>
       </header>
@@ -542,8 +548,6 @@
           
             <a href="/tags/Java/" rel="tag"># Java</a>
           
-            <a href="/tags/后端/" rel="tag"># 后端</a>
-          
             <a href="/tags/Docker/" rel="tag"># Docker</a>
           
             <a href="/tags/分布式/" rel="tag"># 分布式</a>
@@ -551,6 +555,8 @@
             <a href="/tags/SpringBoot/" rel="tag"># SpringBoot</a>
           
             <a href="/tags/Web/" rel="tag"># Web</a>
+          
+            <a href="/tags/后端/" rel="tag"># 后端</a>
           
         </div>
       
@@ -578,8 +584,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/post/37228cde.html" rel="next" title="Java并发编程学习笔记-更新中">
-                <i class="fa fa-chevron-left"></i> Java并发编程学习笔记-更新中
+              <a href="/post/f08593ab.html" rel="next" title="牛客网算法编程题--办公室路径走法 解答">
+                <i class="fa fa-chevron-left"></i> 牛客网算法编程题--办公室路径走法 解答
               </a>
             
           </div>
@@ -679,7 +685,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -701,7 +707,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -834,7 +840,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">29.8k</span>
+    <span title="Site words total count">25.7k</span>
   
 </div>
 
@@ -909,6 +915,8 @@
   
 
 
+  
+
 
 
 
@@ -947,6 +955,11 @@
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
   
 
 
@@ -1115,3 +1128,6 @@
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
 <!-- 页面点击小红心 -->
 <script type="text/javascript" src="/js/src/clicklove.js"></script>
+ <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>

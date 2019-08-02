@@ -2,8 +2,10 @@
 
 
 
+  
 
-<html class="theme-next mist" lang="zh-Hans">
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -89,19 +91,19 @@
 
 
 
-<meta name="description" content="物流中转站题目描述Shopee物流会有很多个中转站。在选址的过程中，会选择离用户最近的地方建一个物流中转站。 假设给你一个二维平面网格，每个格子是房子则为1，或者是空地则为0。找到一个空地修建一个物流中转站，使得这个物流中转站到所有的房子的距离之和最小。 能修建，则返回最小的距离和。如果无法修建，则返回 -1。 若范围限制在100*100以内的网格，如何计算出最小的距离和？ 当平面网格非常大的情况">
+<meta name="description" content="Shopee物流会有很多个中转站。在选址的过程中，会选择离用户最近的地方建一个物流中转站。假设给你一个二维平面网格，每个格子是房子则为1，或者是空地则为0。找到一个空地修建一个物流中转站，使得这个物流中转站到所有的房子的距离之和最小。 能修建，则返回最小的距离和。如果无法修建，则返回 -1。">
 <meta name="keywords" content="Java,算法,Java基础,牛客网,jdk8,流,Lambda">
 <meta property="og:type" content="article">
 <meta property="og:title" content="牛客网算法编程题--物流中转站 解答">
 <meta property="og:url" content="https://www.dzou.top/post/90a1be19.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
-<meta property="og:description" content="物流中转站题目描述Shopee物流会有很多个中转站。在选址的过程中，会选择离用户最近的地方建一个物流中转站。 假设给你一个二维平面网格，每个格子是房子则为1，或者是空地则为0。找到一个空地修建一个物流中转站，使得这个物流中转站到所有的房子的距离之和最小。 能修建，则返回最小的距离和。如果无法修建，则返回 -1。 若范围限制在100*100以内的网格，如何计算出最小的距离和？ 当平面网格非常大的情况">
+<meta property="og:description" content="Shopee物流会有很多个中转站。在选址的过程中，会选择离用户最近的地方建一个物流中转站。假设给你一个二维平面网格，每个格子是房子则为1，或者是空地则为0。找到一个空地修建一个物流中转站，使得这个物流中转站到所有的房子的距离之和最小。 能修建，则返回最小的距离和。如果无法修建，则返回 -1。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://www.dzou.top/images/1.png">
-<meta property="og:updated_time" content="2019-07-24T14:01:37.447Z">
+<meta property="og:updated_time" content="2019-08-02T11:45:18.084Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="牛客网算法编程题--物流中转站 解答">
-<meta name="twitter:description" content="物流中转站题目描述Shopee物流会有很多个中转站。在选址的过程中，会选择离用户最近的地方建一个物流中转站。 假设给你一个二维平面网格，每个格子是房子则为1，或者是空地则为0。找到一个空地修建一个物流中转站，使得这个物流中转站到所有的房子的距离之和最小。 能修建，则返回最小的距离和。如果无法修建，则返回 -1。 若范围限制在100*100以内的网格，如何计算出最小的距离和？ 当平面网格非常大的情况">
+<meta name="twitter:description" content="Shopee物流会有很多个中转站。在选址的过程中，会选择离用户最近的地方建一个物流中转站。假设给你一个二维平面网格，每个格子是房子则为1，或者是空地则为0。找到一个空地修建一个物流中转站，使得这个物流中转站到所有的房子的距离之和最小。 能修建，则返回最小的距离和。如果无法修建，则返回 -1。">
 <meta name="twitter:image" content="https://www.dzou.top/images/1.png">
 
 
@@ -115,7 +117,7 @@
     sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
       author: '博主'
@@ -428,6 +430,10 @@
           
 
           
+              <div class="post-description">
+                  Shopee物流会有很多个中转站。在选址的过程中，会选择离用户最近的地方建一个物流中转站。假设给你一个二维平面网格，每个格子是房子则为1，或者是空地则为0。找到一个空地修建一个物流中转站，使得这个物流中转站到所有的房子的距离之和最小。 能修建，则返回最小的距离和。如果无法修建，则返回 -1。
+              </div>
+          
 
         </div>
       </header>
@@ -446,9 +452,9 @@
 <p>假设给你一个二维平面网格，每个格子是房子则为1，或者是空地则为0。找到一个空地修建一个物流中转站，使得这个物流中转站到所有的房子的距离之和最小。 能修建，则返回最小的距离和。如果无法修建，则返回 -1。</p>
 <p>若范围限制在100*100以内的网格，如何计算出最小的距离和？</p>
 <p>当平面网格非常大的情况下，如何避免不必要的计算？</p>
-<h2 id="输入描述"><a href="#输入描述" class="headerlink" title="输入描述:"></a>输入描述:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">4</span><br><span class="line">0 1 1 0</span><br><span class="line">1 1 0 1</span><br><span class="line">0 0 1 0</span><br><span class="line">0 0 0 0</span><br><span class="line"></span><br><span class="line">先输入方阵阶数，然后逐行输入房子和空地的数据，以空格分隔。</span><br></pre></td></tr></table></figure>
+<h2 id="输入描述"><a href="#输入描述" class="headerlink" title="输入描述"></a>输入描述</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">4</span><br><span class="line">0 1 1 0</span><br><span class="line">1 1 0 1</span><br><span class="line">0 0 1 0</span><br><span class="line">0 0 0 0</span><br><span class="line"></span><br><span class="line">先输入方阵阶数，然后逐行输入房子和空地的数据，以空格分隔。</span><br></pre></td></tr></table></figure>
 
-<h2 id="输出描述"><a href="#输出描述" class="headerlink" title="输出描述:"></a>输出描述:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">8</span><br><span class="line"></span><br><span class="line">能修建，则返回最小的距离和。如果无法修建，则返回 -1。</span><br></pre></td></tr></table></figure>
+<h2 id="输出描述"><a href="#输出描述" class="headerlink" title="输出描述"></a>输出描述</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">8</span><br><span class="line"></span><br><span class="line">能修建，则返回最小的距离和。如果无法修建，则返回 -1。</span><br></pre></td></tr></table></figure>
 
 <hr>
 <blockquote>
@@ -639,7 +645,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -661,7 +667,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -753,7 +759,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#物流中转站"><span class="nav-number">1.</span> <span class="nav-text">物流中转站</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#题目描述"><span class="nav-number">2.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输入描述"><span class="nav-number">3.</span> <span class="nav-text">输入描述:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出描述"><span class="nav-number">4.</span> <span class="nav-text">输出描述:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lambda-Stream-静态内部类"><span class="nav-number">4.1.</span> <span class="nav-text">Lambda Stream+静态内部类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#步入正题"><span class="nav-number">4.1.1.</span> <span class="nav-text">步入正题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如果又看不懂的可以看一下我的另外一篇关于Lambda和Stream的博客"><span class="nav-number">4.2.</span> <span class="nav-text">如果又看不懂的可以看一下我的另外一篇关于Lambda和Stream的博客</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#物流中转站"><span class="nav-number">1.</span> <span class="nav-text">物流中转站</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#题目描述"><span class="nav-number">2.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输入描述"><span class="nav-number">3.</span> <span class="nav-text">输入描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出描述"><span class="nav-number">4.</span> <span class="nav-text">输出描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lambda-Stream-静态内部类"><span class="nav-number">4.1.</span> <span class="nav-text">Lambda Stream+静态内部类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#步入正题"><span class="nav-number">4.1.1.</span> <span class="nav-text">步入正题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如果又看不懂的可以看一下我的另外一篇关于Lambda和Stream的博客"><span class="nav-number">4.2.</span> <span class="nav-text">如果又看不懂的可以看一下我的另外一篇关于Lambda和Stream的博客</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -794,7 +800,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">29.8k</span>
+    <span title="Site words total count">25.7k</span>
   
 </div>
 
@@ -869,6 +875,8 @@
   
 
 
+  
+
 
 
 
@@ -907,6 +915,11 @@
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
   
 
 
@@ -1075,3 +1088,6 @@
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
 <!-- 页面点击小红心 -->
 <script type="text/javascript" src="/js/src/clicklove.js"></script>
+ <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>

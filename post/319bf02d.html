@@ -2,8 +2,10 @@
 
 
 
+  
 
-<html class="theme-next mist" lang="zh-Hans">
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -89,18 +91,18 @@
 
 
 
-<meta name="description" content="session and cookiecookie属性：  Max-Age有效期  ：正表示相对创建时间，负表示使用默认（关闭浏览器销毁），零表示销毁 Path在url那个路径下有效（“/”）表示整个web项目下 secure：设置了属性secure，cookie只有在https协议加密情况下才会发送给服务端  服务端创建cookie：1.new Cookie2.response.addCookie">
+<meta name="description" content="其实cookie是一个很小的文本文件，是浏览器储存在用户的机器上的。Cookie是纯文本，没有可执行代码。储存一些服务器需要的信息，每次请求站点，会发送相应的cookie，这些cookie可以用来辨别用户身份信息等作用。 session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构（也可能就是使用散列表）来保存信息。">
 <meta name="keywords" content="session,cookie,网络编程,http">
 <meta property="og:type" content="article">
 <meta property="og:title" content="cookie和session">
 <meta property="og:url" content="https://www.dzou.top/post/319bf02d.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
-<meta property="og:description" content="session and cookiecookie属性：  Max-Age有效期  ：正表示相对创建时间，负表示使用默认（关闭浏览器销毁），零表示销毁 Path在url那个路径下有效（“/”）表示整个web项目下 secure：设置了属性secure，cookie只有在https协议加密情况下才会发送给服务端  服务端创建cookie：1.new Cookie2.response.addCookie">
+<meta property="og:description" content="其实cookie是一个很小的文本文件，是浏览器储存在用户的机器上的。Cookie是纯文本，没有可执行代码。储存一些服务器需要的信息，每次请求站点，会发送相应的cookie，这些cookie可以用来辨别用户身份信息等作用。 session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构（也可能就是使用散列表）来保存信息。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-24T14:01:50.435Z">
+<meta property="og:updated_time" content="2019-08-02T11:46:58.045Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="cookie和session">
-<meta name="twitter:description" content="session and cookiecookie属性：  Max-Age有效期  ：正表示相对创建时间，负表示使用默认（关闭浏览器销毁），零表示销毁 Path在url那个路径下有效（“/”）表示整个web项目下 secure：设置了属性secure，cookie只有在https协议加密情况下才会发送给服务端  服务端创建cookie：1.new Cookie2.response.addCookie">
+<meta name="twitter:description" content="其实cookie是一个很小的文本文件，是浏览器储存在用户的机器上的。Cookie是纯文本，没有可执行代码。储存一些服务器需要的信息，每次请求站点，会发送相应的cookie，这些cookie可以用来辨别用户身份信息等作用。 session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构（也可能就是使用散列表）来保存信息。">
 
 
 
@@ -113,7 +115,7 @@
     sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
       author: '博主'
@@ -426,6 +428,10 @@
           
 
           
+              <div class="post-description">
+                  其实cookie是一个很小的文本文件，是浏览器储存在用户的机器上的。Cookie是纯文本，没有可执行代码。储存一些服务器需要的信息，每次请求站点，会发送相应的cookie，这些cookie可以用来辨别用户身份信息等作用。 session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构（也可能就是使用散列表）来保存信息。
+              </div>
+          
 
         </div>
       </header>
@@ -520,8 +526,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/post/d43b6d5c.html" rel="next" title="Jwt(Json Web Token)Web安全工具使用">
-                <i class="fa fa-chevron-left"></i> Jwt(Json Web Token)Web安全工具使用
+              <a href="/post/e571ec33.html" rel="next" title="NIO学习笔记（IO、AIO、BIO）--更新中">
+                <i class="fa fa-chevron-left"></i> NIO学习笔记（IO、AIO、BIO）--更新中
               </a>
             
           </div>
@@ -530,8 +536,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/post/9a42916a.html" rel="prev" title="Java中使用servlet内置对象request获取IP地址">
-                Java中使用servlet内置对象request获取IP地址 <i class="fa fa-chevron-right"></i>
+              <a href="/post/67d1f796.html" rel="prev" title="转发和重定向的区别">
+                转发和重定向的区别 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -621,7 +627,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -643,7 +649,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -776,7 +782,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">29.8k</span>
+    <span title="Site words total count">25.7k</span>
   
 </div>
 
@@ -851,6 +857,8 @@
   
 
 
+  
+
 
 
 
@@ -889,6 +897,11 @@
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
   
 
 
@@ -1057,3 +1070,6 @@
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
 <!-- 页面点击小红心 -->
 <script type="text/javascript" src="/js/src/clicklove.js"></script>
+ <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>

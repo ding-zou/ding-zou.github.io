@@ -2,8 +2,10 @@
 
 
 
+  
 
-<html class="theme-next mist" lang="zh-Hans">
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -89,20 +91,20 @@
 
 
 
-<meta name="description" content="##SpringBoot 优点 无需配置xml，无代码生成 无需打包war，而是jar  微服务一组小型服务，通过http进行沟通每个单元度 单体应用传统web应用,所有功能和模块全部部署在一个应用里 jar包运行Spring-boot-maven-plugin可以用maven把springboot应用打jar pom文件探究 springboot-starter-dependencies：版本仲">
+<meta name="description" content="SpringBoot，Spring Boot 是所有基于 Spring 开发的项目的起点。Spring Boot 的设计是为了让你尽可能快的跑起来 Spring 应用程序并且尽可能减少你的配置文件。">
 <meta name="keywords" content="SpringBoot,Java Web,注解配置,配置类,微服务,分布式">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringBoot学习笔记--更新中">
 <meta property="og:url" content="https://www.dzou.top/post/cfc248db.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
-<meta property="og:description" content="##SpringBoot 优点 无需配置xml，无代码生成 无需打包war，而是jar  微服务一组小型服务，通过http进行沟通每个单元度 单体应用传统web应用,所有功能和模块全部部署在一个应用里 jar包运行Spring-boot-maven-plugin可以用maven把springboot应用打jar pom文件探究 springboot-starter-dependencies：版本仲">
+<meta property="og:description" content="SpringBoot，Spring Boot 是所有基于 Spring 开发的项目的起点。Spring Boot 的设计是为了让你尽可能快的跑起来 Spring 应用程序并且尽可能减少你的配置文件。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2019060510505348.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190605170117401.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
-<meta property="og:updated_time" content="2019-07-24T14:03:24.772Z">
+<meta property="og:updated_time" content="2019-08-02T11:53:39.829Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SpringBoot学习笔记--更新中">
-<meta name="twitter:description" content="##SpringBoot 优点 无需配置xml，无代码生成 无需打包war，而是jar  微服务一组小型服务，通过http进行沟通每个单元度 单体应用传统web应用,所有功能和模块全部部署在一个应用里 jar包运行Spring-boot-maven-plugin可以用maven把springboot应用打jar pom文件探究 springboot-starter-dependencies：版本仲">
+<meta name="twitter:description" content="SpringBoot，Spring Boot 是所有基于 Spring 开发的项目的起点。Spring Boot 的设计是为了让你尽可能快的跑起来 Spring 应用程序并且尽可能减少你的配置文件。">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/2019060510505348.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
 
 
@@ -116,7 +118,7 @@
     sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
       author: '博主'
@@ -422,12 +424,16 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  5分
+                  6分
                 </span>
               
             </div>
           
 
+          
+              <div class="post-description">
+                  SpringBoot，Spring Boot 是所有基于 Spring 开发的项目的起点。Spring Boot 的设计是为了让你尽可能快的跑起来 Spring 应用程序并且尽可能减少你的配置文件。
+              </div>
           
 
         </div>
@@ -443,7 +449,7 @@
       
 
       
-        <p>##SpringBoot</p>
+        <p>##SpringBoot<br>Spring Boot 是所有基于 Spring 开发的项目的起点。Spring Boot 的设计是为了让你尽可能快的跑起来 Spring 应用程序并且尽可能减少你的配置文件。</p>
 <h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
 <li>无需配置xml，无代码生成</li>
 <li>无需打包war，而是jar</li>
@@ -494,7 +500,7 @@
 </blockquote>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-configuration-processor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="SpringBoot占位符："><a href="#SpringBoot占位符：" class="headerlink" title="SpringBoot占位符："></a>SpringBoot占位符：</h3><ul>
+<h3 id="SpringBoot占位符"><a href="#SpringBoot占位符" class="headerlink" title="SpringBoot占位符"></a>SpringBoot占位符</h3><ul>
 <li>随机数：可以在配置文件中使用#{random.uuif}等</li>
 <li>占位符获取之前设置的值，如果没有，可以使用默认值#{userAge：默认值}</li>
 </ul>
@@ -604,13 +610,13 @@
           
             <a href="/tags/Java/" rel="tag"># Java</a>
           
-            <a href="/tags/后端/" rel="tag"># 后端</a>
-          
             <a href="/tags/分布式/" rel="tag"># 分布式</a>
           
             <a href="/tags/SpringBoot/" rel="tag"># SpringBoot</a>
           
             <a href="/tags/Web/" rel="tag"># Web</a>
+          
+            <a href="/tags/后端/" rel="tag"># 后端</a>
           
             <a href="/tags/Spring/" rel="tag"># Spring</a>
           
@@ -743,7 +749,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -765,7 +771,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -857,7 +863,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微服务"><span class="nav-number">2.</span> <span class="nav-text">微服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单体应用"><span class="nav-number">3.</span> <span class="nav-text">单体应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jar包运行"><span class="nav-number">4.</span> <span class="nav-text">jar包运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pom文件探究"><span class="nav-number">5.</span> <span class="nav-text">pom文件探究</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主程序类"><span class="nav-number">6.</span> <span class="nav-text">主程序类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建SpringBoot项目"><span class="nav-number">7.</span> <span class="nav-text">创建SpringBoot项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Springboot配置文件"><span class="nav-number">8.</span> <span class="nav-text">Springboot配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#全局配置文件"><span class="nav-number">8.1.</span> <span class="nav-text">全局配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置文件注入值"><span class="nav-number">8.2.</span> <span class="nav-text">配置文件注入值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PropertySource使用路径下的配置文件"><span class="nav-number">8.3.</span> <span class="nav-text">@PropertySource使用路径下的配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加入我们编写的配置文件"><span class="nav-number">8.4.</span> <span class="nav-text">加入我们编写的配置文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringBoot占位符："><span class="nav-number">9.</span> <span class="nav-text">SpringBoot占位符：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#profile"><span class="nav-number">10.</span> <span class="nav-text">profile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日志"><span class="nav-number">11.</span> <span class="nav-text">日志</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#日志级别"><span class="nav-number">11.1.</span> <span class="nav-text">日志级别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调整级别"><span class="nav-number">11.2.</span> <span class="nav-text">调整级别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#日志指定配置"><span class="nav-number">11.3.</span> <span class="nav-text">日志指定配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#切换日志框架"><span class="nav-number">11.4.</span> <span class="nav-text">切换日志框架</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringBoot-Web-开发"><span class="nav-number"></span> <span class="nav-text">SpringBoot Web 开发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pom资源引入：webjars"><span class="nav-number">1.</span> <span class="nav-text">pom资源引入：webjars</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#静态资源"><span class="nav-number">1.1.</span> <span class="nav-text">静态资源</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模板引擎"><span class="nav-number">2.</span> <span class="nav-text">模板引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#语法"><span class="nav-number">2.1.</span> <span class="nav-text">语法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展SpringMVC"><span class="nav-number">3.</span> <span class="nav-text">扩展SpringMVC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Springboot-整合Mybatis"><span class="nav-number"></span> <span class="nav-text">Springboot 整合Mybatis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#maven依赖"><span class="nav-number">1.</span> <span class="nav-text">maven依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件"><span class="nav-number">2.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些工具使用"><span class="nav-number">3.</span> <span class="nav-text">一些工具使用</span></a></li></ol></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微服务"><span class="nav-number">2.</span> <span class="nav-text">微服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单体应用"><span class="nav-number">3.</span> <span class="nav-text">单体应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jar包运行"><span class="nav-number">4.</span> <span class="nav-text">jar包运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pom文件探究"><span class="nav-number">5.</span> <span class="nav-text">pom文件探究</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主程序类"><span class="nav-number">6.</span> <span class="nav-text">主程序类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建SpringBoot项目"><span class="nav-number">7.</span> <span class="nav-text">创建SpringBoot项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Springboot配置文件"><span class="nav-number">8.</span> <span class="nav-text">Springboot配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#全局配置文件"><span class="nav-number">8.1.</span> <span class="nav-text">全局配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置文件注入值"><span class="nav-number">8.2.</span> <span class="nav-text">配置文件注入值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PropertySource使用路径下的配置文件"><span class="nav-number">8.3.</span> <span class="nav-text">@PropertySource使用路径下的配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加入我们编写的配置文件"><span class="nav-number">8.4.</span> <span class="nav-text">加入我们编写的配置文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringBoot占位符"><span class="nav-number">9.</span> <span class="nav-text">SpringBoot占位符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#profile"><span class="nav-number">10.</span> <span class="nav-text">profile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日志"><span class="nav-number">11.</span> <span class="nav-text">日志</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#日志级别"><span class="nav-number">11.1.</span> <span class="nav-text">日志级别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调整级别"><span class="nav-number">11.2.</span> <span class="nav-text">调整级别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#日志指定配置"><span class="nav-number">11.3.</span> <span class="nav-text">日志指定配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#切换日志框架"><span class="nav-number">11.4.</span> <span class="nav-text">切换日志框架</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringBoot-Web-开发"><span class="nav-number"></span> <span class="nav-text">SpringBoot Web 开发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pom资源引入：webjars"><span class="nav-number">1.</span> <span class="nav-text">pom资源引入：webjars</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#静态资源"><span class="nav-number">1.1.</span> <span class="nav-text">静态资源</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模板引擎"><span class="nav-number">2.</span> <span class="nav-text">模板引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#语法"><span class="nav-number">2.1.</span> <span class="nav-text">语法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展SpringMVC"><span class="nav-number">3.</span> <span class="nav-text">扩展SpringMVC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Springboot-整合Mybatis"><span class="nav-number"></span> <span class="nav-text">Springboot 整合Mybatis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#maven依赖"><span class="nav-number">1.</span> <span class="nav-text">maven依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件"><span class="nav-number">2.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些工具使用"><span class="nav-number">3.</span> <span class="nav-text">一些工具使用</span></a></li></ol></li></div>
             
 
           </div>
@@ -898,7 +904,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">29.8k</span>
+    <span title="Site words total count">25.7k</span>
   
 </div>
 
@@ -973,6 +979,8 @@
   
 
 
+  
+
 
 
 
@@ -1011,6 +1019,11 @@
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
   
 
 
@@ -1179,3 +1192,6 @@
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
 <!-- 页面点击小红心 -->
 <script type="text/javascript" src="/js/src/clicklove.js"></script>
+ <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>

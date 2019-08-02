@@ -2,8 +2,10 @@
 
 
 
+  
 
-<html class="theme-next mist" lang="zh-Hans">
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -89,21 +91,21 @@
 
 
 
-<meta name="description" content="Linux(Ubuntu/deepin)特点：没有磁盘的概念，每个用户只能操作根目录下的一个用户文件夹/home/ 代表根目录.代表当前目录或者隐藏文件文件夹..代表上一级目录*代表任意字符文件名和文件数据分开存储的 终端命令pwdprint work directory  输出当前目录 mkdirmake directory 创建文件夹mldir -p a/b/c/d 创建多个文件夹 在a下创建">
+<meta name="description" content="Linux基础命令">
 <meta name="keywords" content="linux,linux命令,Ubuntu,Deepin,ssh,服务器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux学习笔记--更新中 基本知识和常用命令教程 Java程序员必备 较为详细 从基础开始(值得收藏)">
 <meta property="og:url" content="https://www.dzou.top/post/19e1cc75.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
-<meta property="og:description" content="Linux(Ubuntu/deepin)特点：没有磁盘的概念，每个用户只能操作根目录下的一个用户文件夹/home/ 代表根目录.代表当前目录或者隐藏文件文件夹..代表上一级目录*代表任意字符文件名和文件数据分开存储的 终端命令pwdprint work directory  输出当前目录 mkdirmake directory 创建文件夹mldir -p a/b/c/d 创建多个文件夹 在a下创建">
+<meta property="og:description" content="Linux基础命令">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2019050810380247.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190507171143420.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190508103816882.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
-<meta property="og:updated_time" content="2019-07-24T14:02:50.876Z">
+<meta property="og:updated_time" content="2019-08-02T11:50:04.535Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux学习笔记--更新中 基本知识和常用命令教程 Java程序员必备 较为详细 从基础开始(值得收藏)">
-<meta name="twitter:description" content="Linux(Ubuntu/deepin)特点：没有磁盘的概念，每个用户只能操作根目录下的一个用户文件夹/home/ 代表根目录.代表当前目录或者隐藏文件文件夹..代表上一级目录*代表任意字符文件名和文件数据分开存储的 终端命令pwdprint work directory  输出当前目录 mkdirmake directory 创建文件夹mldir -p a/b/c/d 创建多个文件夹 在a下创建">
+<meta name="twitter:description" content="Linux基础命令">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/2019050810380247.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
 
 
@@ -117,7 +119,7 @@
     sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
       author: '博主'
@@ -430,6 +432,10 @@
           
 
           
+              <div class="post-description">
+                  Linux基础命令
+              </div>
+          
 
         </div>
       </header>
@@ -465,7 +471,7 @@
 <p><strong>scp</strong>（mac、windows使用ftp文件传输FileZilla）<br>在linux下远程拷贝文件<br>-p指定端口<br>scp -P port user/@remote:Desktop/01.txt<br>-r传送文件夹<br>scp -r demo user@remote:Desktop</p>
 <h2 id="用户和权限"><a href="#用户和权限" class="headerlink" title="用户和权限"></a>用户和权限</h2><p><strong>用户管理包括用户和组管理，linux系统中必需拥有一个账号，不同的用户有不同的权限管理文件</strong><br><strong>组：对相同权限的用户放在一个组里</strong><br>r可读，w可写，x可执行<br>文件拥有者、文件的组、其他用户（r–、r-x）</p>
 <p><strong>硬连接数：可通过几种方式访问文件</strong></p>
-<p><strong>chmod：</strong><br>chmod +/- rwx 文件名或者文件夹<br>ex：chmod -rw 123.txt 给123.txt减少可读可写权限<br>数字模式：<br>chmod -R 755 文件名或者目录 （三个数字分别对应拥有者、组、其他用户）<br>r-4 w-2 x-1<br><img src="https://img-blog.csdnimg.cn/20190507171143420.png" alt="在这里插入图片描述"></p>
+<p><strong>chmod</strong><br>chmod +/- rwx 文件名或者文件夹<br>ex：chmod -rw 123.txt 给123.txt减少可读可写权限<br>数字模式：<br>chmod -R 755 文件名或者目录 （三个数字分别对应拥有者、组、其他用户）<br>r-4 w-2 x-1<br><img src="https://img-blog.csdnimg.cn/20190507171143420.png" alt="在这里插入图片描述"></p>
 <p><strong>su、sudo</strong><br>su：substitute user<br>sudo使用超级权限来执行</p>
 <p><strong>组管理</strong><br>groupadd、groupdel、cat/etc/group 确认组信息<br>chgrp -P 组名 文件名或者目录 修改文件或者目录组</p>
 <p><strong>用户（创建用户、设置密码、删除用户）</strong><br>useradd -m -g (m自动创建家目录 -g指定所属组）<br>passwd 设置密码<br>userdel （-f强制 -p）<br>who、whoami（查看哪些用户登录、该用户是谁）</p>
@@ -585,8 +591,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/post/3c21ad0c.html" rel="next" title="Mybatis框架学习笔记--更新中 JavaWeb之Mysql（SSM之Mybatis）适合初学者阅读,知识点较为全面 包括mybatis大部分语法 相关配置(值得收藏)">
-                <i class="fa fa-chevron-left"></i> Mybatis框架学习笔记--更新中 JavaWeb之Mysql（SSM之Mybatis）适合初学者阅读,知识点较为全面 包括mybatis大部分语法 相关配置(值得收藏)
+              <a href="/post/c519ea2a.html" rel="next" title="Spring框架学习笔记--更新中(SSM第一部分) 从介绍Spring以及理解实现方法到Spring核心知识 教你上手使用Spring(适合收藏)">
+                <i class="fa fa-chevron-left"></i> Spring框架学习笔记--更新中(SSM第一部分) 从介绍Spring以及理解实现方法到Spring核心知识 教你上手使用Spring(适合收藏)
               </a>
             
           </div>
@@ -686,7 +692,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -708,7 +714,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -841,7 +847,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">29.8k</span>
+    <span title="Site words total count">25.7k</span>
   
 </div>
 
@@ -916,6 +922,8 @@
   
 
 
+  
+
 
 
 
@@ -954,6 +962,11 @@
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
   
 
 
@@ -1122,3 +1135,6 @@
 <script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
 <!-- 页面点击小红心 -->
 <script type="text/javascript" src="/js/src/clicklove.js"></script>
+ <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>  
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
