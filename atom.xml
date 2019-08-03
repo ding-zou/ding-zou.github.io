@@ -62,13 +62,13 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
-    
       <category term="分布式" scheme="https://www.dzou.top/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
     
       <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
     
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
       <category term="Spring" scheme="https://www.dzou.top/tags/Spring/"/>
     
@@ -344,13 +344,13 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
-    
       <category term="分布式" scheme="https://www.dzou.top/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
     
       <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
     
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
       <category term="Spring" scheme="https://www.dzou.top/tags/Spring/"/>
     
@@ -440,9 +440,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
       <category term="Spring" scheme="https://www.dzou.top/tags/Spring/"/>
     
@@ -468,9 +468,9 @@
       <category term="数据库" scheme="https://www.dzou.top/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
     
-      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
-    
       <category term="分布式" scheme="https://www.dzou.top/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
       <category term="NoSql" scheme="https://www.dzou.top/tags/NoSql/"/>
     
@@ -498,15 +498,15 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
       <category term="Spring" scheme="https://www.dzou.top/tags/Spring/"/>
     
-      <category term="SpringMVC" scheme="https://www.dzou.top/tags/SpringMVC/"/>
-    
       <category term="SSM" scheme="https://www.dzou.top/tags/SSM/"/>
+    
+      <category term="SpringMVC" scheme="https://www.dzou.top/tags/SpringMVC/"/>
     
   </entry>
   
