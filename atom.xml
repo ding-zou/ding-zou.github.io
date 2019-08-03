@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.dzou.top/"/>
-  <updated>2019-08-03T06:20:13.981Z</updated>
+  <updated>2019-08-03T06:20:59.750Z</updated>
   <id>https://www.dzou.top/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://www.dzou.top/post/6c84d9a1.html"/>
     <id>https://www.dzou.top/post/6c84d9a1.html</id>
     <published>2019-08-03T06:15:05.000Z</published>
-    <updated>2019-08-03T06:20:13.981Z</updated>
+    <updated>2019-08-03T06:20:59.750Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Java设计模式之策略模式"><a href="#Java设计模式之策略模式" class="headerlink" title="Java设计模式之策略模式"></a>Java设计模式之策略模式</h2><p>设计模式基础：</p><ul><li>抽象</li><li>多态</li><li>继承</li><li>组合</li></ul><p>设计原则：</p><ul><li><p>把变化的抽取出来，不要和不变化的放在一起</p></li><li><p>针对接口编程，不针对实现编程</p></li><li><p>多用组合，少用继承</p></li></ul><p>我们先把定义提出来：</p><p><strong>策略模式：定义了算法族，分别封装起来，让他们之间可以相互替换，此模式让算法的变化独立于使用算法的客户。</strong></p><p>这个概念比较难理解，下面我们具体通过案例分析一下</p><p>场景：我们有三个不同种类的程序员，JavaWeb、大数据BigData和Ai人工智能程序员；他们都有相同的喝水和睡觉行为，但是有不同的写代码行为（写JavaWeb，写Ai，写Big data），我们想一下怎么实现？</p><p>我们首先想到的是使用<code>继承重写父类的方法</code>实现，但是这样做的缺点很多：</p><pre><code class="java">Class JavaWebProgrammer extends Programmer{    public void doSleeping(){        //重写代码    }    public void doCoding(){        //重写代码    }}</code></pre><ul><li>可以解决问题，但是代码无法复用</li><li>多一个类都要重新写它对应的实现，代码量太大</li><li>不符合三个设计原则</li><li>而且无法解决有些类没有或者不需要基类的某个功能 比如有的程序员退休了，有的没有退休</li></ul><p>此时，针对<code>某个类不需要实现基类某个功能</code>你又想到了在重写中什么都不做的方法：</p><pre><code class="java">public void retired(){    //do noting}</code></pre><p>但是这样依然没有解决上面的根本问题，所以我们又想到了<code>使用接口</code>：把不会变化的功能（睡觉行为和喝水行为依然放在基类里，会变化的行为（写代码行为）写成一个接口<code>Codeable</code>，然后通过继承基类实现不变的行为，实现Codeable接口实现不同的写代码行为</p><p>但是这么做还是不行：</p><ul><li>如果有很多子类的实现需要修改，那么我们要修改很多的代码</li></ul><p>这个时候我们就应该充分考虑<code>设计原则</code>的作用了</p><ul><li>把变化的部分封装起来</li><li>面向接口编程</li></ul><p>大家就可以想到把接口的实现独立成一个个类，把写代码行为写成一个接口，不同的实现对应不同的实现类，然后我们在使用时，想到了<code>多态</code>的奇妙之处，根据多态的动态调用</p><p>如下：</p><pre><code class="java">ProgramBehavior programBehavior = new JavaWebBehavior();programBehavior.doCoding();</code></pre><p>在此，我们大体思路已经很接近成功了</p><ul><li><p>首先基类声明为<code>抽象类</code>，里面有睡觉和喝水行为的具体实现（不变的）</p><pre><code class="java">    protected void doDrinking(){        System.out.println(&quot;I am drinking.&quot;);    }    protected void doSleeping(){        System.out.println(&quot;I am sleeping&quot;);    }</code></pre></li><li><p>在基类中声明变化的部分，使用接口的形式使得我们可以动态调用</p><pre><code class="java">ProgramBehavior programBehavior；void doCoding(){    programBehavior.doCoding();}</code></pre></li><li><p>创建写代码行为的接口</p><pre><code class="java">public interface ProgramBehavior {    void doCoding();}</code></pre></li><li><p>子类<code>AIProgrammer</code>继承抽象类<code>Programmer</code>，只需要在初始化时创建<code>AIBehavior</code>赋给我们基类的接口<code>programBehavior</code></p><pre><code class="java">public class AIProgrammer extends Programmer {    public AIProgrammer(){        programBehavior = new AIBehavior();    }}</code></pre></li><li><p>创建不同的接口实现类，实现不同的写代码行为</p><pre><code class="java">public class AIBehavior implements ProgramBehavior {    @Override    public void doCoding() {        System.out.println(&quot;I am doing AI coding.&quot;);    }}</code></pre></li><li><p>测试</p><pre><code class="java">public void testAI(){        Programmer aiProgrammer = new AIProgrammer();        aiProgrammer.doDrinking();        aiProgrammer.doCoding();        aiProgrammer.doSleeping();    }</code></pre><p>结果如下：</p></li></ul><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/1.png"><p>可见：我们使用多态动态调用了<code>doCoding()</code>方法，我们在需要修改实现的时候只需要需要修改接口对应的实现就可以了，而不需要修改子类的方法</p><p>当然，我们不应该在开发中使用初始化时创建实现类的这种方式，我们可以在<code>基类</code>中添加一个<code>setProgramBehavior</code>的方法，这样我们就可以在应用中动态的设置行为</p><pre><code class="java">void setProgramBehavior(ProgramBehavior programBehavior){        this.programBehavior = programBehavior;}</code></pre><p>我们为AIProgramer在执行完睡觉后2秒设置一个新的写代码行为（退休）并调用</p><pre><code class="java">public class RetireBehavior implements ProgramBehavior {    @Override    public void doCoding() {        System.out.println(&quot;I am retired just few days.&quot;);    }}</code></pre><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/2.png"><p>该AIProgramer类图如下</p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/3.png"><blockquote><p>至此，这就是整个策略模式的设计方法，我们再来理一遍，也许你再去看策略模式的定义就没问题了（代码最后附上）</p></blockquote><p>我们把行为中（每个行为可以看成一个算法，形成了算法族）变化的部分从基类抽象类中抽取出来，使用接口定义并使用类实现接口来实现某一个行为（算法）不同的表现，再利用<code>多态</code>的神奇之处动态调用接口不同实现类的同一方法；然后我们需要改变接口实现类的实现方法（算法）时对调用该方法的客户完成不需要更改，没有任何影响。</p><p>代码地址：</p>]]></content>
     
@@ -174,9 +174,9 @@
     
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
-      <category term="servlet" scheme="https://www.dzou.top/tags/servlet/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="servlet" scheme="https://www.dzou.top/tags/servlet/"/>
     
       <category term="request" scheme="https://www.dzou.top/tags/request/"/>
     
@@ -554,9 +554,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
       <category term="算法" scheme="https://www.dzou.top/tags/%E7%AE%97%E6%B3%95/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="牛客" scheme="https://www.dzou.top/tags/%E7%89%9B%E5%AE%A2/"/>
     
