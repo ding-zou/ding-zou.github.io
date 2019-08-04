@@ -99,7 +99,7 @@
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="并发编程是Java程序员最重要的技能之一，也是最难掌握的一种技能。它要求编程者对计算机最底层的运作原理有深刻的理解，同时要求编程者逻辑清晰、思维缜密，这样才能写出高效、安全、可靠的多线程并发程序。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-02T12:06:09.040Z">
+<meta property="og:updated_time" content="2019-08-04T08:27:51.703Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发编程学习笔记-更新中">
 <meta name="twitter:description" content="并发编程是Java程序员最重要的技能之一，也是最难掌握的一种技能。它要求编程者对计算机最底层的运作原理有深刻的理解，同时要求编程者逻辑清晰、思维缜密，这样才能写出高效、安全、可靠的多线程并发程序。">
@@ -409,7 +409,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.8k字
+                  2.8k字
                 </span>
               
 
@@ -425,7 +425,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  7分
+                  10分
                 </span>
               
             </div>
@@ -461,7 +461,7 @@
 <li>Spring 中 注解＠Aysnc</li>
 </ol>
 <blockquote>
-<p>CPU分给每个线程一个时间片，很短，所以看起来是一起执行，切换过程就是上下文切换，会消耗一定的资源</p>
+<p>CPU分给每个线程一个时间片，很短，所以看起来是一起执行，切换过程就是==上下文切换==，会消耗一定的资源</p>
 </blockquote>
 <h2 id="二-线程问题"><a href="#二-线程问题" class="headerlink" title="二.线程问题"></a>二.线程问题</h2><h3 id="1-活跃性问题"><a href="#1-活跃性问题" class="headerlink" title="1.活跃性问题"></a>1.活跃性问题</h3><ul>
 <li><p>死锁 ：互相等待 两个线程互相持有对方需要的资源并都不释放</p>
@@ -477,13 +477,26 @@
 <h3 id="2-线程安全性"><a href="#2-线程安全性" class="headerlink" title="2.线程安全性"></a>2.线程安全性</h3><ul>
 <li>数据竞争：多线程下多个线程共享变量，对资源进行了非原子型操作</li>
 </ul>
+<p>解决途径：</p>
+<ol>
+<li>synchronized（偏向锁、轻量级锁、重量级锁）</li>
+<li>volatile</li>
+<li>JDK原子类</li>
+<li>Lock（独占锁、共享锁）</li>
+</ol>
 <h2 id="三-Synchronized"><a href="#三-Synchronized" class="headerlink" title="三.Synchronized"></a>三.Synchronized</h2><blockquote>
 <p>锁是互斥的：你能执行我就不能执行</p>
 </blockquote>
 <ul>
-<li>synchronized放在方法上：该方法为同步方法（静态、普通） 锁的对象时当前类实例</li>
+<li>synchronized放在方法上：该方法为同步方法（静态、普通） ==锁的对象时当前类实例==</li>
 <li>放在方法内部修饰代码块：该代码块为同步代码块</li>
 </ul>
+<p>JDK6以后对<code>Synchronized</code>进行了优化：</p>
+<ol>
+<li>偏向锁： 当一个线程访问同步块时，获取锁时会在对象头和栈帧中的所记录中存储锁偏向的线程ID，以后该线程进入退出同步块时不需要进行CAS操作来加锁解锁，只需对象头中里是否存储该线程ID进行判断，如果没有再使用CAS竞争锁。它会等到竞争出现才释放。</li>
+<li>轻量级锁： 当一个线程访问同步块时，JVM先在当前线程栈帧中创建存储锁记录的空间，并将对象头中的Mark Word复制到锁记录中，然后线程使用CAS将对象头中的值替换为指向锁记录的指针，成功则获取到锁，否则有线程竞争使用自选获取。解锁时用CAS将指针替换为对象头的值，成功则解锁，否则有线程竞争，将升级为重量级锁，释放并唤醒等待线程。</li>
+<li>重量级锁：如果轻量级锁存在其他线程竞争锁CAS失败后自旋后去锁失败则升级为重量级锁。</li>
+</ol>
 <h2 id="四-锁的类型"><a href="#四-锁的类型" class="headerlink" title="四.锁的类型"></a>四.锁的类型</h2><h3 id="1-重入锁"><a href="#1-重入锁" class="headerlink" title="1.重入锁"></a>1.重入锁</h3><blockquote>
 <p>重入锁指的是可重复可递归调用的锁，在外层使用锁之后，在内层仍然可以使用，并且不发生死锁</p>
 </blockquote>
@@ -577,18 +590,18 @@
         return var5;</code></pre>
 <p>自增是一个非原子操作，包括取值，自增，和赋值三个步骤。在进行写数据时，会在内存中保留一份原来的旧值，写的时候判断当前要写的值和旧值是否相等，不相等就继续等待，直到相等才执行写操作。</p>
 <blockquote>
-<p>当调用getAndAddInt时，调用源码如下</p>
+<p>当调用==getAndAddInt==时，调用源码如下</p>
 </blockquote>
 <pre><code class="java">do {
             var5 = this.getIntVolatile(var1, var2);
         } while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));
         return var5;</code></pre>
 <p>拿到内存最新值，使用CAS尝试将内存位置的值修改为目标值var5 + var4，如果修改失败，则获取该内存位置的新值v，然后继续尝试，直至修改成功。</p>
-<p>compareAndSet方法调用了compareAndSwap</p>
+<p>==compareAndSet==方法调用了==compareAndSwap==</p>
 <pre><code class="java">public final boolean compareAndSet(int expect, int update) {
         return unsafe.compareAndSwapInt(this, valueOffset, expect, update);
     }</code></pre>
-<p>核心：原子类的方法进行操作都是使用unsafe调用了compareAndSwap CAS 这个本地方法实现</p>
+<p>核心：原子类的方法进行操作都是使用==unsafe==调用了==compareAndSwap== CAS 这个本地方法实现</p>
 <h3 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h3><p><strong>CompareAndSwap</strong> 比较并交换 根本是一个本地方法，有三个参数：内存地址、旧的值、即将更新的值</p>
 <p>如果旧的值与将要更新的值相等，则把内存地址的值改为更新的值</p>
 <p>利用CPU执行指令实现CAS</p>
@@ -686,7 +699,64 @@ public synchronized void unlock() {
             }
         }
     }</code></pre>
-<h2 id="八-AbstractQueuedSynchronizer-AQS"><a href="#八-AbstractQueuedSynchronizer-AQS" class="headerlink" title="八.AbstractQueuedSynchronizer(AQS)"></a>八.AbstractQueuedSynchronizer(AQS)</h2>
+<h2 id="八-AbstractQueuedSynchronizer-AQS"><a href="#八-AbstractQueuedSynchronizer-AQS" class="headerlink" title="八.AbstractQueuedSynchronizer(AQS)"></a>八.AbstractQueuedSynchronizer(AQS)</h2><p>详细看我另一篇博客：<a href="https://www.dzou.top/post/7a5625fe.html">https://www.dzou.top/post/7a5625fe.html</a></p>
+<h2 id="读写锁"><a href="#读写锁" class="headerlink" title="读写锁"></a>读写锁</h2><h3 id="ReentrantReadWriteLock"><a href="#ReentrantReadWriteLock" class="headerlink" title="ReentrantReadWriteLock"></a>ReentrantReadWriteLock</h3><p>读写锁中读操作是共享的，并不互斥，读操作可以一起进行；写操作是互斥的，同时只能一个线程获取写锁；</p>
+<p>使用如下：</p>
+<pre><code class="java">//添加参数指定公平或者非公平
+private ReadWriteLock lock = new ReentrantReadWriteLock();
+    private Lock readLock = lock.readLock();
+    private Lock writeLock = lock.writeLock();</code></pre>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p><strong><em>实现与<code>ReentrantLock</code>类似写锁使用继承AQS类的同步器<code>Sync</code>的<code>tryRelease</code>和<code>tryAcquire</code>，重入次数由int值控制，最大16位二进制-1；读锁是共享锁，使用<code>Sync</code>的<code>tryReleaseShare</code>和<code>tryAcquireShare</code>,读锁重入的次数使用<code>HoldCounter</code>内部类（由<code>ThreadLocal</code>存储）</em></strong></p>
+<h3 id="状态维护"><a href="#状态维护" class="headerlink" title="状态维护"></a>状态维护</h3><p>状态由32位二进制整数维护，前16位负责读，后16位负责写，通过位运算确定状态，假设当前状态为<code>S</code>，写状态等于<code>S&amp;0x0000FFFF</code>（将高16位抹去），读状态等于<code>S&gt;&gt;&gt;16</code>无符号右移16位。写状态+1时，<code>S+1</code>；读状态+1时，<code>S+(1&lt;&lt;16)</code>，也就是下面的<code>S+SHARED_UNIT</code></p>
+<ol>
+<li><p>读锁的获取：当没有线程处于获取到写锁或者处于请求获取写锁的状态时，可以获取读锁</p>
+</li>
+<li><p>写锁的获取：首先写锁请求数+1，判断如果没有线程持有写锁并且没有线程持有读锁则可以获取</p>
+</li>
+<li><p>死锁情况：线程1获取到读锁，线程2请求获取写锁，此时线程1再请求获取读锁就会发生死锁</p>
+</li>
+</ol>
+<pre><code class="java">static final int SHARED_SHIFT   = 16;
+static final int SHARED_UNIT    = (1 &lt;&lt; SHARED_SHIFT);
+static final int MAX_COUNT      = (1 &lt;&lt; SHARED_SHIFT) - 1;
+static final int EXCLUSIVE_MASK = (1 &lt;&lt; SHARED_SHIFT) - 1;</code></pre>
+<h3 id="锁降级"><a href="#锁降级" class="headerlink" title="锁降级"></a>锁降级</h3><ol>
+<li>锁升级：读锁升级为写锁</li>
+<li>锁降级：写锁降级为读锁</li>
+</ol>
+<p>降级过程：如果当前线程获取到写锁，再获取到读锁，随后释放写锁的过程。</p>
+<p><code>ReentrantReadWriteLock</code>不支持锁升级，支持把写锁降级到读锁</p>
+<pre><code class="java">public void readWrite(){
+        //因为要读取isUpdate，所以获取读锁
+        readLock.lock();
+    //isUpdate volatile修饰，保持可见性
+        if(!isUpdate) {
+            readLock.unlock();
+            //获取写锁写操作
+            writeLock.lock();
+            try {
+                //重新检查isUpdate的值，可能之前有其他线程获取写锁更改了其的值
+                if (!isUpdate) {
+                    map.put(&quot;key&quot;, &quot;value&quot;);
+                }
+                //获取读锁
+                readLock.lock();
+            }finally {
+                //释放写锁
+                writeLock.unlock();
+            }
+        }
+        //使用读锁读取数据
+        try{
+            System.out.println(Thread.currentThread().getName()+&quot;:&quot;+map.get(&quot;key&quot;));
+        }finally {
+            readLock.unlock();
+        }
+    }</code></pre>
+<p>第二次获取读锁是否必要：</p>
+<p>必要的。因为你先释放写锁再获取读锁的话，中间可能有其他线程获取写锁，导致你无法获取到读锁，无法感知数据的更新。</p>
+<p>不支持锁升级原因：读锁可以被多个线程获取，其中任意线程获取到写锁更新数据后，都会导致其他获取读锁的线程无法感知数据的更新。</p>
+
       
     </div>
     
@@ -997,7 +1067,7 @@ public synchronized void unlock() {
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-创建线程方式"><span class="nav-number">1.</span> <span class="nav-text">一.创建线程方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-线程问题"><span class="nav-number">2.</span> <span class="nav-text">二.线程问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-活跃性问题"><span class="nav-number">2.1.</span> <span class="nav-text">1.活跃性问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-线程安全性"><span class="nav-number">2.2.</span> <span class="nav-text">2.线程安全性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-Synchronized"><span class="nav-number">3.</span> <span class="nav-text">三.Synchronized</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四-锁的类型"><span class="nav-number">4.</span> <span class="nav-text">四.锁的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-重入锁"><span class="nav-number">4.1.</span> <span class="nav-text">1.重入锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-自旋锁"><span class="nav-number">4.2.</span> <span class="nav-text">2.自旋锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-死锁"><span class="nav-number">4.3.</span> <span class="nav-text">3.死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五-volatile"><span class="nav-number">5.</span> <span class="nav-text">五.volatile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#volatile-与-synchronized比较"><span class="nav-number">5.0.1.</span> <span class="nav-text">volatile 与 synchronized比较</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#六-JDK-原子类"><span class="nav-number">6.</span> <span class="nav-text">六.JDK 原子类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原子类"><span class="nav-number">6.1.</span> <span class="nav-text">原子类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAS"><span class="nav-number">6.2.</span> <span class="nav-text">CAS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七-Lock"><span class="nav-number">7.</span> <span class="nav-text">七.Lock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lock接口方法"><span class="nav-number">7.1.</span> <span class="nav-text">Lock接口方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantLock"><span class="nav-number">7.2.</span> <span class="nav-text">ReentrantLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lock与synchronized比较"><span class="nav-number">7.3.</span> <span class="nav-text">lock与synchronized比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义锁"><span class="nav-number">7.4.</span> <span class="nav-text">自定义锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八-AbstractQueuedSynchronizer-AQS"><span class="nav-number">8.</span> <span class="nav-text">八.AbstractQueuedSynchronizer(AQS)</span></a></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-创建线程方式"><span class="nav-number">1.</span> <span class="nav-text">一.创建线程方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-线程问题"><span class="nav-number">2.</span> <span class="nav-text">二.线程问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-活跃性问题"><span class="nav-number">2.1.</span> <span class="nav-text">1.活跃性问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-线程安全性"><span class="nav-number">2.2.</span> <span class="nav-text">2.线程安全性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-Synchronized"><span class="nav-number">3.</span> <span class="nav-text">三.Synchronized</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四-锁的类型"><span class="nav-number">4.</span> <span class="nav-text">四.锁的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-重入锁"><span class="nav-number">4.1.</span> <span class="nav-text">1.重入锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-自旋锁"><span class="nav-number">4.2.</span> <span class="nav-text">2.自旋锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-死锁"><span class="nav-number">4.3.</span> <span class="nav-text">3.死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五-volatile"><span class="nav-number">5.</span> <span class="nav-text">五.volatile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#volatile-与-synchronized比较"><span class="nav-number">5.0.1.</span> <span class="nav-text">volatile 与 synchronized比较</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#六-JDK-原子类"><span class="nav-number">6.</span> <span class="nav-text">六.JDK 原子类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原子类"><span class="nav-number">6.1.</span> <span class="nav-text">原子类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAS"><span class="nav-number">6.2.</span> <span class="nav-text">CAS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七-Lock"><span class="nav-number">7.</span> <span class="nav-text">七.Lock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lock接口方法"><span class="nav-number">7.1.</span> <span class="nav-text">Lock接口方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantLock"><span class="nav-number">7.2.</span> <span class="nav-text">ReentrantLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lock与synchronized比较"><span class="nav-number">7.3.</span> <span class="nav-text">lock与synchronized比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义锁"><span class="nav-number">7.4.</span> <span class="nav-text">自定义锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八-AbstractQueuedSynchronizer-AQS"><span class="nav-number">8.</span> <span class="nav-text">八.AbstractQueuedSynchronizer(AQS)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读写锁"><span class="nav-number">9.</span> <span class="nav-text">读写锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantReadWriteLock"><span class="nav-number">9.1.</span> <span class="nav-text">ReentrantReadWriteLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现原理"><span class="nav-number">9.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态维护"><span class="nav-number">9.3.</span> <span class="nav-text">状态维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#锁降级"><span class="nav-number">9.4.</span> <span class="nav-text">锁降级</span></a></li></ol></li></div>
             
 
           </div>
@@ -1038,7 +1108,7 @@ public synchronized void unlock() {
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">34.1k</span>
+    <span title="Site words total count">35.2k</span>
   
 </div>
 

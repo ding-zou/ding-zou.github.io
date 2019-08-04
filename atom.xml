@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.dzou.top/"/>
-  <updated>2019-08-04T04:21:39.211Z</updated>
+  <updated>2019-08-04T08:28:19.068Z</updated>
   <id>https://www.dzou.top/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://www.dzou.top/post/261ed4ab.html"/>
     <id>https://www.dzou.top/post/261ed4ab.html</id>
     <published>2019-08-04T04:15:54.000Z</published>
-    <updated>2019-08-04T04:21:39.211Z</updated>
+    <updated>2019-08-04T08:28:19.068Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Java设计模式之观察者模式"><a href="#Java设计模式之观察者模式" class="headerlink" title="Java设计模式之观察者模式"></a>Java设计模式之观察者模式</h2><p>前面一篇文章提到了策略模式，提出了三个设计原则，这里提出第四个设计原则</p><p>设计原则：</p><ul><li>为了交互对象之间的松耦合的设计而努力。</li></ul><p>针对报社：<code>出版者</code>+<code>订阅者</code>=<code>观察者模式</code></p><p>报社是获取信息的主题对象，当报社获取到的信息更新了，报社将把信息传送给它的订阅者；当然订阅者也可以通知报社停止订阅，报社就把该对象从订阅者列表中去除，他不再能接收到报社传送的信息。</p><p><strong>观察者模式：定义了对象之间的一对多依赖，这样一来，当一个对象改变状态时。它的所有依赖者都会收到通知并自动更新。</strong></p><p>观察者模式有两个部分：</p><ul><li>观察者</li><li>主题（也叫被观察者）</li></ul><p>一个主题对象关联了多个观察者，当主体对象有数据更新或者状态改变时，它就可以通知它所关联的观察者们；就如果狗对象、猫对象、老鼠对象已经注册成为观察者，他们就将在主体对象数据更新时接收到主题对象发送的通知（通知数据更新了，你可以通过pull或者push的方式获取），这也就是<code>java.util</code>包下的<code>Observer</code>和<code>Observable</code>实现的观察者模式</p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/4.png"><p>我们通过Head FIrst 设计模式中的场景实现观察者模式</p><p><strong><em>场景：一个气象站由<code>WeatherData</code>类或者气象数据<code>温度、湿度、气压</code>，作为主题类，由多个公告板（展示效果不同，数据都是这三个）作为观察者类，当气象数据更新或者改变时，该类将通知公告板更新展示的数据。</em></strong></p><p>WeatherData该主题需要能<code>添加观察者</code>，<code>删除观察者</code>，<code>通知观察者更新数据</code>,并且要获取气象局发布的数据</p><p>我们把主体对象写一个接口如下，不同主题实现不同功能只需实现该接口</p><pre><code class="java">public interface Subject {    //添加观察者    void registerObserver(Observer o);    //删除    void removeObserver(Observer o);    //通知    void notifyObservers(List&lt;Observer&gt; o);    void setChanged();    boolean getChanged();}</code></pre><p>其中<code>setChanged方法</code>把数据是否更新的状态的标志设置为True，在更新状态或者数据时执行该方法</p><p><code>getChanged()</code>获取该标志</p><p><code>WeatherData</code>只需实现该接口，添加获取气象数据的方法即可</p><pre><code class="java">public class WeatherData implements Subject{    private WeatherArgs args = new WeatherArgs();    private List&lt;Observer&gt; obs = new ArrayList&lt;&gt;();    private boolean changed = false;    //设置数据    void setWeatherData(String template,String humidity,String pressure){        args.setTemplate(template);        args.setHumidity(humidity);        args.setPressure(pressure);        //更新完成后设置标志为true        setChanged();        //调用更新后通知观察者方法        onWeatherDataChanged();    }    //数据更新时通知观察者 push数据给观察者    private void onWeatherDataChanged(){        if(getChanged()){            notifyObservers(obs);        }    }    //观察者注册    public void registerObserver(Observer o) {        if(o==null){            throw new RuntimeException();        }        obs.add(o);    }    //观察者移除    public void removeObserver(Observer o) {        obs.remove(o);    }    //通知观察者们数据更新 发送数据给观察者们    public void notifyObservers(List&lt;Observer&gt; obs) {        obs.forEach((o)-&gt;o.update(this,args));    }    @Override    public void setChanged() {        changed = true;    }    @Override    public boolean getChanged() {        return changed;    }}</code></pre><p>其中<code>WeatherArg</code>为气象数据参数类，当我们不使用这个类时，我们需要每次更新时传入特定的值，下面这样</p><pre><code class="java">update(String template,String humidity,String pressure);update(100,200,200kpa);</code></pre><p>这样需要更改数据种类和数量时，需要修改很多代码，所以我们把它封装起来</p><pre><code class="java">@Dataclass WeatherArgs {    //温度    private String template;    //湿度    private String humidity;    //气压    private String pressure;}</code></pre><p>添加这个类是为了如果需要更改数据类型和数量时只需更改这个类就行</p><p>我们用List存放观察者，<code>onWeatherDataChanged</code>方法检测是否更新，如果更新就通知观察者</p><p>观察者有多个，其中都有<code>update</code>方法执行被通知时更新数据，通过不同的<code>display</code>方法展示不同效果的气象数据，我们编写两个接口</p><ul><li>观察者接口 （有多个观察者）Observer</li><li>展示数据接口（有不同展示方法） Displayable</li></ul><pre><code class="java">public interface Observer {    /**     * 更新数据     * @param subject 主题对象     * @param args 更新参数     */    void update(Subject subject,Object args);}</code></pre><pre><code class="java">public interface Displayable {    /**     * 数据展示方法     */    void display();}</code></pre><p>下面我们实现一个观察者</p><p>它需要实现<code>Observer和`Displayable</code>接口实现<code>update和display</code>方法</p><p>我们在构造方法传入一个主题对象，告诉他我们要订阅他</p><pre><code class="java">public class CurrentConditionDisplay implements Observer,Displayable{    //可用于观察者对主题对象取消订阅    private Subject subject;    private WeatherArgs weatherArgs;    //创建时注册    public CurrentConditionDisplay(Subject s){        s.registerObserver(this);        subject = s;    }    @Override    public void update(Subject subject, Object args) {        if(subject instanceof WeatherData){            weatherArgs = (WeatherArgs) args;            display();        }    }    @Override    public void display() {        System.out.println(&quot;template:&quot;+weatherArgs.getTemplate()+&quot;, humidity:&quot;+weatherArgs.getHumidity()+&quot;, pressure:&quot;+weatherArgs.getPressure());    }    //观察者取消订阅 通知主题对象删除我    private void removeMe(){        subject.removeObserver(this);    }}</code></pre><p>至此，观察者模式就完成了</p><p>写一个测试类：</p><pre><code class="java">public class Main {    public static void main(String[] args) {        WeatherData weatherData = new WeatherData();        CurrentConditionDisplay currentConditionDisplay = new CurrentConditionDisplay(weatherData);        weatherData.setWeatherData(&quot;100&quot;,&quot;90&quot;,&quot;100KPa&quot;);    }}</code></pre><pre><code class="java">output：template:100, humidity:90, pressure:100KPa</code></pre><blockquote><p>大家可以看一下JDK中内置的<code>Observer和Observable</code>实现的观察者模式，大体实现是一样的</p></blockquote><p>JDK内置观察者模式</p><p><code>Observable</code>被观察者</p><pre><code class="java">public class Observable {    private boolean changed = false;    private Vector&lt;Observer&gt; obs;    public Observable() {        obs = new Vector&lt;&gt;();    }    public synchronized void addObserver(Observer o) {        if (o == null)            throw new NullPointerException();        if (!obs.contains(o)) {            obs.addElement(o);        }    }    public synchronized void deleteObserver(Observer o) {        obs.removeElement(o);    }    public void notifyObservers() {        notifyObservers(null);    }    public void notifyObservers(Object arg) {        Object[] arrLocal;        synchronized (this) {            if (!changed)                return;            arrLocal = obs.toArray();            clearChanged();        }        for (int i = arrLocal.length-1; i&gt;=0; i--)            ((Observer)arrLocal[i]).update(this, arg);    }    public synchronized void deleteObservers() {        obs.removeAllElements();    }    protected synchronized void setChanged() {        changed = true;    }    protected synchronized void clearChanged() {        changed = false;    }    public synchronized boolean hasChanged() {        return changed;    }    public synchronized int countObservers() {        return obs.size();    }}</code></pre><p><code>Observer</code></p><pre><code class="java">public interface Observer {    //o为被观察者主题，args为更新的数据    void update(Observable o, Object arg);}</code></pre><p>但是我们可以看到该<code>Observable</code>是具体的实现类，不符合设计模式中的</p><ul><li>多用组合少用继承</li></ul><p>不方便我们继承其他类</p><p>有两个办法 ：</p><ul><li>使用上述我们自己实现的观察者模式</li><li>扩展Observable类</li></ul><p>代码地址：<a href="https://github.com/ding-zou/design_mode/tree/master/observer_patterns" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/ding-zou/design_mode/tree/master/observer_patterns</a></p>]]></content>
     
@@ -206,9 +206,9 @@
     
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
       <category term="servlet" scheme="https://www.dzou.top/tags/servlet/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="request" scheme="https://www.dzou.top/tags/request/"/>
     
@@ -534,9 +534,9 @@
     
       <category term="Spring" scheme="https://www.dzou.top/tags/Spring/"/>
     
-      <category term="SpringMVC" scheme="https://www.dzou.top/tags/SpringMVC/"/>
-    
       <category term="SSM" scheme="https://www.dzou.top/tags/SSM/"/>
+    
+      <category term="SpringMVC" scheme="https://www.dzou.top/tags/SpringMVC/"/>
     
   </entry>
   
@@ -584,9 +584,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="算法" scheme="https://www.dzou.top/tags/%E7%AE%97%E6%B3%95/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="算法" scheme="https://www.dzou.top/tags/%E7%AE%97%E6%B3%95/"/>
     
       <category term="牛客" scheme="https://www.dzou.top/tags/%E7%89%9B%E5%AE%A2/"/>
     
