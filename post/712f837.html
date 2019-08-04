@@ -99,22 +99,22 @@
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="Shiro JavaWeb 安全框架，实现权限管理和用户认证">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190607230804827.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://easydoc-1255322048.image.myqcloud.com/cover/jwymt1ro">
-<meta property="og:image" content="https://easydoc-1255322048.image.myqcloud.com/cover/jwyp9q88">
-<meta property="og:image" content="https://easydoc-1255322048.image.myqcloud.com/cover/jwyn6ggs">
-<meta property="og:image" content="https://easydoc-1255322048.image.myqcloud.com/cover/jwymojcq">
-<meta property="og:image" content="https://easydoc-1255322048.image.myqcloud.com/cover/jwyq0gjy">
-<meta property="og:image" content="https://easydoc-1255322048.image.myqcloud.com/cover/jwyqazu7">
-<meta property="og:image" content="https://easydoc-1255322048.image.myqcloud.com/cover/jwyrqhze">
-<meta property="og:image" content="https://easydoc-1255322048.image.myqcloud.com/cover/jwyrlnmn">
-<meta property="og:image" content="https://easydoc-1255322048.image.myqcloud.com/cover/jwyqgt4c">
-<meta property="og:image" content="https://easydoc-1255322048.image.myqcloud.com/cover/jwyqib1o">
-<meta property="og:updated_time" content="2019-08-02T11:52:20.304Z">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/1.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/2.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/3.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/4.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/5.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/6.jpeg">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/7.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/8.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/9.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/10.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/11.png">
+<meta property="og:updated_time" content="2019-08-04T08:52:53.789Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Shiro Java安全框架 （认证、授权）--更新中">
 <meta name="twitter:description" content="Shiro JavaWeb 安全框架，实现权限管理和用户认证">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190607230804827.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
+<meta name="twitter:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/1.png">
 
 
 
@@ -462,7 +462,9 @@
       
 
       
-        <h2 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h2><p>权限管理实现对用户访问系统的控制，按照安全规则或者安全策略控制用户可以访问而且只能访问自己被授权的资源。<br><img src="https://img-blog.csdnimg.cn/20190607230804827.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+        <h2 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h2><p>权限管理实现对用户访问系统的控制，按照安全规则或者安全策略控制用户可以访问而且只能访问自己被授权的资源。</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/1.png">
+
 <ul>
 <li>用户认证</li>
 <li>用户授权</li>
@@ -501,18 +503,31 @@
 </ul>
 <hr>
 <h3 id="SecurityUtils-getSubject"><a href="#SecurityUtils-getSubject" class="headerlink" title="SecurityUtils.getSubject()"></a><strong>SecurityUtils.getSubject()</strong></h3><p>SecurityUtils.getSubject()是每个请求创建一个Subject, 并保存到ThreadContext的resources（ThreadLocal&lt;Map&lt;Object, Object&gt;&gt;）变量中，也就是一个http请求一个subject,并绑定到当前线程。</p>
-<p><img src="https://easydoc-1255322048.image.myqcloud.com/cover/jwymt1ro" alt="image.png"></p>
-<h4 id="controller接受请求后"><a href="#controller接受请求后" class="headerlink" title="controller接受请求后"></a>controller接受请求后</h4><p><img src="https://easydoc-1255322048.image.myqcloud.com/cover/jwyp9q88" alt="image.png"></p>
-<h3 id="URL拦截"><a href="#URL拦截" class="headerlink" title="URL拦截"></a>URL拦截</h3><p><img src="https://easydoc-1255322048.image.myqcloud.com/cover/jwyn6ggs" alt="image.png"></p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/2.png">
+
+
+<h4 id="controller接受请求后"><a href="#controller接受请求后" class="headerlink" title="controller接受请求后"></a>controller接受请求后</h4><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/3.png">
+
+
+<h3 id="URL拦截"><a href="#URL拦截" class="headerlink" title="URL拦截"></a>URL拦截</h3><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/4.png">
+
+
 <h2 id="授权"><a href="#授权" class="headerlink" title="授权"></a>授权</h2><p>用户授权的流程</p>
 <ul>
 <li>到达了用户授权环节，需要用户认证之后</li>
 <li>用户访问资源，系统判断该用户是否有权限去操作该资源</li>
-<li>如果该用户有权限才能够访问，如果没有权限就不能访问了<br><img src="https://easydoc-1255322048.image.myqcloud.com/cover/jwymojcq" alt="image.png"></li>
+<li>如果该用户有权限才能够访问，如果没有权限就不能访问了</li>
 </ul>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/5.png">
+
+
+
 <h3 id="获取角色和权限"><a href="#获取角色和权限" class="headerlink" title="获取角色和权限"></a>获取角色和权限</h3><p>一个角色role对应多个权限，一个用户user对应多个角色<br>我们通过getSysUserRoleList和getPermissions分别获取角色列表和用户权限。</p>
 <p>然后通过<br><code>user.hasRole(&quot;&quot;)或者role.hasPermission(&quot;&quot;)</code><br>检查用户是否有对某个操作的权限</p>
-<h3 id="密码加密和匹配"><a href="#密码加密和匹配" class="headerlink" title="密码加密和匹配"></a>密码加密和匹配</h3><p><img src="https://easydoc-1255322048.image.myqcloud.com/cover/jwyq0gjy" alt="image.png"></p>
+<h3 id="密码加密和匹配"><a href="#密码加密和匹配" class="headerlink" title="密码加密和匹配"></a>密码加密和匹配</h3><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/6.jpeg">
+
+
+
 <ul>
 <li><strong>Subject</strong>：</li>
 </ul>
@@ -569,7 +584,9 @@
 <li>cookie</li>
 <li>rememberMeCookieManager</li>
 </ul>
-<h3 id="配置RememberMeManager"><a href="#配置RememberMeManager" class="headerlink" title="配置RememberMeManager"></a>配置RememberMeManager</h3><p><img src="https://easydoc-1255322048.image.myqcloud.com/cover/jwyqazu7" alt="image.png"></p>
+<h3 id="配置RememberMeManager"><a href="#配置RememberMeManager" class="headerlink" title="配置RememberMeManager"></a>配置RememberMeManager</h3><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/7.png">
+
+
 <h2 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h2><ul>
 <li><p><strong>使用缓存存储session（单服务器使用EhCacheManager）</strong></p>
 </li>
@@ -588,8 +605,20 @@
 <p> <strong>使用了ConcurrentMap管理数据和缓存，更加高效</strong></p>
 </li>
 </ul>
-<h3 id="缓存session和授权信息"><a href="#缓存session和授权信息" class="headerlink" title="缓存session和授权信息"></a>缓存session和授权信息</h3><h4 id="１．基于EhCache缓存（效率不高，无法解决分布式问题）"><a href="#１．基于EhCache缓存（效率不高，无法解决分布式问题）" class="headerlink" title="１．基于EhCache缓存（效率不高，无法解决分布式问题）"></a>１．基于EhCache缓存（效率不高，无法解决分布式问题）</h4><p><img src="https://easydoc-1255322048.image.myqcloud.com/cover/jwyrqhze" alt="image.png"></p>
-<h4 id="２．基于Redis缓存-CrazyCake-shiro-redis开源插件，效率高，可实现集群共享）"><a href="#２．基于Redis缓存-CrazyCake-shiro-redis开源插件，效率高，可实现集群共享）" class="headerlink" title="２．基于Redis缓存(CrazyCake　shiro-redis开源插件，效率高，可实现集群共享）"></a>２．基于Redis缓存(CrazyCake　shiro-redis开源插件，效率高，可实现集群共享）</h4><p>RedisConfig加载配置类<br><img src="https://easydoc-1255322048.image.myqcloud.com/cover/jwyrlnmn" alt="image.png"><br>sessionManager管理session<br><img src="https://easydoc-1255322048.image.myqcloud.com/cover/jwyqgt4c" alt="image.png"><br>创建cookie集群共享sessionid<br><img src="https://easydoc-1255322048.image.myqcloud.com/cover/jwyqib1o" alt="image.png"></p>
+<h3 id="缓存session和授权信息"><a href="#缓存session和授权信息" class="headerlink" title="缓存session和授权信息"></a>缓存session和授权信息</h3><h4 id="１．基于EhCache缓存（效率不高，无法解决分布式问题）"><a href="#１．基于EhCache缓存（效率不高，无法解决分布式问题）" class="headerlink" title="１．基于EhCache缓存（效率不高，无法解决分布式问题）"></a>１．基于EhCache缓存（效率不高，无法解决分布式问题）</h4><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/8.png">
+
+
+<h4 id="２．基于Redis缓存-CrazyCake-shiro-redis开源插件，效率高，可实现集群共享）"><a href="#２．基于Redis缓存-CrazyCake-shiro-redis开源插件，效率高，可实现集群共享）" class="headerlink" title="２．基于Redis缓存(CrazyCake　shiro-redis开源插件，效率高，可实现集群共享）"></a>２．基于Redis缓存(CrazyCake　shiro-redis开源插件，效率高，可实现集群共享）</h4><p>RedisConfig加载配置类</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/9.png">
+
+<p>sessionManager管理session</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/10.png">
+
+<p>创建cookie集群共享sessionid</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/shiro/11.png">
+
+
+
 <h2 id="Shiro配置类"><a href="#Shiro配置类" class="headerlink" title="Shiro配置类"></a>Shiro配置类</h2><h3 id="ShiroFilterFactoryBean"><a href="#ShiroFilterFactoryBean" class="headerlink" title="ShiroFilterFactoryBean"></a>ShiroFilterFactoryBean</h3><p>一个工厂Bean，将ShiroFilter实例对象注入到Spring容器中去，这样Shiro基于url的方式进行请求过滤处理，把安全管理器添加到该bean中。</p>
 <h3 id="SecurityManager-管理认证和授权"><a href="#SecurityManager-管理认证和授权" class="headerlink" title="SecurityManager 管理认证和授权"></a>SecurityManager 管理认证和授权</h3><h4 id="1-SessionManager-（管理session"><a href="#1-SessionManager-（管理session" class="headerlink" title="1.SessionManager　（管理session)"></a>1.SessionManager　（管理session)</h4><h5 id="（1）SessionDao-（自定义或者crazycake）"><a href="#（1）SessionDao-（自定义或者crazycake）" class="headerlink" title="（1）SessionDao （自定义或者crazycake）"></a>（1）SessionDao （自定义或者crazycake）</h5><h5 id="（2）cookie-（存放JESSIONID）"><a href="#（2）cookie-（存放JESSIONID）" class="headerlink" title="（2）cookie　（存放JESSIONID）"></a>（2）cookie　（存放JESSIONID）</h5><h5 id="（3）redisManager-（管理redis）"><a href="#（3）redisManager-（管理redis）" class="headerlink" title="（3）redisManager　（管理redis）"></a>（3）redisManager　（管理redis）</h5><h4 id="2-CacheManager-保存用户信息和授权信息"><a href="#2-CacheManager-保存用户信息和授权信息" class="headerlink" title="2.CacheManager　保存用户信息和授权信息"></a>2.CacheManager　保存用户信息和授权信息</h4><h5 id="方式一：EhCache实现缓存管理器-编写自定义缓存方式配置文件shiro-ehcache-xml"><a href="#方式一：EhCache实现缓存管理器-编写自定义缓存方式配置文件shiro-ehcache-xml" class="headerlink" title="方式一：EhCache实现缓存管理器,编写自定义缓存方式配置文件shiro-ehcache.xml"></a>方式一：EhCache实现缓存管理器,编写自定义缓存方式配置文件shiro-ehcache.xml</h5><h5 id="方式二：redis-做缓存"><a href="#方式二：redis-做缓存" class="headerlink" title="方式二：redis 做缓存"></a>方式二：redis 做缓存</h5><h5 id="3-RememberMeManager"><a href="#3-RememberMeManager" class="headerlink" title="3.RememberMeManager"></a>3.RememberMeManager</h5><p>添加SimpleCookie作为RememberMeCookie</p>
 <h4 id="4-MyShiroRealm（自定义认证授权实现Realm类）"><a href="#4-MyShiroRealm（自定义认证授权实现Realm类）" class="headerlink" title="4.MyShiroRealm（自定义认证授权实现Realm类）"></a>4.MyShiroRealm（自定义认证授权实现Realm类）</h4><ul>
