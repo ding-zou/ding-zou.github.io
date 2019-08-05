@@ -234,9 +234,9 @@
     
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
-      <category term="servlet" scheme="https://www.dzou.top/tags/servlet/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="servlet" scheme="https://www.dzou.top/tags/servlet/"/>
     
       <category term="request" scheme="https://www.dzou.top/tags/request/"/>
     
@@ -562,9 +562,9 @@
     
       <category term="Spring" scheme="https://www.dzou.top/tags/Spring/"/>
     
-      <category term="SSM" scheme="https://www.dzou.top/tags/SSM/"/>
-    
       <category term="SpringMVC" scheme="https://www.dzou.top/tags/SpringMVC/"/>
+    
+      <category term="SSM" scheme="https://www.dzou.top/tags/SSM/"/>
     
   </entry>
   
