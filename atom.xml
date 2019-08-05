@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.dzou.top/"/>
-  <updated>2019-08-05T04:06:10.998Z</updated>
+  <updated>2019-08-05T04:06:38.138Z</updated>
   <id>https://www.dzou.top/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://www.dzou.top/post/1b3210b0.html"/>
     <id>https://www.dzou.top/post/1b3210b0.html</id>
     <published>2019-08-05T04:04:46.000Z</published>
-    <updated>2019-08-05T04:06:10.998Z</updated>
+    <updated>2019-08-05T04:06:38.138Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Java设计模式之装饰者模式"><a href="#Java设计模式之装饰者模式" class="headerlink" title="Java设计模式之装饰者模式"></a>Java设计模式之装饰者模式</h2><p>前面两篇文章介绍了四个设计模式的原则：</p><ul><li>把变化的抽取出来，不要和不变化的放在一起</li><li>针对接口编程，不针对实现编程</li><li>多用组合，少用继承</li><li>为了交互对象之间的松耦合的设计而努力。</li></ul><p>现在我们要介绍最重要的设计原则：</p><ul><li>类应该对扩展开放，对修改关闭</li></ul><p><strong><em>装饰者模式：动态地将责任附加到对象上。若要扩展功能，装饰者提供比继承更有弹性的替代方案。</em></strong></p><p>可以动态地给对象添加一些额外的属性或者行为</p><p>装饰者模式：</p><ul><li>装饰者和被装饰者有相同的超类</li><li>可以用一个或者多个装饰者包装一个对象</li><li>因为装饰者和被装饰者有相同的超类，所以在任何需要原始对象（被包装的）的时候，你都可以用装饰过的对象替代。</li><li>装饰者可以在被装饰者的行为前后添加自己的行为。</li><li>装饰者可以如何时候被装饰，可以运行时动态地装饰对象。</li></ul><h3 id="Head-First-设计模式中案例"><a href="#Head-First-设计模式中案例" class="headerlink" title="Head First 设计模式中案例"></a>Head First 设计模式中案例</h3><p>星巴克做的咖啡有很多种类，我们想在这些咖啡上添加一些原料（牛奶、豆浆、奶泡、摩卡），还有咖啡的规格Size（大中小），我们决定使用装饰者模式来完成</p><ul><li><p>装饰者就是具体的原料类</p></li><li><p>被装饰者就是具体咖啡类</p></li></ul><p>我们使用一个抽象的<code>Beverage</code>类描述星巴克的咖啡（当然也可以使用接口），各个不同种类的咖啡继承该抽象类，我们还需要一个抽象的装饰者类，继承该装饰者类实现具体的原料装饰类，根据装饰者模式的<code>被装饰者和装饰者用相同的超类</code>，我们的装饰者抽象类需要继承<code>Beverage</code>类</p><p>计算价格我们要调用最外层的<code>cost</code>方法，每一层会委托<code>它装饰的对象-被装饰者</code>计算出价格</p><p>当我们最外层装饰者为奶泡<code>Whip</code>时，它会委托给上一层装饰者摩卡<code>Mocha</code>计算出摩卡所装饰的具体咖啡的价格+摩卡的价格；然后再加上自己奶泡的价格。(之所以可以这样实现调用多层cost是因为他们都来自一个超类对象)</p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/6.png"><p>Beverage类：</p><pre><code class="java">public abstract class Beverage {    //规格    protected Size size = Size.UNKNOWN;    public void setSize(Size size){        this.size = size;    }    //描述    protected String description = &quot;unKnown Beverage&quot;;    public String getDescription(){        return description;    }    //价格    public abstract double cost();}</code></pre><p>我们使用枚举类定义Size：</p><ul><li>小杯+0.1元</li><li>中杯+0.15元</li><li>大杯+0.2元</li></ul><pre><code class="java">public enum Size {    SMALL(0.10)    ,MEDIUM(0.15)    ,BIG(0.20)    ,UNKNOWN(0);    private double cost;    Size(double v) {        cost = v;    }    public double getCost(){return cost;}}</code></pre><p>三个具体的咖啡类：</p><pre><code class="java">/** * 深培咖啡 */public class DarkRoast extends Beverage{    //构造时传入规格    public DarkRoast(Size size){        setSize(size);        if(this.size==Size.UNKNOWN){            throw new RuntimeException();        }        description = &quot;DarkRoast &quot;+this.size.name();    }//30.00元+规格需加的钱    public double cost() {        return 30.00+size.getCost();    }}</code></pre><pre><code class="java">/** *浓缩咖啡 */public class Espresso extends Beverage{    public Espresso(Size size){        setSize(size);        if(this.size==Size.UNKNOWN){            throw new RuntimeException();        }        description = &quot;Espresso &quot;+this.size.name();    }    public double cost() {        return 25.00+size.getCost();    }}</code></pre><pre><code class="java">/** * 混合咖啡 */public class HouseBlend extends Beverage{    public HouseBlend(Size size){        setSize(size);        if(this.size==Size.UNKNOWN){            throw new RuntimeException();        }        description = &quot;HouseBlend &quot;+this.size.name();    }    public double cost() {        return 50.00+size.getCost();    }}</code></pre><p>原料装饰者抽象类：</p><pre><code class="java">public abstract class CondimentDecorator extends Beverage {    //描述中需要有原料信息，所以需要重写该抽象方法    public abstract String getDescription();}</code></pre><p>四个原料装饰者类：</p><ul><li>牛奶、摩卡、豆浆、奶泡</li></ul><pre><code class="java">public class Milk extends CondimentDecorator{    private Beverage beverage;    //构造方法传入需要装饰的咖啡    public Milk(Beverage beverage){        this.beverage = beverage;    }    //牛奶需要多加9元    public double cost() {        return beverage.cost()+9.00;    }    //重写的描述放方法    public String getDescription() {        return beverage.getDescription()+&quot; with Milk&quot;;    }}</code></pre><pre><code class="java">public class Mocha extends CondimentDecorator{    private Beverage beverage;    public Mocha(Beverage beverage){        this.beverage = beverage;    }    public double cost() {        return beverage.cost()+7.00;    }    public String getDescription() {        return beverage.getDescription()+&quot; with Mocha&quot;;    }}</code></pre><pre><code class="java">public class Soy extends CondimentDecorator{    private Beverage beverage;    public Soy(Beverage beverage){        this.beverage = beverage;    }    public double cost() {        return beverage.cost()+5.00;    }    public String getDescription() {        return beverage.getDescription()+&quot; with Soy&quot;;    }}</code></pre><pre><code class="java">public class Whip extends CondimentDecorator{    private Beverage beverage;    public Whip(Beverage beverage){        this.beverage = beverage;    }    public double cost() {        return beverage.cost()+15.00;    }    public String getDescription() {        return beverage.getDescription()+&quot; with Whip&quot;;    }}</code></pre><p>编写测试类：</p><pre><code class="java">public class Main {    public static void main(String[] args) {        DarkRoast darkRoast = new DarkRoast(Size.BIG);        Milk mb = new Milk(darkRoast);        System.out.println(mb.getDescription()+&quot;,cost:&quot;+mb.cost());        Mocha mochab = new Mocha(new Espresso(Size.SMALL));        System.out.println(mochab.getDescription()+&quot;,cost:&quot;+mochab.cost());        Soy sb = new Soy(new HouseBlend(Size.MEDIUM));        System.out.println(sb.getDescription()+&quot;,cost:&quot;+sb.cost());        Whip wb = new Whip(new DarkRoast(Size.BIG));        System.out.println(wb.getDescription()+&quot;,cost:&quot;+sb.cost());        Milk mb2 = new Milk(mb);        System.out.println(mb2.getDescription()+&quot;,cost:&quot;+mb2.cost());        Soy soyb = new Soy(mb2);        System.out.println(soyb.getDescription()+&quot;,cost:&quot;+soyb.cost());        Whip whipb = new Whip(soyb);        System.out.println(whipb.getDescription()+&quot;,cost:&quot;+whipb.cost());    }}</code></pre><p>输出如下</p><pre><code class="java">output：DarkRoast BIG with Milk,cost:39.2Espresso SMALL with Mocha,cost:32.1HouseBlend MEDIUM with Soy,cost:55.15DarkRoast BIG with Whip,cost:55.15DarkRoast BIG with Milk with Milk,cost:48.2DarkRoast BIG with Milk with Milk with Soy,cost:53.2DarkRoast BIG with Milk with Milk with Soy with Whip,cost:68.2</code></pre><h3 id="JDK中装饰者——IO"><a href="#JDK中装饰者——IO" class="headerlink" title="JDK中装饰者——IO"></a>JDK中装饰者——IO</h3><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/8.png"><p>IO中<code>InputStream</code>和<code>OutputStream</code>就是抽象的超类，<code>Reader</code>和<code>Writer</code>也是抽象的超类。整个IO家族都是由装饰者模式构成的。</p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/7.png">]]></content>
     
@@ -234,9 +234,9 @@
     
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
-      <category term="servlet" scheme="https://www.dzou.top/tags/servlet/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="servlet" scheme="https://www.dzou.top/tags/servlet/"/>
     
       <category term="request" scheme="https://www.dzou.top/tags/request/"/>
     
@@ -346,11 +346,11 @@
     
       <category term="安全" scheme="https://www.dzou.top/tags/%E5%AE%89%E5%85%A8/"/>
     
+      <category term="Redis" scheme="https://www.dzou.top/tags/Redis/"/>
+    
       <category term="记住我" scheme="https://www.dzou.top/tags/%E8%AE%B0%E4%BD%8F%E6%88%91/"/>
     
       <category term="单点登录" scheme="https://www.dzou.top/tags/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/"/>
-    
-      <category term="Redis" scheme="https://www.dzou.top/tags/Redis/"/>
     
   </entry>
   
@@ -530,9 +530,9 @@
     
       <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
-      <category term="Redis" scheme="https://www.dzou.top/tags/Redis/"/>
-    
       <category term="NoSql" scheme="https://www.dzou.top/tags/NoSql/"/>
+    
+      <category term="Redis" scheme="https://www.dzou.top/tags/Redis/"/>
     
   </entry>
   
