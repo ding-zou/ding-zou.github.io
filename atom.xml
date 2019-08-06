@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.dzou.top/"/>
-  <updated>2019-08-05T04:06:38.138Z</updated>
+  <updated>2019-08-06T04:58:45.249Z</updated>
   <id>https://www.dzou.top/</id>
   
   <author>
@@ -17,11 +17,39 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Java 设计模式——工厂模式</title>
+    <link href="https://www.dzou.top/post/4caa56ee.html"/>
+    <id>https://www.dzou.top/post/4caa56ee.html</id>
+    <published>2019-08-06T04:56:52.000Z</published>
+    <updated>2019-08-06T04:58:45.249Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Java设计模式之工厂模式"><a href="#Java设计模式之工厂模式" class="headerlink" title="Java设计模式之工厂模式"></a>Java设计模式之工厂模式</h2><p>工厂模式有下面两种:</p><ol><li><p>简单工厂模式</p></li><li><p>工厂方法模式</p></li><li><p>抽象工厂模式</p></li></ol><h3 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h3><ul><li><p>系统扩展困难，一旦添加新产品就不得不修改工厂逻辑，在产品类型较多时，有可能造成工厂逻辑过于复杂，不利于系统的扩展和维护。</p></li><li><p>简单工厂模式由于使用了静态工厂方法，造成工厂角色无法形成基于继承的等级结构。</p></li><li><p>工厂类集中了所有产品创建逻辑，一旦不能正常工作，整个系统都要受到影响。</p></li></ul><h3 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h3><p><strong><em>工厂方法模式：定义了一个创建对象的接口，但由子类决定要实例化哪一个。工厂方法把类实例化延迟到子类。抽象工厂模式：提供一个接口，用于创建相关或者依赖对象的家族，而不需要明确指定具体类。</em></strong></p><p><code>接口</code>，广义的说法，指的是<code>抽象类或方法</code>和<code>接口或接口方法</code></p><ul><li>创建者类：抽象类，定义了一个抽象工厂方法，让子类实现此方法制造产品。</li><li>具体创建者类：创建者的子类，实现了工厂方法，由该子类决定要实例化哪一个类不代表子类真正决定创建哪一个产品，而是说编写创建者类时，不需要具体知道需要创建哪一个类，而是根据选择哪一个类，就自然在运行时创建该产品类。</li><li>产品类：抽象类或接口，实现该产品接口创建具体的产品类，在使用时只需要把引用指向他，而不是具体的类(<code>多态</code>)。</li></ul><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/11.png"><p>这样做的目的：</p><ul><li>使用子类实现创建产品帮助我们将产品的<code>实现</code>和<code>使用</code>解耦，需要增加产品或者改变产品的实现时，创建者都不受影响。</li><li>客户端不需要知道具体产品类的类名，只需要知道所对应的工厂即可。</li></ul><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/12.png"><h4 id="依赖倒置"><a href="#依赖倒置" class="headerlink" title="依赖倒置"></a>依赖倒置</h4><p>设计原则：</p><ul><li>要依赖抽象，不依赖具体类。</li></ul><blockquote><p>不能让<code>高层组件</code>依赖<code>低层组件</code>。高层组件：由其他低层组件定义其行为的类（有低层组件构成，具体更复杂的功能），面向接口编程的思想。</p></blockquote><p>问题：类A直接依赖类B，假如要将类A改为依赖类C，则必须通过修改类A的代码来达成。这种场景下，类A一般是高层模块，负责复杂的业务逻辑；类B和类C是低层模块，负责基本的原子操作；假如修改类A，会给程序带来不必要的风险。</p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/9.png"><h3 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h3><p><strong><em>抽象工厂模式：提供一个接口，用于创建相关或者依赖对象的家族，而不需要明确指定具体类。</em></strong></p><p>接口中创建每个产品的接口就使用了工厂方法。</p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/10.png"><h3 id="普通工厂、抽象工厂模式和工厂方法模式比较"><a href="#普通工厂、抽象工厂模式和工厂方法模式比较" class="headerlink" title="普通工厂、抽象工厂模式和工厂方法模式比较"></a>普通工厂、抽象工厂模式和工厂方法模式比较</h3><p>比较：</p><ul><li><p>普通工厂不是一种设计模式，但是实现了对象创建的封装和松耦合</p></li><li><p>工厂方法使用继承：把创建委托给子类，子类实现工厂方法创建产品</p></li><li><p>抽象工厂使用组合：对象的创建被实现接口方法的类创建</p></li></ul><p>优点：</p><ul><li>都实现松耦合，把应用程序和具体类促进解耦</li><li>依赖倒置原则：避免依赖具体对象，尽量依赖抽象</li></ul><p>使用：</p><ul><li>抽象工厂：当你需要创建一整套产品家族时使用</li><li>工厂方法：把产品使用和实例化解耦。如果你不知道要实例化哪些类时可以使用。</li></ul><p>代码：</p><p><a href="https://github.com/ding-zou/design_mode/tree/master/facotory_patterns" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/ding-zou/design_mode/tree/master/facotory_patterns</a></p>]]></content>
+    
+    <summary type="html">
+    
+      工厂方法模式：定义了一个创建对象的接口，但由子类决定要实例化哪一个。工厂方法把类实例化延迟到子类。
+    
+    </summary>
+    
+      <category term="Java基础" scheme="https://www.dzou.top/categories/Java%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
+    
+      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java设计模式——装饰者模式</title>
     <link href="https://www.dzou.top/post/1b3210b0.html"/>
     <id>https://www.dzou.top/post/1b3210b0.html</id>
     <published>2019-08-05T04:04:46.000Z</published>
-    <updated>2019-08-05T04:06:38.138Z</updated>
+    <updated>2019-08-06T04:58:59.625Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Java设计模式之装饰者模式"><a href="#Java设计模式之装饰者模式" class="headerlink" title="Java设计模式之装饰者模式"></a>Java设计模式之装饰者模式</h2><p>前面两篇文章介绍了四个设计模式的原则：</p><ul><li>把变化的抽取出来，不要和不变化的放在一起</li><li>针对接口编程，不针对实现编程</li><li>多用组合，少用继承</li><li>为了交互对象之间的松耦合的设计而努力。</li></ul><p>现在我们要介绍最重要的设计原则：</p><ul><li>类应该对扩展开放，对修改关闭</li></ul><p><strong><em>装饰者模式：动态地将责任附加到对象上。若要扩展功能，装饰者提供比继承更有弹性的替代方案。</em></strong></p><p>可以动态地给对象添加一些额外的属性或者行为</p><p>装饰者模式：</p><ul><li>装饰者和被装饰者有相同的超类</li><li>可以用一个或者多个装饰者包装一个对象</li><li>因为装饰者和被装饰者有相同的超类，所以在任何需要原始对象（被包装的）的时候，你都可以用装饰过的对象替代。</li><li>装饰者可以在被装饰者的行为前后添加自己的行为。</li><li>装饰者可以如何时候被装饰，可以运行时动态地装饰对象。</li></ul><h3 id="Head-First-设计模式中案例"><a href="#Head-First-设计模式中案例" class="headerlink" title="Head First 设计模式中案例"></a>Head First 设计模式中案例</h3><p>星巴克做的咖啡有很多种类，我们想在这些咖啡上添加一些原料（牛奶、豆浆、奶泡、摩卡），还有咖啡的规格Size（大中小），我们决定使用装饰者模式来完成</p><ul><li><p>装饰者就是具体的原料类</p></li><li><p>被装饰者就是具体咖啡类</p></li></ul><p>我们使用一个抽象的<code>Beverage</code>类描述星巴克的咖啡（当然也可以使用接口），各个不同种类的咖啡继承该抽象类，我们还需要一个抽象的装饰者类，继承该装饰者类实现具体的原料装饰类，根据装饰者模式的<code>被装饰者和装饰者用相同的超类</code>，我们的装饰者抽象类需要继承<code>Beverage</code>类</p><p>计算价格我们要调用最外层的<code>cost</code>方法，每一层会委托<code>它装饰的对象-被装饰者</code>计算出价格</p><p>当我们最外层装饰者为奶泡<code>Whip</code>时，它会委托给上一层装饰者摩卡<code>Mocha</code>计算出摩卡所装饰的具体咖啡的价格+摩卡的价格；然后再加上自己奶泡的价格。(之所以可以这样实现调用多层cost是因为他们都来自一个超类对象)</p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/6.png"><p>Beverage类：</p><pre><code class="java">public abstract class Beverage {    //规格    protected Size size = Size.UNKNOWN;    public void setSize(Size size){        this.size = size;    }    //描述    protected String description = &quot;unKnown Beverage&quot;;    public String getDescription(){        return description;    }    //价格    public abstract double cost();}</code></pre><p>我们使用枚举类定义Size：</p><ul><li>小杯+0.1元</li><li>中杯+0.15元</li><li>大杯+0.2元</li></ul><pre><code class="java">public enum Size {    SMALL(0.10)    ,MEDIUM(0.15)    ,BIG(0.20)    ,UNKNOWN(0);    private double cost;    Size(double v) {        cost = v;    }    public double getCost(){return cost;}}</code></pre><p>三个具体的咖啡类：</p><pre><code class="java">/** * 深培咖啡 */public class DarkRoast extends Beverage{    //构造时传入规格    public DarkRoast(Size size){        setSize(size);        if(this.size==Size.UNKNOWN){            throw new RuntimeException();        }        description = &quot;DarkRoast &quot;+this.size.name();    }//30.00元+规格需加的钱    public double cost() {        return 30.00+size.getCost();    }}</code></pre><pre><code class="java">/** *浓缩咖啡 */public class Espresso extends Beverage{    public Espresso(Size size){        setSize(size);        if(this.size==Size.UNKNOWN){            throw new RuntimeException();        }        description = &quot;Espresso &quot;+this.size.name();    }    public double cost() {        return 25.00+size.getCost();    }}</code></pre><pre><code class="java">/** * 混合咖啡 */public class HouseBlend extends Beverage{    public HouseBlend(Size size){        setSize(size);        if(this.size==Size.UNKNOWN){            throw new RuntimeException();        }        description = &quot;HouseBlend &quot;+this.size.name();    }    public double cost() {        return 50.00+size.getCost();    }}</code></pre><p>原料装饰者抽象类：</p><pre><code class="java">public abstract class CondimentDecorator extends Beverage {    //描述中需要有原料信息，所以需要重写该抽象方法    public abstract String getDescription();}</code></pre><p>四个原料装饰者类：</p><ul><li>牛奶、摩卡、豆浆、奶泡</li></ul><pre><code class="java">public class Milk extends CondimentDecorator{    private Beverage beverage;    //构造方法传入需要装饰的咖啡    public Milk(Beverage beverage){        this.beverage = beverage;    }    //牛奶需要多加9元    public double cost() {        return beverage.cost()+9.00;    }    //重写的描述放方法    public String getDescription() {        return beverage.getDescription()+&quot; with Milk&quot;;    }}</code></pre><pre><code class="java">public class Mocha extends CondimentDecorator{    private Beverage beverage;    public Mocha(Beverage beverage){        this.beverage = beverage;    }    public double cost() {        return beverage.cost()+7.00;    }    public String getDescription() {        return beverage.getDescription()+&quot; with Mocha&quot;;    }}</code></pre><pre><code class="java">public class Soy extends CondimentDecorator{    private Beverage beverage;    public Soy(Beverage beverage){        this.beverage = beverage;    }    public double cost() {        return beverage.cost()+5.00;    }    public String getDescription() {        return beverage.getDescription()+&quot; with Soy&quot;;    }}</code></pre><pre><code class="java">public class Whip extends CondimentDecorator{    private Beverage beverage;    public Whip(Beverage beverage){        this.beverage = beverage;    }    public double cost() {        return beverage.cost()+15.00;    }    public String getDescription() {        return beverage.getDescription()+&quot; with Whip&quot;;    }}</code></pre><p>编写测试类：</p><pre><code class="java">public class Main {    public static void main(String[] args) {        DarkRoast darkRoast = new DarkRoast(Size.BIG);        Milk mb = new Milk(darkRoast);        System.out.println(mb.getDescription()+&quot;,cost:&quot;+mb.cost());        Mocha mochab = new Mocha(new Espresso(Size.SMALL));        System.out.println(mochab.getDescription()+&quot;,cost:&quot;+mochab.cost());        Soy sb = new Soy(new HouseBlend(Size.MEDIUM));        System.out.println(sb.getDescription()+&quot;,cost:&quot;+sb.cost());        Whip wb = new Whip(new DarkRoast(Size.BIG));        System.out.println(wb.getDescription()+&quot;,cost:&quot;+sb.cost());        Milk mb2 = new Milk(mb);        System.out.println(mb2.getDescription()+&quot;,cost:&quot;+mb2.cost());        Soy soyb = new Soy(mb2);        System.out.println(soyb.getDescription()+&quot;,cost:&quot;+soyb.cost());        Whip whipb = new Whip(soyb);        System.out.println(whipb.getDescription()+&quot;,cost:&quot;+whipb.cost());    }}</code></pre><p>输出如下</p><pre><code class="java">output：DarkRoast BIG with Milk,cost:39.2Espresso SMALL with Mocha,cost:32.1HouseBlend MEDIUM with Soy,cost:55.15DarkRoast BIG with Whip,cost:55.15DarkRoast BIG with Milk with Milk,cost:48.2DarkRoast BIG with Milk with Milk with Soy,cost:53.2DarkRoast BIG with Milk with Milk with Soy with Whip,cost:68.2</code></pre><h3 id="JDK中装饰者——IO"><a href="#JDK中装饰者——IO" class="headerlink" title="JDK中装饰者——IO"></a>JDK中装饰者——IO</h3><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/8.png"><p>IO中<code>InputStream</code>和<code>OutputStream</code>就是抽象的超类，<code>Reader</code>和<code>Writer</code>也是抽象的超类。整个IO家族都是由装饰者模式构成的。</p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/7.png">]]></content>
     
@@ -36,11 +64,11 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
+      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
-    
-      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
   </entry>
   
@@ -49,7 +77,7 @@
     <link href="https://www.dzou.top/post/261ed4ab.html"/>
     <id>https://www.dzou.top/post/261ed4ab.html</id>
     <published>2019-08-04T04:15:54.000Z</published>
-    <updated>2019-08-04T08:28:19.068Z</updated>
+    <updated>2019-08-06T04:58:56.645Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Java设计模式之观察者模式"><a href="#Java设计模式之观察者模式" class="headerlink" title="Java设计模式之观察者模式"></a>Java设计模式之观察者模式</h2><p>前面一篇文章提到了策略模式，提出了三个设计原则，这里提出第四个设计原则</p><p>设计原则：</p><ul><li>为了交互对象之间的松耦合的设计而努力。</li></ul><p>针对报社：<code>出版者</code>+<code>订阅者</code>=<code>观察者模式</code></p><p>报社是获取信息的主题对象，当报社获取到的信息更新了，报社将把信息传送给它的订阅者；当然订阅者也可以通知报社停止订阅，报社就把该对象从订阅者列表中去除，他不再能接收到报社传送的信息。</p><p><strong>观察者模式：定义了对象之间的一对多依赖，这样一来，当一个对象改变状态时。它的所有依赖者都会收到通知并自动更新。</strong></p><p>观察者模式有两个部分：</p><ul><li>观察者</li><li>主题（也叫被观察者）</li></ul><p>一个主题对象关联了多个观察者，当主体对象有数据更新或者状态改变时，它就可以通知它所关联的观察者们；就如果狗对象、猫对象、老鼠对象已经注册成为观察者，他们就将在主体对象数据更新时接收到主题对象发送的通知（通知数据更新了，你可以通过pull或者push的方式获取），这也就是<code>java.util</code>包下的<code>Observer</code>和<code>Observable</code>实现的观察者模式</p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/4.png"><p>我们通过Head FIrst 设计模式中的场景实现观察者模式</p><p><strong><em>场景：一个气象站由<code>WeatherData</code>类或者气象数据<code>温度、湿度、气压</code>，作为主题类，由多个公告板（展示效果不同，数据都是这三个）作为观察者类，当气象数据更新或者改变时，该类将通知公告板更新展示的数据。</em></strong></p><p>WeatherData该主题需要能<code>添加观察者</code>，<code>删除观察者</code>，<code>通知观察者更新数据</code>,并且要获取气象局发布的数据</p><p>我们把主体对象写一个接口如下，不同主题实现不同功能只需实现该接口</p><pre><code class="java">public interface Subject {    //添加观察者    void registerObserver(Observer o);    //删除    void removeObserver(Observer o);    //通知    void notifyObservers(List&lt;Observer&gt; o);    void setChanged();    boolean getChanged();}</code></pre><p>其中<code>setChanged方法</code>把数据是否更新的状态的标志设置为True，在更新状态或者数据时执行该方法</p><p><code>getChanged()</code>获取该标志</p><p><code>WeatherData</code>只需实现该接口，添加获取气象数据的方法即可</p><pre><code class="java">public class WeatherData implements Subject{    private WeatherArgs args = new WeatherArgs();    private List&lt;Observer&gt; obs = new ArrayList&lt;&gt;();    private boolean changed = false;    //设置数据    void setWeatherData(String template,String humidity,String pressure){        args.setTemplate(template);        args.setHumidity(humidity);        args.setPressure(pressure);        //更新完成后设置标志为true        setChanged();        //调用更新后通知观察者方法        onWeatherDataChanged();    }    //数据更新时通知观察者 push数据给观察者    private void onWeatherDataChanged(){        if(getChanged()){            notifyObservers(obs);        }    }    //观察者注册    public void registerObserver(Observer o) {        if(o==null){            throw new RuntimeException();        }        obs.add(o);    }    //观察者移除    public void removeObserver(Observer o) {        obs.remove(o);    }    //通知观察者们数据更新 发送数据给观察者们    public void notifyObservers(List&lt;Observer&gt; obs) {        obs.forEach((o)-&gt;o.update(this,args));    }    @Override    public void setChanged() {        changed = true;    }    @Override    public boolean getChanged() {        return changed;    }}</code></pre><p>其中<code>WeatherArg</code>为气象数据参数类，当我们不使用这个类时，我们需要每次更新时传入特定的值，下面这样</p><pre><code class="java">update(String template,String humidity,String pressure);update(100,200,200kpa);</code></pre><p>这样需要更改数据种类和数量时，需要修改很多代码，所以我们把它封装起来</p><pre><code class="java">@Dataclass WeatherArgs {    //温度    private String template;    //湿度    private String humidity;    //气压    private String pressure;}</code></pre><p>添加这个类是为了如果需要更改数据类型和数量时只需更改这个类就行</p><p>我们用List存放观察者，<code>onWeatherDataChanged</code>方法检测是否更新，如果更新就通知观察者</p><p>观察者有多个，其中都有<code>update</code>方法执行被通知时更新数据，通过不同的<code>display</code>方法展示不同效果的气象数据，我们编写两个接口</p><ul><li>观察者接口 （有多个观察者）Observer</li><li>展示数据接口（有不同展示方法） Displayable</li></ul><pre><code class="java">public interface Observer {    /**     * 更新数据     * @param subject 主题对象     * @param args 更新参数     */    void update(Subject subject,Object args);}</code></pre><pre><code class="java">public interface Displayable {    /**     * 数据展示方法     */    void display();}</code></pre><p>下面我们实现一个观察者</p><p>它需要实现<code>Observer和`Displayable</code>接口实现<code>update和display</code>方法</p><p>我们在构造方法传入一个主题对象，告诉他我们要订阅他</p><pre><code class="java">public class CurrentConditionDisplay implements Observer,Displayable{    //可用于观察者对主题对象取消订阅    private Subject subject;    private WeatherArgs weatherArgs;    //创建时注册    public CurrentConditionDisplay(Subject s){        s.registerObserver(this);        subject = s;    }    @Override    public void update(Subject subject, Object args) {        if(subject instanceof WeatherData){            weatherArgs = (WeatherArgs) args;            display();        }    }    @Override    public void display() {        System.out.println(&quot;template:&quot;+weatherArgs.getTemplate()+&quot;, humidity:&quot;+weatherArgs.getHumidity()+&quot;, pressure:&quot;+weatherArgs.getPressure());    }    //观察者取消订阅 通知主题对象删除我    private void removeMe(){        subject.removeObserver(this);    }}</code></pre><p>至此，观察者模式就完成了</p><p>写一个测试类：</p><pre><code class="java">public class Main {    public static void main(String[] args) {        WeatherData weatherData = new WeatherData();        CurrentConditionDisplay currentConditionDisplay = new CurrentConditionDisplay(weatherData);        weatherData.setWeatherData(&quot;100&quot;,&quot;90&quot;,&quot;100KPa&quot;);    }}</code></pre><pre><code class="java">output：template:100, humidity:90, pressure:100KPa</code></pre><blockquote><p>大家可以看一下JDK中内置的<code>Observer和Observable</code>实现的观察者模式，大体实现是一样的</p></blockquote><p>JDK内置观察者模式</p><p><code>Observable</code>被观察者</p><pre><code class="java">public class Observable {    private boolean changed = false;    private Vector&lt;Observer&gt; obs;    public Observable() {        obs = new Vector&lt;&gt;();    }    public synchronized void addObserver(Observer o) {        if (o == null)            throw new NullPointerException();        if (!obs.contains(o)) {            obs.addElement(o);        }    }    public synchronized void deleteObserver(Observer o) {        obs.removeElement(o);    }    public void notifyObservers() {        notifyObservers(null);    }    public void notifyObservers(Object arg) {        Object[] arrLocal;        synchronized (this) {            if (!changed)                return;            arrLocal = obs.toArray();            clearChanged();        }        for (int i = arrLocal.length-1; i&gt;=0; i--)            ((Observer)arrLocal[i]).update(this, arg);    }    public synchronized void deleteObservers() {        obs.removeAllElements();    }    protected synchronized void setChanged() {        changed = true;    }    protected synchronized void clearChanged() {        changed = false;    }    public synchronized boolean hasChanged() {        return changed;    }    public synchronized int countObservers() {        return obs.size();    }}</code></pre><p><code>Observer</code></p><pre><code class="java">public interface Observer {    //o为被观察者主题，args为更新的数据    void update(Observable o, Object arg);}</code></pre><p>但是我们可以看到该<code>Observable</code>是具体的实现类，不符合设计模式中的</p><ul><li>多用组合少用继承</li></ul><p>不方便我们继承其他类</p><p>有两个办法 ：</p><ul><li>使用上述我们自己实现的观察者模式</li><li>扩展Observable类</li></ul><p>代码地址：<a href="https://github.com/ding-zou/design_mode/tree/master/observer_patterns" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/ding-zou/design_mode/tree/master/observer_patterns</a></p>]]></content>
     
@@ -64,11 +92,11 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
+      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
-    
-      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
   </entry>
   
@@ -77,7 +105,7 @@
     <link href="https://www.dzou.top/post/6c84d9a1.html"/>
     <id>https://www.dzou.top/post/6c84d9a1.html</id>
     <published>2019-08-03T06:15:05.000Z</published>
-    <updated>2019-08-04T04:20:24.038Z</updated>
+    <updated>2019-08-06T04:58:53.813Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Java设计模式之策略模式"><a href="#Java设计模式之策略模式" class="headerlink" title="Java设计模式之策略模式"></a>Java设计模式之策略模式</h2><p>设计模式基础：</p><ul><li>抽象</li><li>多态</li><li>继承</li><li>组合</li></ul><p>设计原则：</p><ul><li><p>把变化的抽取出来，不要和不变化的放在一起</p></li><li><p>针对接口编程，不针对实现编程</p></li><li><p>多用组合，少用继承</p></li></ul><p>我们先把定义提出来：</p><p><strong>策略模式：定义了算法族，分别封装起来，让他们之间可以相互替换，此模式让算法的变化独立于使用算法的客户。</strong></p><p>这个概念比较难理解，下面我们具体通过案例分析一下</p><p>场景：我们有三个不同种类的程序员，JavaWeb、大数据BigData和Ai人工智能程序员；他们都有相同的喝水和睡觉行为，但是有不同的写代码行为（写JavaWeb，写Ai，写Big data），我们想一下怎么实现？</p><p>我们首先想到的是使用<code>继承重写父类的方法</code>实现，但是这样做的缺点很多：</p><pre><code class="java">Class JavaWebProgrammer extends Programmer{    public void doSleeping(){        //重写代码    }    public void doCoding(){        //重写代码    }}</code></pre><ul><li>可以解决问题，但是代码无法复用</li><li>多一个类都要重新写它对应的实现，代码量太大</li><li>不符合三个设计原则</li><li>而且无法解决有些类没有或者不需要基类的某个功能 比如有的程序员退休了，有的没有退休</li></ul><p>此时，针对<code>某个类不需要实现基类某个功能</code>你又想到了在重写中什么都不做的方法：</p><pre><code class="java">public void retired(){    //do noting}</code></pre><p>但是这样依然没有解决上面的根本问题，所以我们又想到了<code>使用接口</code>：把不会变化的功能（睡觉行为和喝水行为依然放在基类里，会变化的行为（写代码行为）写成一个接口<code>Codeable</code>，然后通过继承基类实现不变的行为，实现Codeable接口实现不同的写代码行为</p><p>但是这么做还是不行：</p><ul><li>如果有很多子类的实现需要修改，那么我们要修改很多的代码</li></ul><p>这个时候我们就应该充分考虑<code>设计原则</code>的作用了</p><ul><li>把变化的部分封装起来</li><li>面向接口编程</li></ul><p>大家就可以想到把接口的实现独立成一个个类，把写代码行为写成一个接口，不同的实现对应不同的实现类，然后我们在使用时，想到了<code>多态</code>的奇妙之处，根据多态的动态调用</p><p>如下：</p><pre><code class="java">ProgramBehavior programBehavior = new JavaWebBehavior();programBehavior.doCoding();</code></pre><p>在此，我们大体思路已经很接近成功了</p><ul><li><p>首先基类声明为<code>抽象类</code>，里面有睡觉和喝水行为的具体实现（不变的）</p><pre><code class="java">    protected void doDrinking(){        System.out.println(&quot;I am drinking.&quot;);    }    protected void doSleeping(){        System.out.println(&quot;I am sleeping&quot;);    }</code></pre></li><li><p>在基类中声明变化的部分，使用接口的形式使得我们可以动态调用</p><pre><code class="java">ProgramBehavior programBehavior；void doCoding(){    programBehavior.doCoding();}</code></pre></li><li><p>创建写代码行为的接口</p><pre><code class="java">public interface ProgramBehavior {    void doCoding();}</code></pre></li><li><p>子类<code>AIProgrammer</code>继承抽象类<code>Programmer</code>，只需要在初始化时创建<code>AIBehavior</code>赋给我们基类的接口<code>programBehavior</code></p><pre><code class="java">public class AIProgrammer extends Programmer {    public AIProgrammer(){        programBehavior = new AIBehavior();    }}</code></pre></li><li><p>创建不同的接口实现类，实现不同的写代码行为</p><pre><code class="java">public class AIBehavior implements ProgramBehavior {    @Override    public void doCoding() {        System.out.println(&quot;I am doing AI coding.&quot;);    }}</code></pre></li><li><p>测试</p><pre><code class="java">public void testAI(){        Programmer aiProgrammer = new AIProgrammer();        aiProgrammer.doDrinking();        aiProgrammer.doCoding();        aiProgrammer.doSleeping();    }</code></pre><p>结果如下：</p></li></ul><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/1.png"><p>可见：我们使用多态动态调用了<code>doCoding()</code>方法，我们在需要修改实现的时候只需要需要修改接口对应的实现就可以了，而不需要修改子类的方法</p><p>当然，我们不应该在开发中使用初始化时创建实现类的这种方式，我们可以在<code>基类</code>中添加一个<code>setProgramBehavior</code>的方法，这样我们就可以在应用中动态的设置行为</p><pre><code class="java">void setProgramBehavior(ProgramBehavior programBehavior){        this.programBehavior = programBehavior;}</code></pre><p>我们为AIProgramer在执行完睡觉后2秒设置一个新的写代码行为（退休）并调用</p><pre><code class="java">public class RetireBehavior implements ProgramBehavior {    @Override    public void doCoding() {        System.out.println(&quot;I am retired just few days.&quot;);    }}</code></pre><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/2.png"><p>该AIProgramer类图如下</p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/3.png"><blockquote><p>至此，这就是整个策略模式的设计方法，我们再来理一遍，也许你再去看策略模式的定义就没问题了（代码最后附上）</p></blockquote><p>我们把行为中（每个行为可以看成一个算法，形成了算法族）变化的部分从基类抽象类中抽取出来，使用接口定义并使用类实现接口来实现某一个行为（算法）不同的表现，再利用<code>多态</code>的神奇之处动态调用接口不同实现类的同一方法；然后我们需要改变接口实现类的实现方法（算法）时对调用该方法的客户完成不需要更改，没有任何影响。</p><p>代码地址：</p><p> <a href="https://github.com/ding-zou/design_mode" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/ding-zou/design_mode</a></p>]]></content>
     
@@ -92,11 +120,11 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
+      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
-    
-      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
   </entry>
   
@@ -120,13 +148,13 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
-    
       <category term="分布式" scheme="https://www.dzou.top/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
     
       <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
     
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
       <category term="Spring" scheme="https://www.dzou.top/tags/Spring/"/>
     
@@ -374,11 +402,11 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
+      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
-    
-      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
   </entry>
   
@@ -402,13 +430,13 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
-    
       <category term="分布式" scheme="https://www.dzou.top/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
     
       <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
     
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
       <category term="Spring" scheme="https://www.dzou.top/tags/Spring/"/>
     
@@ -498,9 +526,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
       <category term="Spring" scheme="https://www.dzou.top/tags/Spring/"/>
     
@@ -526,9 +554,9 @@
       <category term="数据库" scheme="https://www.dzou.top/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
     
-      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
-    
       <category term="分布式" scheme="https://www.dzou.top/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
       <category term="NoSql" scheme="https://www.dzou.top/tags/NoSql/"/>
     
@@ -556,39 +584,15 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
       <category term="Spring" scheme="https://www.dzou.top/tags/Spring/"/>
     
       <category term="SpringMVC" scheme="https://www.dzou.top/tags/SpringMVC/"/>
     
       <category term="SSM" scheme="https://www.dzou.top/tags/SSM/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>解决Deepin系统使用中dock栏消失不显示</title>
-    <link href="https://www.dzou.top/post/3a5de41c.html"/>
-    <id>https://www.dzou.top/post/3a5de41c.html</id>
-    <published>2019-07-23T12:38:32.000Z</published>
-    <updated>2019-08-02T11:47:09.969Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="解决Deepin系统使用中dock栏消失不显示"><a href="#解决Deepin系统使用中dock栏消失不显示" class="headerlink" title="解决Deepin系统使用中dock栏消失不显示"></a>解决Deepin系统使用中dock栏消失不显示</h2><p>不需要卸载重新安装<strong>dde-dock</strong></p><p>只需要把进程kill</p><p>终端中输入：</p><pre><code class="linux">killall dde-dock</code></pre><p>dock栏就出现了</p>]]></content>
-    
-    <summary type="html">
-    
-      解决Deepin系统使用中dock栏消失不显示
-    
-    </summary>
-    
-      <category term="linux" scheme="https://www.dzou.top/categories/linux/"/>
-    
-    
-      <category term="deepin" scheme="https://www.dzou.top/tags/deepin/"/>
-    
-      <category term="linux" scheme="https://www.dzou.top/tags/linux/"/>
     
   </entry>
   
