@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.dzou.top/"/>
-  <updated>2019-08-06T04:58:45.249Z</updated>
+  <updated>2019-08-08T04:42:57.047Z</updated>
   <id>https://www.dzou.top/</id>
   
   <author>
@@ -17,11 +17,67 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Java设计模式——适配器模式及外观模式</title>
+    <link href="https://www.dzou.top/post/519a7c00.html"/>
+    <id>https://www.dzou.top/post/519a7c00.html</id>
+    <published>2019-08-08T04:41:33.000Z</published>
+    <updated>2019-08-08T04:42:57.047Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Java设计模式之适配器模式和外观模式"><a href="#Java设计模式之适配器模式和外观模式" class="headerlink" title="Java设计模式之适配器模式和外观模式"></a>Java设计模式之适配器模式和外观模式</h2><h3 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h3><p><strong><em>适配器模式：将一个类的接口，转换成客户期望的有两个接口。适配器让原来的接口不兼容的类可以合作无间。</em></strong></p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/16.png"><ul><li>类适配器：多重继承完成，Java中不允许，高耦合</li><li>对象适配器：只用组合完成，低耦合</li></ul><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/18.png"><ol><li>创建目标接口</li></ol><pre><code class="java">public interface Target {    //这是源类Adapteee没有的方法    public void Request(); }</code></pre><ol start="2"><li>创建被适配器</li></ol><pre><code class="java">public class Adaptee {    public void SpecificRequest(){    }}</code></pre><ol start="3"><li>创建适配器类（Adapter）</li></ol><pre><code class="java">class Adapter implements Target{      // 直接关联被适配类      private Adaptee adaptee;      // 可以通过构造函数传入具体需要适配的被适配类对象      public Adapter (Adaptee adaptee) {          this.adaptee = adaptee;      }      @Override    public void Request() {          // 这里是使用委托的方式完成特殊功能          this.adaptee.SpecificRequest();      }  }  </code></pre><ol start="4"><li>适配器使用</li></ol><pre><code class="java">public class AdapterPattern {    public static void main(String[] args){        //需要先创建一个被适配类的对象作为参数          Target mAdapter = new Adapter(new Adaptee())；        mAdapter.Request();    }}</code></pre><h4 id="适配器模式实际应用"><a href="#适配器模式实际应用" class="headerlink" title="适配器模式实际应用"></a>适配器模式实际应用</h4><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/17.png"><p>JDK以前使用<code>Enumeration</code>枚举接口遍历，现在使用<code>Iterator</code>迭代器</p><pre><code class="java">public interface Enumeration&lt;E&gt; {    boolean hasMoreElements();    E nextElement();}</code></pre><pre><code class="java">public interface Iterator&lt;E&gt; {    boolean hasNext();    E next();    default void remove() {        throw new UnsupportedOperationException(&quot;remove&quot;);    }}</code></pre><p>我们写一个适配器将<code>枚举</code>适配到<code>迭代器</code></p><ul><li>目标接口：迭代器</li><li>被适配接口：枚举接口</li></ul><p><code>Enumeration</code>的<code>hasMoreElements</code>就对应<code>Iterator</code>的<code>hasNext</code>；<code>nextElement</code>对应<code>next</code>；</p><p>Enumeration不支持<code>remove</code>，就像Iterator设计好的，抛出一个不支持的运行时异常。</p><pre><code class="java">public class EnumerationIteratorAdapter implements Iterator {    private Enumeration enumeration;    public EnumerationIteratorAdapter(Enumeration enumeration){        this.enumeration = enumeration;    }    public boolean hasNext() {        return enumeration.hasMoreElements();    }    public Object next() {        return enumeration.nextElement();    }    public void remove() {        throw new UnsupportedOperationException();    }}</code></pre><p>测试：<code>Vector</code></p><pre><code class="java">public static void main(String[] args) {        Vector&lt;Double&gt; vector = new Vector&lt;&gt;();        vector.add(12.21);        vector.add(10.26);        EnumerationIteratorAdapter enumerationIteratorAdapter = new EnumerationIteratorAdapter(vector.elements());        double a;        while (enumerationIteratorAdapter.hasNext()){            a = (double) enumerationIteratorAdapter.next();            System.out.println(a);        }    }</code></pre><p>我们再写一个适配器将<code>枚举</code>适配到<code>迭代器</code></p><ul><li>被适配接口：迭代器</li><li>目标接口：枚举接口</li></ul><pre><code class="java">public class IteratorEnumerationAdapter implements Enumeration {    private Iterator iterator;    public IteratorEnumerationAdapter(Iterator iterator){        this.iterator = iterator;    }    public boolean hasMoreElements() {        return iterator.hasNext();    }    public Object nextElement() {        return iterator.next();    }}</code></pre><p>测试：<code>ArrayList</code></p><pre><code class="java">ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();        list.add(&quot;1&quot;);        list.add(&quot;2&quot;);        list.add(&quot;3&quot;);        list.add(&quot;4&quot;);        IteratorEnumerationAdapter iteratorEnumerationAdapter = new IteratorEnumerationAdapter(list.iterator());        String a = &quot;&quot;;        while (iteratorEnumerationAdapter.hasMoreElements()){            a = (String) iteratorEnumerationAdapter.nextElement();            System.out.println(a);        }</code></pre><h4 id="装饰者和适配器"><a href="#装饰者和适配器" class="headerlink" title="装饰者和适配器"></a>装饰者和适配器</h4><ul><li>适配器：存在不被客户知道，客户只知道请求对应的行为，适配器帮助客户和被适配者解耦，<code>将一个接口转换为另一个接口</code></li><li>装饰者：<code>不改变接口，但加入责任</code></li><li>适配器将一个对象包装起来以改变其接口，装饰者将对象包装起来以增加新的行为或者责任。</li></ul><h3 id="外观模式"><a href="#外观模式" class="headerlink" title="外观模式"></a>外观模式</h3><p><strong><em>外观模式：提供了一个同一的接口，用来访问子系统中的一群接口。外观定义了一个高层接口，让子系统更容易使用。</em></strong></p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/15.png"><p><code>新的设计原则</code>：</p><ul><li>最少设计原则：只和你的密友谈话</li></ul><p>设计中不要让太多的类耦合在一起，免得修改系统中的一部分又会影响到另一部分。如果系统各个部分依赖太多，这个系统会需要大量成本维护。</p><p>像下面这个代码：</p><pre><code class="java">public void getTemp(){    //耦合了三个类    return station.getFirstTemp().getSecondTemp();}</code></pre><p>该原则缺点：</p><p>虽然减少了对象的依赖，但是也会导致更多的类被创建出来用于处理组件的沟通，导致系统复杂度高，并且降低性能。</p><h4 id="外观模式的使用"><a href="#外观模式的使用" class="headerlink" title="外观模式的使用"></a>外观模式的使用</h4><p>一个私人影院由多个子系统构成:DVD播放器、投影仪、自动屏幕、环绕立体声、爆米花机</p><p>你每次观影之前需要做很多准备工作，结束还要做很多清理工作</p><p>我们可以使用外观模式，提供一个更合理的接口类，简化你的子系统的使用。</p><ul><li>该外观接口中有<code>watchMovie</code>方法，里面综合了各个子系统需要做的一切准备工作</li><li><code>endMovie</code>方法综合了所有的清理工作</li></ul><p>接口</p><pre><code class="java">public interface HomeTheaterFacadeAPI {    public void watchMovie();    public void endMovie();}</code></pre><pre><code class="java">public class HomeTheaterFacade implements HomeTheaterFacadeAPI{    private Amplifier amplifier;    private CDplayer cDplayer;    private DVDplayer dvDplayer;    private PopCornPopper popCornPopper;    private Screen screen;    private TheaterLight theaterLight;    private Projector projector;    public HomeTheaterFacade(Amplifier amplifier,                             CDplayer cDplayer,                             DVDplayer dvDplayer,                             PopCornPopper popCornPopper,                             Screen screen,                             TheaterLight theaterLight,                             Projector projector){        this.amplifier = amplifier;        this.cDplayer = cDplayer;        this.dvDplayer = dvDplayer;        this.popCornPopper = popCornPopper;        this.screen = screen;        this.theaterLight = theaterLight;        this.projector = projector;    }    public void watchMovie() {        System.out.println(&quot;准备开始看电影&quot;);        popCornPopper.on();        popCornPopper.pop();        theaterLight.dim(10);        screen.down();        projector.open();        amplifier.on();        amplifier.setDvdAndCd();        amplifier.setVolume(20);        dvDplayer.open();        cDplayer.open();    }    public void endMovie() {        System.out.println(&quot;正在关闭设备&quot;);        popCornPopper.close();        theaterLight.close();        screen.up();        projector.close();        amplifier.close();        dvDplayer.close();        cDplayer.close();    }}</code></pre><h3 id="外观模式和适配器的使用"><a href="#外观模式和适配器的使用" class="headerlink" title="外观模式和适配器的使用"></a>外观模式和适配器的使用</h3><ul><li>当需要一个现有类而接口不符合要求时，使用适配器。</li><li>当需要简化并统一一个很大的接口或者一群很复杂接口时，使用外观。(将客户和子系统解耦)</li></ul><p>github:<a href="https://github.com/ding-zou/design_mode" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/ding-zou/design_mode</a></p>]]></content>
+    
+    <summary type="html">
+    
+      适配器模式：将一个类的接口，转换成客户期望的有两个接口。适配器让原来的接口不兼容的类可以合作无间。外观模式：提供了一个同一的接口，用来访问子系统中的一群接口。外观定义了一个高层接口，让子系统更容易使用。
+    
+    </summary>
+    
+      <category term="Java基础" scheme="https://www.dzou.top/categories/Java%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+      <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java设计模式——命令模式</title>
+    <link href="https://www.dzou.top/post/667421d7.html"/>
+    <id>https://www.dzou.top/post/667421d7.html</id>
+    <published>2019-08-07T15:54:07.000Z</published>
+    <updated>2019-08-07T15:55:02.787Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Java设计模式之命令模式"><a href="#Java设计模式之命令模式" class="headerlink" title="Java设计模式之命令模式"></a>Java设计模式之命令模式</h2><p>他能帮助我们将<code>动作的请求者</code>和<code>动作的执行者</code>解耦</p><p>把请求封装（打开灯）成一个特定对象（打开厨房灯）</p><p><strong><em>命令模式：将“请求”封装成对象，以便使用不同的请求，队列或者日志来参数化其他对象，命令模式也可以支持可撤销的操作。</em></strong></p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/14.png"><p>遥控器当按下按键时，把控制灯开关、门开关的的请求提交，把请求提交给相应的<code>命令对象</code>执行其接受者对应的行为。</p><ul><li>测试类就是客户，创建很多命令对象，把它加载到遥控器卡槽</li><li>遥控器就是命令模式的客户，提交请求，通过<code>setCommand</code>方法把命令传给调用者</li><li>灯、车库就是具体的接受者，具有相应的行为</li><li>命令对象就是打开关闭灯、打开关闭门灯命令对象</li></ul><p>命令对象在遥控器中初始化时，使用了空对象<code>NoCommand</code>，也是一种设计模式，避免进行不必要的判断</p><pre><code class="java">//非空判断if(object!=null){    ....}</code></pre><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/13.png"><p>撤销功能：可以使用<code>添加状态变量</code>来获取前一次状态</p><p>多次撤销：可以使用<code>堆栈</code>记录每一次调用状态，撤销时从<code>堆栈</code>中取出</p><p>为什么命令对象不实现具体的<code>execute</code>方法？</p><p>答：我们尽量使用<code>傻瓜</code>的命令对象，不许关注接受者实现细节，实现调用者和接受者解耦。</p><h2 id="命令模式用途"><a href="#命令模式用途" class="headerlink" title="命令模式用途"></a>命令模式用途</h2><h3 id="队列请求"><a href="#队列请求" class="headerlink" title="队列请求"></a>队列请求</h3><p>命令可以将运算块打包，将他传来传去，命令对象创建许久后依然可以调用运算。</p><p>可以实现：日程安排、线程池、工作队列</p><h4 id="工作队列"><a href="#工作队列" class="headerlink" title="工作队列"></a>工作队列</h4><p>你在一端添加命令，在另一端使用线程依次取出命令并执行</p><h4 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h4><p>我们执行命令时将历史记录存储在磁盘里。一旦系统死机，我们就可以利用命令对象重新加载，依次调用他们的execute方法（使用序列化实现）</p><p>github：<a href="https://github.com/ding-zou/design_mode/tree/master/command_patterns" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/ding-zou/design_mode/tree/master/command_patterns</a></p>]]></content>
+    
+    <summary type="html">
+    
+      命令模式：将“请求”封装成对象，以便使用不同的请求，队列或者日志来参数化其他对象，命令模式也可以支持可撤销的操作。
+    
+    </summary>
+    
+      <category term="Java基础" scheme="https://www.dzou.top/categories/Java%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+      <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java 设计模式——工厂模式</title>
     <link href="https://www.dzou.top/post/4caa56ee.html"/>
     <id>https://www.dzou.top/post/4caa56ee.html</id>
     <published>2019-08-06T04:56:52.000Z</published>
-    <updated>2019-08-06T04:58:45.249Z</updated>
+    <updated>2019-08-06T04:59:43.526Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Java设计模式之工厂模式"><a href="#Java设计模式之工厂模式" class="headerlink" title="Java设计模式之工厂模式"></a>Java设计模式之工厂模式</h2><p>工厂模式有下面两种:</p><ol><li><p>简单工厂模式</p></li><li><p>工厂方法模式</p></li><li><p>抽象工厂模式</p></li></ol><h3 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h3><ul><li><p>系统扩展困难，一旦添加新产品就不得不修改工厂逻辑，在产品类型较多时，有可能造成工厂逻辑过于复杂，不利于系统的扩展和维护。</p></li><li><p>简单工厂模式由于使用了静态工厂方法，造成工厂角色无法形成基于继承的等级结构。</p></li><li><p>工厂类集中了所有产品创建逻辑，一旦不能正常工作，整个系统都要受到影响。</p></li></ul><h3 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h3><p><strong><em>工厂方法模式：定义了一个创建对象的接口，但由子类决定要实例化哪一个。工厂方法把类实例化延迟到子类。抽象工厂模式：提供一个接口，用于创建相关或者依赖对象的家族，而不需要明确指定具体类。</em></strong></p><p><code>接口</code>，广义的说法，指的是<code>抽象类或方法</code>和<code>接口或接口方法</code></p><ul><li>创建者类：抽象类，定义了一个抽象工厂方法，让子类实现此方法制造产品。</li><li>具体创建者类：创建者的子类，实现了工厂方法，由该子类决定要实例化哪一个类不代表子类真正决定创建哪一个产品，而是说编写创建者类时，不需要具体知道需要创建哪一个类，而是根据选择哪一个类，就自然在运行时创建该产品类。</li><li>产品类：抽象类或接口，实现该产品接口创建具体的产品类，在使用时只需要把引用指向他，而不是具体的类(<code>多态</code>)。</li></ul><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/11.png"><p>这样做的目的：</p><ul><li>使用子类实现创建产品帮助我们将产品的<code>实现</code>和<code>使用</code>解耦，需要增加产品或者改变产品的实现时，创建者都不受影响。</li><li>客户端不需要知道具体产品类的类名，只需要知道所对应的工厂即可。</li></ul><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/12.png"><h4 id="依赖倒置"><a href="#依赖倒置" class="headerlink" title="依赖倒置"></a>依赖倒置</h4><p>设计原则：</p><ul><li>要依赖抽象，不依赖具体类。</li></ul><blockquote><p>不能让<code>高层组件</code>依赖<code>低层组件</code>。高层组件：由其他低层组件定义其行为的类（有低层组件构成，具体更复杂的功能），面向接口编程的思想。</p></blockquote><p>问题：类A直接依赖类B，假如要将类A改为依赖类C，则必须通过修改类A的代码来达成。这种场景下，类A一般是高层模块，负责复杂的业务逻辑；类B和类C是低层模块，负责基本的原子操作；假如修改类A，会给程序带来不必要的风险。</p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/9.png"><h3 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h3><p><strong><em>抽象工厂模式：提供一个接口，用于创建相关或者依赖对象的家族，而不需要明确指定具体类。</em></strong></p><p>接口中创建每个产品的接口就使用了工厂方法。</p><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/10.png"><h3 id="普通工厂、抽象工厂模式和工厂方法模式比较"><a href="#普通工厂、抽象工厂模式和工厂方法模式比较" class="headerlink" title="普通工厂、抽象工厂模式和工厂方法模式比较"></a>普通工厂、抽象工厂模式和工厂方法模式比较</h3><p>比较：</p><ul><li><p>普通工厂不是一种设计模式，但是实现了对象创建的封装和松耦合</p></li><li><p>工厂方法使用继承：把创建委托给子类，子类实现工厂方法创建产品</p></li><li><p>抽象工厂使用组合：对象的创建被实现接口方法的类创建</p></li></ul><p>优点：</p><ul><li>都实现松耦合，把应用程序和具体类促进解耦</li><li>依赖倒置原则：避免依赖具体对象，尽量依赖抽象</li></ul><p>使用：</p><ul><li>抽象工厂：当你需要创建一整套产品家族时使用</li><li>工厂方法：把产品使用和实例化解耦。如果你不知道要实例化哪些类时可以使用。</li></ul><p>代码：</p><p><a href="https://github.com/ding-zou/design_mode/tree/master/facotory_patterns" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/ding-zou/design_mode/tree/master/facotory_patterns</a></p>]]></content>
     
@@ -36,9 +92,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
       <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
     
@@ -64,9 +120,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
       <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
     
@@ -92,9 +148,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
       <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
     
@@ -120,9 +176,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
       <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
     
@@ -374,11 +430,11 @@
     
       <category term="安全" scheme="https://www.dzou.top/tags/%E5%AE%89%E5%85%A8/"/>
     
-      <category term="Redis" scheme="https://www.dzou.top/tags/Redis/"/>
-    
       <category term="记住我" scheme="https://www.dzou.top/tags/%E8%AE%B0%E4%BD%8F%E6%88%91/"/>
     
       <category term="单点登录" scheme="https://www.dzou.top/tags/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/"/>
+    
+      <category term="Redis" scheme="https://www.dzou.top/tags/Redis/"/>
     
   </entry>
   
@@ -402,9 +458,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="设计模式" scheme="https://www.dzou.top/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
       <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
     
@@ -531,66 +587,6 @@
       <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
     
       <category term="Spring" scheme="https://www.dzou.top/tags/Spring/"/>
-    
-      <category term="SSM" scheme="https://www.dzou.top/tags/SSM/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis非关系型数据库学习笔记--更新中</title>
-    <link href="https://www.dzou.top/post/7c806d9b.html"/>
-    <id>https://www.dzou.top/post/7c806d9b.html</id>
-    <published>2019-07-24T01:20:27.000Z</published>
-    <updated>2019-08-02T11:51:47.436Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="NoSql（Not-Only-Sql）非关系型数据库"><a href="#NoSql（Not-Only-Sql）非关系型数据库" class="headerlink" title="NoSql（Not Only Sql）非关系型数据库"></a>NoSql（Not Only Sql）非关系型数据库</h2><p>这类型数据存储不需要<strong>固定</strong>的模式，<strong>key-value cache persistent存储</strong><br><strong>易扩展</strong><br><strong>把反复查询的数据放到缓存里，减少过多查询数据库</strong><br><strong>读写分离</strong>：写（主数据库），读（副数据库）<br><strong>表锁，行锁</strong>（高并发下使用时把数据锁起来，一次只能一个使用）<br><strong>分表分库</strong>：减小数据库压力<br>无需<strong>事先创建对应字段</strong>，灵活性高</p><p><strong>出现原因：关系型数据库无法解决过于复杂的关系</strong>（例如亲戚）<br>高并发、高可扩、高性能</p><p><strong>BSON</strong>Binary JSON</p><p><strong>聚合模型：</strong></p><ol><li>KV键值（Redis）</li><li>文档型数据库 BSON（CacheDb、MongoDB）</li><li>列族</li><li>图形（朋友圈社交网络、广告推荐系统）</li></ol><p><strong>CAP:（三进二）</strong></p><ul><li>C:Consistency 强一致性</li><li>A：可用性</li><li>P：分区容忍性</li></ul><hr><p><strong>Redis(很高效)</strong><br>一个基于内存的单线程高性能key-value型数据库（NoSql），读写性能优越，支持多种数据类型（list、set、zset、hash），master-slaver数据备份<br>epoll（linux内核），多路io复用，读写快<br><strong>内存储存和持久化</strong>：异步将内存数据写到硬盘上<br>CONFIG命令获取和设置所有的Redis配置。</p><hr><p><strong>命令：</strong><br>select 获取数据库（0-15）<br>get key 获取key<br>set key value 设置键值<br>DSBSIZE 当前表容量<br>FLUSHDB、FLUSHALL清空当前库和所有库<br>exists key 存在key（1） 没有（0）<br>ttl 过期时间（-1永不过期 -2 已经过期）<br>expire key time（设置过期时间）</p><hr><h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p><strong>哈希（hash）</strong>：<br>String类型的field和value的映射表，hash特别适合用于存储对象</p><pre><code>redis 127.0.0.1:6379&gt; HMSET user:1 usernameOKredis 127.0.0.1:6379&gt; HGETALL user:11) &quot;username&quot;</code></pre><p><strong>列表（list）</strong><br>列表是简单的字符串列表，按照插入顺序排序。你可以添加一个元素导列表的头部（左边）或者尾部（右边）。</p><pre><code>redis 127.0.0.1:6379&gt; lpush redis.net.cn redis(integer) 1redis 127.0.0.1:6379&gt; lrange redis.net.cn 0 10</code></pre><p><strong>集合（set）</strong><br>Set是string类型的无序无重复集合。<br>集合是通过哈希表实现的，所以添加，删除，查找的复杂度都是O(1)。</p><pre><code>redis 127.0.0.1:6379&gt; sadd redis.net.cn redis(integer) 1redis 127.0.0.1:6379&gt; smembers redis.net.cn</code></pre><p><strong>有序集合（zset）：sorted set</strong><br>通过分数来为集合中的成员进行从小到大的排序。</p><pre><code>redis 127.0.0.1:6379&gt; zadd redis.net.cn 0 redis(integer) 1redis 127.0.0.1:6379&gt; zadd redis.net.cn 0 rabitmq(integer) 1redis 127.0.0.1:6379&gt; zadd redis.net.cn 0 rabitmq(integer) 0redis 127.0.0.1:6379&gt; ZRANGEBYSCORE redis.net.cn 0 1000</code></pre><hr><h2 id="Redis持久化"><a href="#Redis持久化" class="headerlink" title="Redis持久化"></a>Redis持久化</h2><p><strong>1.rdb：redis Database</strong><br>将redis存储的数据生成<strong>快照snapshot并存储到磁盘</strong>等介质上<br>对于RDB方式，redis会单独创建（<strong>fork</strong>）一个子进程来进行持久化，而主进程是不会进行任何IO操作的，这样就确保了redis极高的性能。<br>redis在进行数据持久化的过程中，会先将数据写入到一个临时文件中，待持久化过程都结束了，才会用这个临时文件替换上次持久化好的文件。<br>保存dump.rdb（备份）</p><p><strong>2.aof：append only file</strong><br>以日志记录形式写操作，只能<strong>追不能改写</strong><br>AOF方式是将执行过的写指令记录下来，在数据恢复时按照<strong>从前到后</strong>的顺序再将指令都执行一遍，就这么简单。</p><p>AOF方式的另一个好处，我们通过一个“场景再现”来说明。某同学在操作redis时，不小心执行了FLUSHALL，导致redis内存中的数据全部被清空了，这是很悲剧的事情。不过这也不是世界末日，只要redis配置了AOF持久化方式，且AOF文件还没有被重写（rewrite），我们就可以用最快的速度暂停redis并编辑AOF文件，将最后一行的FLUSHALL命令删除，然后重启redis，就可以恢复redis的所有数据到FLUSHALL之前的状态了。是不是很神奇，这就是AOF持久化方式的好处之一。但是如果AOF文件已经被重写了，那就无法通过这种方法来恢复数据了。</p><p><strong><em>aof重写</em></strong><br>因为采用了追加方式，如果不做任何处理的话，AOF文件会变得<strong>越来越大</strong>，为此，redis提供了AOF文件重写（rewrite）机制，即当AOF文件的大小超过所设定的阈值时，redis就会启动AOF文件的<strong>内容压缩</strong>，只保留可以<strong>恢复数据的最小指令集</strong>。<br>2、在重写即将开始之际，redis会创建（fork）一个“重写子进程”，这个子进程会首先读取现有的AOF文件，并将其包含的指令进行分析压缩并写入到一个临时文件中。</p><p>3、与此同时，主工作进程会将新接收到的写指令一边累积到内存缓冲区中，一边继续写入到原有的AOF文件中，这样做是保证原有的AOF文件的可用性，避免在重写过程中出现意外。</p><p>4、当“重写子进程”完成重写工作后，它会给父进程发一个信号，父进程收到信号后就会将内存中缓存的写指令追加到新AOF文件中。</p><p>5、当追加结束后，redis就会用新AOF文件来代替旧AOF文件，之后再有新的写指令，就都会追加到新的AOF文件中了。</p><hr><p><strong>aof和rdb比较</strong><br>官方的建议是两个同时使用。这样可以提供更可靠的持久化方案<br>RDB需要定时持久化，风险是可能会丢两次持久之间的数据，量可能很大。<br>在同样数据规模的情况下，AOF文件要比RDB文件的体积大。而且，AOF方式的恢复速度也要慢于RDB方式。</p><h2 id="Redis事务"><a href="#Redis事务" class="headerlink" title="Redis事务"></a>Redis事务</h2><p>一次执行多个命令，批处理（一起成功、一起失败）<br><img src="https://img-blog.csdnimg.cn/20190612152347346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><pre><code>redis 127.0.0.1:6379&gt; MULTI OK redis 127.0.0.1:6379&gt; SET mykey &quot;redis&quot; QUEUED redis 127.0.0.1:6379&gt; GET mykey QUEUED redis 127.0.0.1:6379&gt; INCR visitors QUEUED redis 127.0.0.1:6379&gt; EXEC  1) OK 2) &quot;redis&quot; 3) (integer) 1</code></pre><p><strong>watch类似乐观锁</strong></p><pre><code>//balance100 debt 20127.0.0.1:6379&gt; watch balanceOK127.0.0.1:6379&gt; MULTIOK127.0.0.1:6379&gt; DECRBY balance 20QUEUED127.0.0.1:6379&gt; INCRBY debt 20QUEUED127.0.0.1:6379&gt; EXEC1) (integer) 802) (integer) 40</code></pre><hr><h2 id="Redis发布和订阅（少用）-有专门的消息中间件"><a href="#Redis发布和订阅（少用）-有专门的消息中间件" class="headerlink" title="Redis发布和订阅（少用） 有专门的消息中间件"></a><del>Redis发布和订阅</del>（少用） 有专门的消息中间件</h2><p>Redis 发布订阅(pub/sub)实现了消息系统，发送者(在redis术语中称为发布者)在接收者(订阅者)接收消息时发送消息。传送消息的链路称为信道。</p><hr>]]></content>
-    
-    <summary type="html">
-    
-      redis非关系型数据库，redis实现缓存存储，高效查询
-    
-    </summary>
-    
-      <category term="数据库" scheme="https://www.dzou.top/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-      <category term="分布式" scheme="https://www.dzou.top/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
-    
-      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
-    
-      <category term="NoSql" scheme="https://www.dzou.top/tags/NoSql/"/>
-    
-      <category term="Redis" scheme="https://www.dzou.top/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>SpringMVC框架学习笔记--更新中 JavaWeb开发（SSM框架第三部分）从介绍SpringMVC到使用,让你掌握核心知识</title>
-    <link href="https://www.dzou.top/post/f3a4f54b.html"/>
-    <id>https://www.dzou.top/post/f3a4f54b.html</id>
-    <published>2019-07-24T01:14:50.000Z</published>
-    <updated>2019-08-02T14:31:09.058Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="SpringMVC"><a href="#SpringMVC" class="headerlink" title="SpringMVC"></a>SpringMVC</h2><h3 id="服务器端三层架构"><a href="#服务器端三层架构" class="headerlink" title="服务器端三层架构"></a>服务器端三层架构</h3><ul><li>表现层（SpringMVC）</li><li>务层（Spring）</li><li>持久层（Mybatis）<br>表现层：拿到http请求的参数，传递给spring</li></ul><p><img src="https://img-blog.csdnimg.cn/20190518202814921.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><h3 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h3><p><strong>SpringMVC：一种基于Java实现的MVC设计模型的请求驱动类型的轻量级框架</strong></p><ul><li>M（model）：javaBean对象（将参数封装成JavaBean对象交给业务层处理）</li><li>V(view)：jsp （向控制器提交数据，显示模型中的数据）</li><li>C（controller）：servlet（根据视图提出的请求判断将请求交给那个模型处理，将处理后的结果交给对应的视图更新显示）</li></ul><h3 id="SpringMVC运行流程"><a href="#SpringMVC运行流程" class="headerlink" title="SpringMVC运行流程"></a>SpringMVC运行流程</h3><p>在Spring MVC框架中，从“Request（请求）”开始，依次进入“DispatcherServlet（核心分发器）” —&gt; “HandlerMapping（处理器映射）” —&gt; “Controller（控制器）” —&gt; “ModelAndView（模型和视图）” —&gt; “ViewResolver（视图解析器）” —&gt; “View（视图）” —&gt; “Response（响应）”结束，其中DispatcherServlet、HandlerMapping和ViewResolver 只需要在XML文件中配置即可，从而大大提高了开发的效率，特别是对于 HandlerMapping 框架为其提供了默认的配置。</p><ul><li>1.HandlerMapping（处理器映射）：通过映射找到哪个控制器执行哪个方法@RequestMapping（path=“”）再通过HandlerAdapter适配器执行方法</li><li>2.ViewResolver（视图解析器）：找到哪个视图的显示</li></ul><p><img src="https://img-blog.csdnimg.cn/20190519203907629.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><h3 id="SpringMVC和struct2区别"><a href="#SpringMVC和struct2区别" class="headerlink" title="SpringMVC和struct2区别"></a>SpringMVC和struct2区别</h3><ul><li>共同：都是表现层框架，离不开ServletAPI， 请求的机制都是一个核心控制器</li><li>不同：<ul><li>1.SpringMVC核心控制器是Servlet，Struct是Filter</li><li>2.SpringMVC是基于方法设计的，Struct是基于类设计的，前者效率较高</li><li>3.SpringMVC使用更简洁，支持JSR303，处理ajax请求更方便</li><li>4.Struct的OGNL表达式比SpringMVC开发效率高，执行效率比JSTL低，尤其Struct的表单标签，没有html效率高</li></ul></li></ul><h3 id="创建SpringMVC-Web项目"><a href="#创建SpringMVC-Web项目" class="headerlink" title="创建SpringMVC Web项目"></a>创建SpringMVC Web项目</h3><blockquote><p>使用maven构建webapp项目，maven添加archetypeCatalog=internal，国外服务器太慢</p></blockquote><p><a href="mvc:annotation-driven/" rel="external nofollow noopener noreferrer" target="_blank">mvc:annotation-driven/</a>打开注解（处理器映射器、处理器适配器、视图解析器配置）</p><h4 id="请求参数绑定"><a href="#请求参数绑定" class="headerlink" title="请求参数绑定"></a>请求参数绑定</h4><p>当你以表当post提交参数时，RequestMapping可以根据HandlerMapping寻找指定controller携带的javabean类对象参数将参数封装成一个bean对象返回（jsp表单指定属性name值要与bean对象属性名相同，当参数时包装对象时，应使用包装对象里的对象名加属性）</p><pre><code class="xml">&lt;form action=&quot;params/userVoadd&quot; method=&quot;post&quot;&gt;    username&lt;input type=&quot;text&quot; name=&quot;user.username&quot;&gt;&lt;/br&gt;    password&lt;input type=&quot;password&quot; name=&quot;user.password&quot;&gt;&lt;/br&gt;    money&lt;input type=&quot;text&quot; name=&quot;user.money&quot;&gt;&lt;/br&gt;    UserVoName&lt;input type=&quot;text&quot; name=&quot;userVoname&quot;&gt;&lt;/br&gt;    UserVoPassword&lt;input type=&quot;text&quot; name=&quot;userVopassword&quot;&gt;&lt;/br&gt;    &lt;input type=&quot;submit&quot; value=&quot;submit&quot;&gt;&lt;/form&gt;</code></pre><h4 id="请求时参数转换器"><a href="#请求时参数转换器" class="headerlink" title="请求时参数转换器"></a>请求时参数转换器</h4><p>（1）首先定义一个类继承<strong>Converter</strong>或者<strong>formatter</strong>类，<br>前者可用泛型表达参数转换类型&lt;String,Integer&gt;，后者使用<t>,formatter转换源类型必须是String，对于Web应用Http发送的数据都是以String类型存储，使用formatter更合适</t></p><pre><code class="java">public class Convertors implements Converter&lt;String,Date&gt; {    @Override    public Date convert(String s) {        if(s==null){            throw new RuntimeException(&quot;请你传入数据!&quot;);        }        DateFormat df=new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);        try {            return df.parse(s);        } catch (ParseException e) {            throw new RuntimeException(&quot;转换出错&quot;);        }    }}</code></pre><p>（2）在主文件中配置装换器</p><pre><code class="xml">&lt;bean class=&quot;org.springframework.context.support.ConversionServiceFactoryBean&quot; id=&quot;conversionServiceFactoryBean&quot;&gt;        &lt;property name=&quot;converters&quot;&gt;            &lt;set&gt;                &lt;bean class=&quot;com.dingxiang.utils.DateConvertor.Convertors&quot;/&gt;            &lt;/set&gt;        &lt;/property&gt;    &lt;/bean&gt;</code></pre><p>（3）在注解中打开转换器</p><pre><code class="xml">&lt;mvc:annotation-driven conversion-service=&quot;conversionServiceFactoryBean&quot;/&gt;</code></pre><h3 id="常用注解"><a href="#常用注解" class="headerlink" title="常用注解"></a>常用注解</h3><h4 id="RequestParam"><a href="#RequestParam" class="headerlink" title="RequestParam"></a>RequestParam</h4><p>（1）RequestParam=request.getParameter(“name”)（name和value属性基本等同，required表示是否必须）</p><pre><code class="java">//用s来获取参数usernamepublic String testRequestParam(@RequestParam(name = &quot;username&quot;)String s){        System.out.println(s);        return &quot;start&quot;;    }</code></pre><h4 id="RequestBody"><a href="#RequestBody" class="headerlink" title="RequestBody"></a>RequestBody</h4><p>（2）RequestBody（获取请求体的内容，得到key=value&amp;keyvalue…，gei方式不适用）</p><pre><code class="java">//获取表单传递参数，用字符串接受public String testRequestBody(@RequestBody String body){        System.out.println(body);        return &quot;start&quot;;    }</code></pre><h4 id="PathVarible"><a href="#PathVarible" class="headerlink" title="PathVarible"></a>PathVarible</h4><p>（3）PathVariable使用RESTful风格，即根据参数传递类型和参数数量选取不同的方法执行，</p><pre><code class="java">//使用占位符{}直接传入参数@RequestMapping(&quot;/testPathVariable/{id}&quot;)    public String testPathVariable(@PathVariable(value = &quot;id&quot;) String body){        System.out.println(body);        return &quot;start&quot;;    }</code></pre><h4 id="静态方法发送请求"><a href="#静态方法发送请求" class="headerlink" title="静态方法发送请求"></a>静态方法发送请求</h4><p>浏览器插件测试各种请求方式<br>（4）RequestHeader（少用）</p><pre><code class="java">@RequestHeader(value = &quot;User-Agent&quot;)</code></pre><p>（5）CookieValue（少用）</p><pre><code class="java">@CookieValue(value = &quot;JSESSIONID&quot;)</code></pre><h4 id="ModelAttribute"><a href="#ModelAttribute" class="headerlink" title="ModelAttribute"></a>ModelAttribute</h4><p>（6）ModelAttribute（方法、参数）首先执行<br>用于将多个参数封装到一个实体对象，从而简化数据绑定流程，自动暴露为模型数据，在视图展示时使用<br>两种方法，返回bean对象或者通过把bean对象加入到集合使用注解来读取</p><pre><code class="java"> @RequestMapping(&quot;/testModelAttribute&quot;)    public String testModelAttribute(@ModelAttribute(&quot;1&quot;) User user){        System.out.println(&quot;testModelAttribute&quot;);        System.out.println(user.toString());        return &quot;start&quot;;    }    @ModelAttribute    public void modelattribute(Map&lt;String,User&gt; map){        User user=new User();        user.setDate(new Date());        user.setMoney(12.212);        map.put(&quot;1&quot;,user);    }</code></pre><pre><code class="java">@RequestMapping(&quot;/testModelAttribute&quot;)    public String testModelAttribute(User user){        System.out.println(&quot;testModelAttribute&quot;);        System.out.println(user.toString());        return &quot;start&quot;;    }    @ModelAttribute    public User modelattribute(){        User user=new User();        user.setDate(new Date());        user.setMoney(12.212);        return user;    }</code></pre><h4 id="SessionAttribute"><a href="#SessionAttribute" class="headerlink" title="SessionAttribute"></a>SessionAttribute</h4><p>（7）SessionAttribute<br>使用HttpSession的话需要servletAPI支持，存在耦合<br>value代表我们需要把什么样的对象放入session</p><pre><code class="java">@SessionAttributes(value = {&quot;name&quot;})</code></pre><h4 id="前端控制器拦截资源文件"><a href="#前端控制器拦截资源文件" class="headerlink" title="前端控制器拦截资源文件"></a>前端控制器拦截资源文件</h4><p>（8）不让前端控制器拦截资源文件<br>    <code>&lt;mvc:resources mapping=&quot;/css/**&quot; location=&quot;/css/**&quot;/&gt;</code></p><h4 id="ResponseBody"><a href="#ResponseBody" class="headerlink" title="ResponseBody"></a>ResponseBody</h4><p>（9）ResponseBody 使用到了json转换器jackson，添加maven依赖<br>核心包：jackson-databind jackson-annatation jackson-core</p><pre><code class="xml">    &lt;dependency&gt;      &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;      &lt;artifactId&gt;jackson-core&lt;/artifactId&gt;      &lt;version&gt;2.8.1&lt;/version&gt;    &lt;/dependency&gt;    &lt;dependency&gt;      &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;      &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;      &lt;version&gt;2.8.1&lt;/version&gt;    &lt;/dependency&gt;    &lt;dependency&gt;      &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;      &lt;artifactId&gt;jackson-annotations&lt;/artifactId&gt;      &lt;version&gt;2.8.1&lt;/version&gt;    &lt;/dependency&gt;</code></pre><h3 id="Ajax前后端数据传输"><a href="#Ajax前后端数据传输" class="headerlink" title="Ajax前后端数据传输"></a>Ajax前后端数据传输</h3><p> <strong>jQuery Ajax实现前后台json数据传输并使用@RequestBody封装成对象传输到后台@ResponseBody封装成对象返回到jsp</strong></p><pre><code class="js">$(function () {            $(&#39;#ajax&#39;).click(function () {                $.ajax({                    url:&#39;user/testAjax2&#39;,                    contentType:&#39;application/json; charset=UTF-8&#39;,                    type:&#39;post&#39;,                    data:&#39;{&quot;username&quot;:&quot;zoufuob&quot;,&quot;password&quot;:&quot;12345&quot;}&#39;,                    dataType:&#39;json&#39;,                    error:function () {                        alert(&quot;获取数据失败&quot;)                    },                    success:function (data) {                        alert(data.username)                        alert(data.password)                    }                })            })        })</code></pre><pre><code class="java">//jackson把json String封装发哦user对象@RequestMapping(&quot;/testAjax2&quot;)    public @ResponseBody User testAjax2(@RequestBody User user){        System.out.println(&quot;执行了testAjax2&quot;);        System.out.println(user);        //模拟查找修改数据库数据        user.setUsername(&quot;wangdatao&quot;);        user.setPassword(&quot;52zoufubo&quot;);        return user;    }</code></pre><h3 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h3><ul><li>（1）异常类  继承Exception</li><li>（2）异常解析类 实现接口HandlerExceptionResolver重写resolveException方法</li></ul><pre><code class="java">public ModelAndView resolveException(javax.servlet.http.HttpServletRequest httpServletRequest, javax.servlet.http.HttpServletResponse httpServletResponse, Object o, Exception e) {        //获取异常对象        SysException exception=null;        if(e instanceof SysException){            exception= (SysException) e;        }else{            exception = new SysException(&quot;error&quot;);        }        //创建modelandview        ModelAndView modelAndView=new ModelAndView();        modelAndView.addObject(&quot;errorMsg&quot;,exception.getMsg());        modelAndView.setViewName(&quot;error&quot;);        return modelAndView;    }</code></pre><ul><li>（3）配置异常处理器（配置异常解析类对象到spring）</li></ul><p><img src="https://img-blog.csdnimg.cn/20190522230615681.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><h3 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h3><blockquote><p>表单 enctype=”multipart/form-data”</p></blockquote><h4 id="单服务器文件上传"><a href="#单服务器文件上传" class="headerlink" title="单服务器文件上传"></a>单服务器文件上传</h4><p>用MultipartFile对象作为Controller参数接收表单传入数据，通过transferTo方法上传文件</p><pre><code class="java">public String testUpload2(HttpServletRequest request, MultipartFile upload2)throws Exception{        System.out.println(&quot;文件上传&quot;);        String path=request.getSession().getServletContext().getRealPath(&quot;/uploads/&quot;);        File file=new File(path);        if(!file.exists()){            file.mkdir();        }        String name=upload2.getOriginalFilename();        String uuid=UUID.randomUUID().toString().replace(&quot;-&quot;,&quot;&quot;);        name=uuid+&quot;_&quot;+name;        upload2.transferTo(new File(path,name));        return &quot;success&quot;;    }</code></pre><h4 id="跨服务器上传文件"><a href="#跨服务器上传文件" class="headerlink" title="跨服务器上传文件"></a>跨服务器上传文件</h4><ul><li>（1）创建客户端对象</li><li>（2）与服务器建立连接</li><li>（3）传入数据</li></ul><pre><code class="java">@RequestMapping(&quot;testUpload3&quot;)    public String testUpload3(MultipartFile upload3) throws IOException {        System.out.println(&quot;跨服务器文件上传&quot;);        String path=&quot;http://localhost:8090/uploads/&quot;;        String name=upload3.getOriginalFilename();        String uuid=UUID.randomUUID().toString().replace(&quot;-&quot;,&quot;&quot;);        name=uuid+&quot;_&quot;+name;        //创建客户端对象        Client client=Client.create();        //与服务器进行连接        WebResource resource=client.resource(path+name);        //传文件        resource.put(upload3.getBytes());        return &quot;success&quot;;    }</code></pre><h3 id="拦截器"><a href="#拦截器" class="headerlink" title="拦截器"></a>拦截器</h3><p>功能与过滤器基本相同，但是拦截器只能对用户请求的方法进行拦截，用在权限验证，判断用户是否登录，记录请求信息的日志</p><ul><li>拦截器类 实现接口HandlerInterceptor 可重写<ul><li>preHandle（返回true时执行下一个拦截器，没有拦截器时执行Controller）</li><li>postHandle（该方法在控制器请求方法调用之后，视图解析之前进行执行）</li><li>afterHandle（在视图解析后执行）</li></ul></li><li>配置拦截器</li></ul><pre><code class="xml">&lt;mvc:interceptors&gt;        &lt;mvc:interceptor&gt;            &lt;!--要拦截的方法--&gt;            &lt;mvc:mapping path=&quot;/user/testInterceptor&quot;/&gt;            &lt;bean class=&quot;com.dingxiang.Interceptor.MyInterceptor&quot; id=&quot;myInterceptor&quot;/&gt;        &lt;/mvc:interceptor&gt;        &lt;mvc:interceptor&gt;            &lt;!--要拦截的方法--&gt;            &lt;mvc:mapping path=&quot;/user/testInterceptor&quot;/&gt;            &lt;bean class=&quot;com.dingxiang.Interceptor.MyInterceptor2&quot; id=&quot;myInterceptor2&quot;/&gt;        &lt;/mvc:interceptor&gt;        &lt;mvc:interceptor&gt;            &lt;mvc:mapping path=&quot;/login/main&quot;/&gt;            &lt;bean class=&quot;com.dingxiang.Interceptor.loginInterceptor.LoginInterceptor&quot; id=&quot;loginInterceptor&quot;/&gt;        &lt;/mvc:interceptor&gt;    &lt;/mvc:interceptors&gt;</code></pre><h3 id="数据验证"><a href="#数据验证" class="headerlink" title="数据验证"></a>数据验证</h3><p>网页前端验证后还需要在服务器端对数据进行验证</p><h4 id="Spring-Validator接口"><a href="#Spring-Validator接口" class="headerlink" title="Spring Validator接口"></a>Spring Validator接口</h4><p>首先需要编写一个Vaidator类实现该接口，对数据进行验证的配置，相当于JSR303的注解配置验证信息；<br>然后再主配置文件中配置一个ReloadableResourceBundleMessageSource Bean并打开注解validator</p><pre><code class="xml">&lt;bean class=&quot;org.springframework.context.support.ReloadableResourceBundleMessageSource&quot; id=&quot;messageSource&quot;&gt;        &lt;property name=&quot;basename&quot; value=&quot;classpath:errorMessege&quot;/&gt;    &lt;/bean&gt;</code></pre><pre><code class="xml">&lt;mvc:annotation-driven validator=&quot;validator&quot;/&gt;</code></pre><h4 id="JSR303-JSR-303"><a href="#JSR303-JSR-303" class="headerlink" title="JSR303 JSR-303"></a>JSR303 JSR-303</h4><p> Java EE 6 中的一项子规范，叫做 Bean Validation JSR 303 用于对 Java Bean 中的字段的值进行验证。</p><ol><li><p>Bean Validation 中内置的 constraint</p><ul><li>@Null<br>被注释的元素必须为 null</li><li>@NotNull<br>被注释的元素必须不为 null</li><li>@AssertTrue<br>被注释的元素必须为 true</li><li>@AssertFalse<br>被注释的元素必须为 false</li><li>@Min(value)<br>被注释的元素必须是一个数字，其值必须大于等于指定的最小值</li><li>@Max(value)<br>被注释的元素必须是一个数字，其值必须小于等于指定的最大值</li><li>@DecimalMin(value)<br>被注释的元素必须是一个数字，其值必须大于等于指定的最小值</li><li>@DecimalMax(value)<br>被注释的元素必须是一个数字，其值必须小于等于指定的最大值</li><li>@Size(max, min)<br>被注释的元素的大小必须在指定的范围内</li><li>@Digits (integer, fraction)<br>被注释的元素必须是一个数字，其值必须在可接受的范围内</li><li>@Past<br>被注释的元素必须是一个过去的日期</li><li>@Future<br>被注释的元素必须是一个将来的日期</li><li>@Pattern(value)<br>被注释的元素必须符合指定的正则表达式</li></ul></li><li><p>Hibernate Validator 附加的 constraint</p><ul><li>@Email<br>被注释的元素必须是电子邮箱地址</li><li>@Length<br>被注释的字符串的大小必须在指定的范围内</li><li>@NotEmpty<br>被注释的字符串的必须非空</li><li>@Range<br>被注释的元素必须在合适的范围内</li></ul></li></ol><p>与Validator不同的是需要配置一个LocalValidatorFactoryBean</p><pre><code class="xml"> &lt;bean id=&quot;validator&quot; class=&quot;org.springframework.validation.beanvalidation.LocalValidatorFactoryBean&quot;&gt;        &lt;property name=&quot;providerClass&quot; value=&quot;org.hibernate.validator.HibernateValidator&quot;/&gt;        &lt;property name=&quot;validationMessageSource&quot; ref=&quot;messageSource&quot;/&gt;    &lt;/bean&gt;</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      SpringMVC：一种基于Java实现的MVC设计模型的请求驱动类型的轻量级框架- M（model）：javaBean对象（将参数封装成JavaBean对象交给业务层处理）
-    
-    </summary>
-    
-      <category term="Java Web" scheme="https://www.dzou.top/categories/Java-Web/"/>
-    
-    
-      <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
-    
-      <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
-    
-      <category term="后端" scheme="https://www.dzou.top/tags/%E5%90%8E%E7%AB%AF/"/>
-    
-      <category term="Spring" scheme="https://www.dzou.top/tags/Spring/"/>
-    
-      <category term="SpringMVC" scheme="https://www.dzou.top/tags/SpringMVC/"/>
     
       <category term="SSM" scheme="https://www.dzou.top/tags/SSM/"/>
     
