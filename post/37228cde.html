@@ -78,7 +78,7 @@
 
 
 
-  <meta name="keywords" content="Java,Java基础,并发编程,锁,同步,线程,多线程,死锁,线程安全性,Synchronized,volatile,重入锁,自旋锁,原子类,CAS,饥饿,Lock,ReentrantLock,Callable,Future,线程池,执行器,ThreadExecutorPool">
+  <meta name="keywords" content="Java,Java基础,并发编程,锁,同步,线程,多线程,死锁,线程安全性,Synchronized,volatile,重入锁,自旋锁,原子类,CAS,饥饿,Lock,ReentrantLock,Callable,Future,线程池,执行器,ThreadExecutorPool,Condition,Join,ExecutorService,Semaphore,CountDownLatch,CyclicBarrier,wait,notify,await,signal,ThreadLocal">
 
 
 
@@ -92,17 +92,19 @@
 
 
 <meta name="description" content="并发编程是Java程序员最重要的技能之一，也是最难掌握的一种技能。它要求编程者对计算机最底层的运作原理有深刻的理解，同时要求编程者逻辑清晰、思维缜密，这样才能写出高效、安全、可靠的多线程并发程序。">
-<meta name="keywords" content="Java,Java基础,并发编程,锁,同步,线程,多线程,死锁,线程安全性,Synchronized,volatile,重入锁,自旋锁,原子类,CAS,饥饿,Lock,ReentrantLock,Callable,Future,线程池,执行器,ThreadExecutorPool">
+<meta name="keywords" content="Java,Java基础,并发编程,锁,同步,线程,多线程,死锁,线程安全性,Synchronized,volatile,重入锁,自旋锁,原子类,CAS,饥饿,Lock,ReentrantLock,Callable,Future,线程池,执行器,ThreadExecutorPool,Condition,Join,ExecutorService,Semaphore,CountDownLatch,CyclicBarrier,wait,notify,await,signal,ThreadLocal">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java并发编程学习笔记-更新中">
 <meta property="og:url" content="https://www.dzou.top/post/37228cde.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="并发编程是Java程序员最重要的技能之一，也是最难掌握的一种技能。它要求编程者对计算机最底层的运作原理有深刻的理解，同时要求编程者逻辑清晰、思维缜密，这样才能写出高效、安全、可靠的多线程并发程序。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-04T08:27:51.703Z">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/1.png">
+<meta property="og:updated_time" content="2019-08-10T11:35:15.636Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发编程学习笔记-更新中">
 <meta name="twitter:description" content="并发编程是Java程序员最重要的技能之一，也是最难掌握的一种技能。它要求编程者对计算机最底层的运作原理有深刻的理解，同时要求编程者逻辑清晰、思维缜密，这样才能写出高效、安全、可靠的多线程并发程序。">
+<meta name="twitter:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/1.png">
 
 
 
@@ -409,7 +411,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.8k字
+                  8.5k字
                 </span>
               
 
@@ -425,7 +427,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  10分
+                  35分
                 </span>
               
             </div>
@@ -700,7 +702,7 @@ public synchronized void unlock() {
         }
     }</code></pre>
 <h2 id="八-AbstractQueuedSynchronizer-AQS"><a href="#八-AbstractQueuedSynchronizer-AQS" class="headerlink" title="八.AbstractQueuedSynchronizer(AQS)"></a>八.AbstractQueuedSynchronizer(AQS)</h2><p>详细看我另一篇博客：<a href="https://www.dzou.top/post/7a5625fe.html">https://www.dzou.top/post/7a5625fe.html</a></p>
-<h2 id="读写锁"><a href="#读写锁" class="headerlink" title="读写锁"></a>读写锁</h2><h3 id="ReentrantReadWriteLock"><a href="#ReentrantReadWriteLock" class="headerlink" title="ReentrantReadWriteLock"></a>ReentrantReadWriteLock</h3><p>读写锁中读操作是共享的，并不互斥，读操作可以一起进行；写操作是互斥的，同时只能一个线程获取写锁；</p>
+<h2 id="九-读写锁"><a href="#九-读写锁" class="headerlink" title="九.读写锁"></a>九.读写锁</h2><h3 id="ReentrantReadWriteLock"><a href="#ReentrantReadWriteLock" class="headerlink" title="ReentrantReadWriteLock"></a>ReentrantReadWriteLock</h3><p>读写锁中读操作是共享的，并不互斥，读操作可以一起进行；写操作是互斥的，同时只能一个线程获取写锁；</p>
 <p>使用如下：</p>
 <pre><code class="java">//添加参数指定公平或者非公平
 private ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -709,12 +711,9 @@ private ReadWriteLock lock = new ReentrantReadWriteLock();
 <h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p><strong><em>实现与<code>ReentrantLock</code>类似写锁使用继承AQS类的同步器<code>Sync</code>的<code>tryRelease</code>和<code>tryAcquire</code>，重入次数由int值控制，最大16位二进制-1；读锁是共享锁，使用<code>Sync</code>的<code>tryReleaseShare</code>和<code>tryAcquireShare</code>,读锁重入的次数使用<code>HoldCounter</code>内部类（由<code>ThreadLocal</code>存储）</em></strong></p>
 <h3 id="状态维护"><a href="#状态维护" class="headerlink" title="状态维护"></a>状态维护</h3><p>状态由32位二进制整数维护，前16位负责读，后16位负责写，通过位运算确定状态，假设当前状态为<code>S</code>，写状态等于<code>S&amp;0x0000FFFF</code>（将高16位抹去），读状态等于<code>S&gt;&gt;&gt;16</code>无符号右移16位。写状态+1时，<code>S+1</code>；读状态+1时，<code>S+(1&lt;&lt;16)</code>，也就是下面的<code>S+SHARED_UNIT</code></p>
 <ol>
-<li><p>读锁的获取：当没有线程处于获取到写锁或者处于请求获取写锁的状态时，可以获取读锁</p>
-</li>
-<li><p>写锁的获取：首先写锁请求数+1，判断如果没有线程持有写锁并且没有线程持有读锁则可以获取</p>
-</li>
-<li><p>死锁情况：线程1获取到读锁，线程2请求获取写锁，此时线程1再请求获取读锁就会发生死锁</p>
-</li>
+<li>读锁的获取：当没有线程处于获取到写锁或者处于请求获取写锁的状态时，可以获取读锁</li>
+<li>写锁的获取：首先写锁请求数+1，判断如果没有线程持有写锁并且没有线程持有读锁则可以获取</li>
+<li>死锁情况：线程1获取到读锁，线程2请求获取写锁，此时线程1再请求获取读锁就会发生死锁</li>
 </ol>
 <pre><code class="java">static final int SHARED_SHIFT   = 16;
 static final int SHARED_UNIT    = (1 &lt;&lt; SHARED_SHIFT);
@@ -756,6 +755,864 @@ static final int EXCLUSIVE_MASK = (1 &lt;&lt; SHARED_SHIFT) - 1;</code></pre>
 <p>第二次获取读锁是否必要：</p>
 <p>必要的。因为你先释放写锁再获取读锁的话，中间可能有其他线程获取写锁，导致你无法获取到读锁，无法感知数据的更新。</p>
 <p>不支持锁升级原因：读锁可以被多个线程获取，其中任意线程获取到写锁更新数据后，都会导致其他获取读锁的线程无法感知数据的更新。</p>
+<h2 id="十-线程通信"><a href="#十-线程通信" class="headerlink" title="十.线程通信"></a>十.线程通信</h2><h3 id="wait-notify"><a href="#wait-notify" class="headerlink" title="wait notify"></a>wait notify</h3><p>传统可使用下面代码等待，但是资源消耗太大：</p>
+<pre><code class="java">protected MySignal sharedSignal = ...
+
+while(!sharedSignal.hasDataToProcess()){
+  //do nothing... busy waiting
+}</code></pre>
+<p><code>wait</code>：会释放线程资源，停止运行状态（释放锁）</p>
+<p><code>notify</code>：通知某一个处于等待状态的线程（随机）</p>
+<pre><code class="java">/**
+ * 模拟10个厕所坑位，20个人上，出来一个可以进去一个
+ */
+public class Toilet {
+    private volatile int toilet = 10;
+    public void getOneToilet() throws InterruptedException {
+        synchronized (this) {
+            if (toilet &gt; 0) {
+                toilet = toilet - 1;
+                System.out.println(Thread.currentThread().getName() + &quot;:get one toilet.&quot;);
+            } else {
+                wait();
+                getOneToilet();
+            }
+        }
+    }
+    public void releaseToilet(){
+        synchronized (this) {
+            toilet = toilet + 1;
+            System.out.println(Thread.currentThread().getName()+&quot;:release one toilet&quot;);
+            notify();
+        }
+    }
+    public static void main(String[] args) {
+        Toilet toilet = new Toilet();
+        for(int i=0;i&lt;20;i++){
+            new Thread(()-&gt;{
+                try {
+                    toilet.getOneToilet();
+                    Thread.sleep(new Random().nextInt(7000));
+                    toilet.releaseToilet();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+    }
+}</code></pre>
+<h3 id="生产者和消费者"><a href="#生产者和消费者" class="headerlink" title="生产者和消费者"></a>生产者和消费者</h3><p>面包店生产面包，放在商店里，消费者来店里购买面包；没有面包时，店家告诉你生产出来告诉你，告诉厂家生产面包，到货了，你再过来购买。</p>
+<h3 id="Condition——线程通信更高效的方式"><a href="#Condition——线程通信更高效的方式" class="headerlink" title="Condition——线程通信更高效的方式"></a>Condition——线程通信更高效的方式</h3><p><code>AQS内部类ConditionObject</code>实现<code>Condition</code>接口</p>
+<p>监视器方法包括wait()/notify()/notifyAll(),需要配合synchronized使用.而Condition是配合lock使用的。</p>
+<p>主要方法：</p>
+<pre><code class="java">void await();
+void signal();</code></pre>
+<blockquote>
+<p>用<code>await()</code>替换<code>wait()</code>，用<code>signal()</code>替换<code>notify()</code>，用<code>signalAll()</code>替换<code>notifyAll()</code>，传统线程的通信方式，Condition都可以实现，这里注意，Condition是被绑定到Lock上的，要创建一个Lock的Condition必须用newCondition()方法。</p>
+</blockquote>
+<p>使用：</p>
+<pre><code class="java">private Lock lock = new ReentrantLock();
+private Condition addCondition = lock.newCondition();
+private Condition pollCondition = lock.newCondition();</code></pre>
+<h4 id="Condition实现的有界队列"><a href="#Condition实现的有界队列" class="headerlink" title="Condition实现的有界队列"></a>Condition实现的有界队列</h4><pre><code class="java">public class BoundQueue {
+    private Lock lock = new ReentrantLock();
+    private Condition addCondition = lock.newCondition();
+    private Condition pollCondition = lock.newCondition();
+    private Object[] boundQueue = new Object[20];
+    private int count;//队列元素数量
+    private int addIndex;//入队索引
+    private int pollIndex;//出队索引
+    public void add(Object x){
+        lock.lock();
+        try {
+            while (count &gt;= boundQueue.length) {
+                addCondition.await();//等待
+            }
+            System.out.println(Thread.currentThread().getName()+&quot;:&quot;+x+&quot;入队列，当前有：&quot;+ ++count+&quot;个元素&quot;);
+            boundQueue[addIndex] = x;//入队
+            if(++addIndex==boundQueue.length){
+                addIndex = 0;//入队到尽头时，从队列开始入队
+            }
+            pollCondition.signal();//唤醒
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            lock.unlock();
+        }
+    }
+    public void poll(){
+        lock.lock();
+        try {
+            while (count &lt;= 0) {
+                pollCondition.await();
+            }
+            System.out.println(Thread.currentThread().getName()+&quot;:&quot;+boundQueue[pollIndex]+&quot;出队列，当前有：&quot;+ --count+&quot;个元素&quot;);
+            boundQueue[pollIndex] = null;//出队
+            if(++pollIndex==boundQueue.length){
+                pollIndex = 0;//如果出队的索引到队列尽头，从头开始出队
+            }
+            addCondition.signal();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            lock.unlock();
+        }
+    }</code></pre>
+<h4 id="Condition源码分析"><a href="#Condition源码分析" class="headerlink" title="Condition源码分析"></a>Condition源码分析</h4><p>Condition接口实现类就是AQS同步器的<code>ConditionObject</code>类，每一个ConditionObject维护一个等待队列（单向队列）</p>
+<p>该类维护着一个与AQS中<code>ReentrantLock</code>的同步队列类似，叫等待队列，所有调用condition.await方法的线程会加入到等待队列中，并且线程状态转换为等待状态。</p>
+<ul>
+<li>等待队列：存储者待唤醒的线程的引用</li>
+<li>同步队列：存储同步竞争资源的线程的引用</li>
+</ul>
+<h5 id="await"><a href="#await" class="headerlink" title="await"></a>await</h5><p>把线程加入等待队列</p>
+<pre><code class="java">public final void await() throws InterruptedException {
+            if (Thread.interrupted())
+                throw new InterruptedException();
+    //主要 把当前线程引用用Node保存，添加到等待队列
+            Node node = addConditionWaiter();
+            int savedState = fullyRelease(node);
+            int interruptMode = 0;
+    //while循环把该线程的节点添加到同步队列 阻塞
+            while (!isOnSyncQueue(node)) {
+                LockSupport.park(this);
+                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+                    break;
+            }
+            if (acquireQueued(node, savedState) &amp;&amp; interruptMode != THROW_IE)
+                interruptMode = REINTERRUPT;
+            if (node.nextWaiter != null) // clean up if cancelled
+                //清空等待队列中处于CANCEL状态的节点
+                unlinkCancelledWaiters();
+            if (interruptMode != 0)
+                reportInterruptAfterWait(interruptMode);
+        }</code></pre>
+<h5 id="addConditionWaiter"><a href="#addConditionWaiter" class="headerlink" title="addConditionWaiter"></a>addConditionWaiter</h5><p>把当前线程引用用Node保存，添加到等待队列</p>
+<pre><code class="java">private Node addConditionWaiter() {
+            Node t = lastWaiter;
+            // If lastWaiter is cancelled, clean out.
+            if (t != null &amp;&amp; t.waitStatus != Node.CONDITION) {
+                unlinkCancelledWaiters();
+                t = lastWaiter;
+            }
+            Node node = new Node(Thread.currentThread(), Node.CONDITION);
+    //如果等待队列中最后一个节点为空，则该节点为第一个节点
+            if (t == null)
+                firstWaiter = node;
+            else
+                //否则为最后一个节点的后一个节点
+                t.nextWaiter = node;
+    //把最后一个节点指向该节点
+            lastWaiter = node;
+            return node;
+        }</code></pre>
+<h5 id="unlinkCancelledWaiters"><a href="#unlinkCancelledWaiters" class="headerlink" title="unlinkCancelledWaiters"></a>unlinkCancelledWaiters</h5><p>清空等待队列中CANCEL状态的节点</p>
+<pre><code class="java">private void unlinkCancelledWaiters() {
+            Node t = firstWaiter;
+            Node trail = null;
+            while (t != null) {
+                Node next = t.nextWaiter;
+                //如果状态不为CONDITION（Condition等待队列），把它清除
+                if (t.waitStatus != Node.CONDITION) {
+                    t.nextWaiter = null;
+                    if (trail == null)
+                        firstWaiter = next;
+                    else
+                        trail.nextWaiter = next;
+                    if (next == null)
+                        lastWaiter = trail;
+                }
+                else
+                    trail = t;
+                t = next;
+            }
+        }</code></pre>
+<h5 id="signal"><a href="#signal" class="headerlink" title="signal"></a>signal</h5><p>唤醒等待队列中第一个队列到同步队列</p>
+<pre><code class="java">public final void signal() {
+    //如果不是独占模式抛出异常
+            if (!isHeldExclusively())
+                throw new IllegalMonitorStateException();
+    //唤醒第一个节点对应线程
+            Node first = firstWaiter;
+            if (first != null)
+                doSignal(first);
+        }
+</code></pre>
+<h5 id="doSignal"><a href="#doSignal" class="headerlink" title="doSignal"></a>doSignal</h5><pre><code class="java">private void doSignal(Node first) {
+    //唤醒第一个节点，失败唤醒下一个，成功后停止循环
+            do {
+                if ( (firstWaiter = first.nextWaiter) == null)
+                    lastWaiter = null;
+                first.nextWaiter = null;
+            } while (!transferForSignal(first) &amp;&amp;
+                     (first = firstWaiter) != null);
+        }</code></pre>
+<h5 id="transferForSignal"><a href="#transferForSignal" class="headerlink" title="transferForSignal"></a>transferForSignal</h5><p>把线程改变成唤醒状态</p>
+<pre><code class="java">final boolean transferForSignal(Node node) {
+        /*
+         * If cannot change waitStatus, the node has been cancelled.
+         */
+        if (!compareAndSetWaitStatus(node, Node.CONDITION, 0))
+            return false;
+//把当前节点添加到同步队列中 竞争资源
+        Node p = enq(node);
+        int ws = p.waitStatus;
+    //如果该线程状态为CANCEL或者设置状态为SIGNAL（唤醒状态）失败的话，使用UNSAFE的unpark方法唤醒该线程，但是这样的话节点状态可能短暂是错误的，但是影响并不大（在同步队列中会使用CAS设定状态）
+        if (ws &gt; 0 || !compareAndSetWaitStatus(p, ws, Node.SIGNAL))
+            LockSupport.unpark(node.thread);
+        return true;
+    }</code></pre>
+<h3 id="数据库连接池"><a href="#数据库连接池" class="headerlink" title="数据库连接池"></a>数据库连接池</h3><h4 id="使用Condition-ReentrantLock实现"><a href="#使用Condition-ReentrantLock实现" class="headerlink" title="使用Condition+ReentrantLock实现"></a>使用Condition+ReentrantLock实现</h4><pre><code class="java">public class MyDataSource {
+    private List&lt;Connection&gt; pool = new LinkedList&lt;&gt;();
+    private static final int INIT_CONNECTION = 10;
+    private static String URL = &quot;jdbc:mysql://localhost:3306/springboot&quot;;
+    private static String USER = &quot;xxxx&quot;;
+    private static String PASSWORD = &quot;xxxx&quot;;
+    private Lock lock = new ReentrantLock();
+    private Condition condition = lock.newCondition();
+    static {
+        try {
+            Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    public MyDataSource(){
+        for(int i=0;i&lt;INIT_CONNECTION;i++) {
+            try {
+                pool.add(DriverManager.getConnection(URL,USER,PASSWORD));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public Connection getConnection(){
+        lock.lock();
+        try {
+            while (pool.isEmpty()){
+                condition.await();
+            }
+            System.out.println(Thread.currentThread().getName()+&quot;:获取到连接，目前连接池还有&quot;+ (pool.size() - 1) +&quot;个连接&quot;);
+            return pool.remove(0);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }finally {
+            lock.unlock();
+        }
+    }
+    public void release(Connection con) throws SQLException {
+        lock.lock();
+        try {
+            if (con != null) {
+                System.out.println(Thread.currentThread().getName()+&quot;:释放连接，目前连接池还有&quot;+(pool.size() + 1)+&quot;个连接&quot;);
+                pool.add(con);
+                condition.signal();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            lock.unlock();
+        }
+    }
+    public static void main(String[] args) {
+        MyDataSource dataSource = new MyDataSource();
+        for(int i=0;i&lt;5;i++){
+            new Thread(()-&gt;{
+                try {
+                    Connection con = dataSource.getConnection();
+                    Thread.sleep(5000);
+                    dataSource.release(con);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+    }
+}</code></pre>
+<h3 id="线程-Join"><a href="#线程-Join" class="headerlink" title="线程 Join"></a>线程 Join</h3><p>让“主线程”等待“子线程”结束之后才能继续运行。</p>
+<p>原理：</p>
+<pre><code class="java">while(join线程存活){
+    主线程wait
+}</code></pre>
+<p>concurrent.join包下</p>
+<h3 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h3><p>ThreadLocal是一个关于创建线程局部变量的类。</p>
+<p>通常情况下，我们创建的变量是可以被任何一个线程访问并修改的。而使用ThreadLocal创建的变量只能被当前线程访问，其他线程则无法访问和修改。</p>
+<p>各个线程使用<code>set</code>、<code>get</code>和<code>remove</code>对局部变量进行操作，实现了数据的隔离</p>
+<blockquote>
+<p>总而言之，往ThreadLocal中存的变量属于当前线程的，其他线程无法获取</p>
+</blockquote>
+<h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><ul>
+<li>支持泛型</li>
+</ul>
+<pre><code class="java">ThreadLocal&lt;String&gt; mStringThreadLocal = new ThreadLocal&lt;&gt;();
+
+mStringThreadLocal.set(&quot;dzou.top&quot;);
+
+mStringThreadLocal.get();</code></pre>
+<ul>
+<li>为ThreadLocal设置初始值：重写<code>initialValue</code>方法</li>
+</ul>
+<pre><code class="java">ThreadLocal&lt;Integer&gt; mThreadLocal = new ThreadLocal&lt;String&gt;() {
+    @Override
+    protected Integer initialValue() {
+      return 1;
+    }
+};</code></pre>
+<ul>
+<li>存储在栈内存中</li>
+</ul>
+<p>每个线程都有一个栈内存，属于线程的私有空间。而堆内存对所有线程可见。</p>
+<h4 id="实现原理-1"><a href="#实现原理-1" class="headerlink" title="实现原理"></a>实现原理</h4><ul>
+<li>看一下<code>get</code>方法</li>
+</ul>
+<pre><code class="java">public T get() {
+    //获取当前线程对象
+        Thread t = Thread.currentThread();
+        ThreadLocalMap map = getMap(t);
+        if (map != null) {
+            //通过当前线程对象获取值
+            ThreadLocalMap.Entry e = map.getEntry(this);
+            if (e != null) {
+                T result = (T)e.value;
+                return result;
+            }
+        }
+        return setInitialValue();
+    }</code></pre>
+<p>这里使用了<code>ThreadLocalMap</code>这个Map存储，内部使用了<code>Entry</code>这个类存储</p>
+<blockquote>
+<p>Entry：Entry&lt;K,V&gt;它表示Map中的一个实体（一个key-value对）</p>
+</blockquote>
+<p>其中Map的key值就是<code>当前线程对象</code>，value就是存储的值，所以保证了只有当前线程才能获取到值</p>
+<ul>
+<li>看一下<code>set</code>方法</li>
+</ul>
+<pre><code class="java">public void set(T value) {
+    //获取线程对象
+        Thread t = Thread.currentThread();
+    //根据线程对象获取Map
+        ThreadLocalMap map = getMap(t);
+        if (map != null)
+            //Map不为空设置value
+            map.set(this, value);
+        else
+            //为空创建Map并设置value
+            createMap(t, value);
+    }</code></pre>
+<ul>
+<li><code>remove</code>方法</li>
+</ul>
+<pre><code class="java">public void remove() {
+         ThreadLocalMap m = getMap(Thread.currentThread());
+         if (m != null)
+             //不为空，根据当前线程对象作为Key删除该Entry
+             m.remove(this);
+     }</code></pre>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ol>
+<li>ThreadLocal中维护着一个ThreadLocalMap对象</li>
+<li>ThreadLocalMap时ThreadLocal的内部类，内部使用Entry进行存储</li>
+<li>调用key时，是根据线程对象获取value</li>
+</ol>
+<h4 id="内存泄露"><a href="#内存泄露" class="headerlink" title="内存泄露"></a>内存泄露</h4><p>因为<code>ThreadLocal</code>中局部变量是根据当前线程创建的，所以<code>ThreadLocal</code>和线程有相同的存活时间，当线程没有结束，导致对应Map中<code>Entry</code>依然存在，所以为了防止内存泄漏要自己收到在不需要时把Entry给<code>remove</code>掉</p>
+<h4 id="ThreadLocal应用"><a href="#ThreadLocal应用" class="headerlink" title="ThreadLocal应用"></a>ThreadLocal应用</h4><ul>
+<li>实现单个线程单例以及单个线程上下文信息存储，比如交易id等</li>
+<li>实现线程安全，非线程安全的对象使用ThreadLocal之后就会变得线程安全，因为每个线程都会有一个对应的实例</li>
+<li>承载一些线程相关的数据，避免在方法中来回传递参数</li>
+</ul>
+<h4 id="InheritableThreadLocal"><a href="#InheritableThreadLocal" class="headerlink" title="InheritableThreadLocal"></a>InheritableThreadLocal</h4><p>继承自ThreadLocal</p>
+<p>ThreadLocal设计之初就是为了绑定当前线程，如果希望当前线程的ThreadLocal能够被子线程使用，实现方式就会相当困难，解决此问题</p>
+<pre><code class="java">protected T childValue(T parentValue) {
+    //获取父线程值
+        return parentValue;
+    }</code></pre>
+<p><code>InheritableThreadLocal</code>主要用于<code>子线程创建</code>时，需要自动继承父线程的ThreadLocal变量，方便必要信息的进一步传递。</p>
+<ul>
+<li>shiro：Shiro中使用ThreadLocal存储用户主体Subject对象，通过<code>getSubject</code>获取，<code>InheritableThreadLocal</code> 可以让用户自行 new Thread 出来的线程可以获取到 Subject，否则用户还要额外想办法怎么获取到这个 Subject</li>
+</ul>
+<h2 id="十一-并发工具类"><a href="#十一-并发工具类" class="headerlink" title="十一.并发工具类"></a>十一.并发工具类</h2><h3 id="CountDownLatch——共享锁"><a href="#CountDownLatch——共享锁" class="headerlink" title="CountDownLatch——共享锁"></a>CountDownLatch——共享锁</h3><p><strong><em>该类提供一种等待一个或者多个并发任务完成的机制。内部有一个计数器，主线程要继续执行需要完成指定数量的并发任务。</em></strong></p>
+<p>业务场景：有一个业务分成多个部分，需要完成指定的部分后才能完成剩下的指定部分。</p>
+<p>实现：可以用<code>Join</code>、<code>wait/notify</code>、<code>Condition</code>实现</p>
+<p>但是Java中AQS同步器又为我们实现了该工具类（AQS真的是并发之宝），类似倒计时的工具类</p>
+<p>使用：</p>
+<pre><code class="java">CountDownLatch latch = new CountDownLatch(5);//初始化指定需要完成5个并发任务
+latch.await();//完成5个之前等待，等待完成5个唤醒
+latch.countDown();//计数任务-1</code></pre>
+<ul>
+<li><code>await()</code>：调用该方法的线程等待count值减到0时才能被唤醒继续执行，否则等待</li>
+<li><code>countDown()</code>：使计数任务值-1</li>
+</ul>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><p>全班20名同学完成作业后才可以放学</p>
+<pre><code class="java">private static final int STUDENTS_NUMBER = 20;
+    private static CountDownLatch finishHW = new CountDownLatch(STUDENTS_NUMBER);
+    public static void main(String[] args) throws InterruptedException {
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        for(int i=0;i&lt;STUDENTS_NUMBER;i++){
+            executorService.execute(()-&gt;{
+                System.out.println(Thread.currentThread().getName()+&quot;:完成了作业&quot;);
+                sleep(500);
+                finishHW.countDown();
+            });
+        }
+        finishHW.await();
+        sleep(1000);
+        System.out.println(&quot;全部人完成了任务，可以放学了&quot;);
+    }
+    private static void sleep(int milliSecond){
+        try {
+            TimeUnit.MILLISECONDS.sleep(milliSecond);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }</code></pre>
+<h4 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h4><p>CountDownLatch也是基于AQS实现的，使用一个int型(原子)volatile(可见)变量维护状态</p>
+<ul>
+<li>await</li>
+</ul>
+<p>调用<code>sync.acquireSharedInterruptibly(1);</code></p>
+<pre><code class="java">public final void acquireSharedInterruptibly(int arg)
+            throws InterruptedException {
+        if (Thread.interrupted())
+            throw new InterruptedException();
+        if (tryAcquireShared(arg) &lt; 0)
+            doAcquireSharedInterruptibly(arg);
+    }</code></pre>
+<pre><code class="java">protected int tryAcquireShared(int acquires) {
+    //如果状态不为0也就是count！=0，则执行等待doAcquireSharedInterruptibly
+            return (getState() == 0) ? 1 : -1;
+        }</code></pre>
+<pre><code class="java">private void doAcquireSharedInterruptibly(int arg)
+        throws InterruptedException {
+    //以共享模式将节点添加到队列中
+        final Node node = addWaiter(Node.SHARED);
+        boolean failed = true;
+        try {
+            //循环执行，等待其他线程执行到足够的任务数，count=0时，唤醒该等待线程
+            for (;;) {
+                //获取前一个节点
+                final Node p = node.predecessor();
+                if (p == head) {
+                    //r&gt;=0代表等待完成，count=0
+                    int r = tryAcquireShared(arg);
+                    if (r &gt;= 0) {
+                        //设置当前节点为头结点并唤醒等待的线程
+                        setHeadAndPropagate(node, r);
+                        p.next = null; // help GC
+                        failed = false;
+                        return;
+                    }
+                }
+                if (shouldParkAfterFailedAcquire(p, node) &amp;&amp;
+                    parkAndCheckInterrupt())
+                    throw new InterruptedException();
+            }
+        } finally {
+            if (failed)
+                cancelAcquire(node);
+        }
+    }
+</code></pre>
+<ul>
+<li><p>countDown</p>
+<p>调用<code>sync.releaseShared(1);</code></p>
+</li>
+</ul>
+<pre><code class="java">public final boolean releaseShared(int arg) {
+        if (tryReleaseShared(arg)) {
+            doReleaseShared();
+            return true;
+        }
+        return false;
+    }</code></pre>
+<pre><code class="java">protected boolean tryReleaseShared(int releases) {
+    //循环设置状态count=count-1，任务数减一，成功返回count是否为0，即是否还有任务
+            for (;;) {
+                int c = getState();
+                if (c == 0)
+                    return false;//没有任务了直接返回false，无需线程需要唤醒
+                int nextc = c-1;
+                if (compareAndSetState(c, nextc))//CAS设置状态
+                    return nextc == 0;
+            }
+        }</code></pre>
+<p>doReleaseShared()方法主要作用是唤醒调用了await()方法的线程</p>
+<pre><code class="java">private void doReleaseShared() {
+    //循环唤醒所有await的线程，共享模式而非独占模式
+        for (;;) {
+            Node h = head;
+            //头节点不为空并且节点数&gt;1
+            if (h != null &amp;&amp; h != tail) {
+                int ws = h.waitStatus;
+                if (ws == Node.SIGNAL) {// SIGNAL状态表示当前节点正在等待被唤醒
+                    //清除等待状态
+                    if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0))
+                        continue;            // loop to recheck cases
+                    //唤醒线程
+                    unparkSuccessor(h);
+                }
+                else if (ws == 0 &amp;&amp;
+                         !compareAndSetWaitStatus(h, 0, Node.PROPAGATE))
+                    continue;                // loop on failed CAS
+            }
+            if (h == head)                   // loop if head changed
+                break;
+        }
+    }</code></pre>
+<p>总结：</p>
+<p><code>CountDownLatch</code>是一个共享锁，锁住了共享资源，调用<code>CountDownLatch</code>释放一个资源，当所有资源被释放时，唤醒所有等待的线程。</p>
+<h3 id="CyclicBarrier——屏障"><a href="#CyclicBarrier——屏障" class="headerlink" title="CyclicBarrier——屏障"></a>CyclicBarrier——屏障</h3><p><code>barrier</code>是屏障，它的作用就是在让多个线程在完成了屏障前的工作后，在屏障那等待，知道其他线程也完成了屏障前的工作才可以一起执行屏障后的工作。</p>
+<p><code>cyclic</code>代表循环，可以复用</p>
+<p>构造方法：</p>
+<ul>
+<li><p><code>public CyclicBarrier(int parties, Runnable barrierAction)</code></p>
+<p>创建一个新的CyclicBarrier，给定数量的参与者，给定屏障线程，当等待线程达到参与者数量时，屏障线程工作，等待线程继续执行。</p>
+</li>
+<li><p><code>public CyclicBarrier(int parties)</code></p>
+<p>创建一个新的CyclicBarrier，给定数量的参与者，当等待线程达到参与者数量时，等待线程继续执行。</p>
+</li>
+</ul>
+<h4 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h4><p>一个长跑比赛需要运动员进场到<code>起跑线</code>准备好裁判才会吹响比赛，多个线程来到起跑线就进行等待，直到所有的参赛选手都到起跑线准备好比赛才可以开始。</p>
+<pre><code class="java">public class CyclicBarrierTask implements Runnable{
+    private CyclicBarrier cyclicBarrier;
+    private static final int COMPETITOR_NUMBER = 10;
+    public CyclicBarrierTask(Thread barrierThread){
+        cyclicBarrier = new CyclicBarrier(COMPETITOR_NUMBER, barrierThread);
+    }
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName()+&quot;:走入赛场&quot;);
+        try {
+            Thread.sleep(2000);
+            System.out.println(Thread.currentThread().getName()+&quot;:准备好开始比赛&quot;);
+            cyclicBarrier.await();
+            System.out.println(Thread.currentThread().getName()+&quot;:出发&quot;);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) throws InterruptedException {
+        CyclicBarrierTask cyclicBarrierTask = new CyclicBarrierTask(new Thread(()-&gt;{
+            System.out.println(&quot;裁判吹响口哨，开始比赛！！！&quot;);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }));
+        for(int i=0;i&lt;COMPETITOR_NUMBER;i++){
+            new Thread(cyclicBarrierTask).start();
+        }
+        Thread.sleep(10000);
+        System.out.println(&quot;比赛结束，运动员回家，裁判回家。&quot;);
+    }
+}</code></pre>
+<ul>
+<li><p><code>reset</code>方法</p>
+<p>当有线程来到屏障前等待，调用reset方法会抛出<code>BrokenBarrierException</code>异常</p>
+</li>
+<li><p><code>isBroken</code>方法</p>
+<p>线程是否被中断</p>
+</li>
+<li><p><code>getNumberWaiting</code>方法</p>
+<p>获取正在等待线程数量</p>
+</li>
+</ul>
+<h4 id="源码分析-1"><a href="#源码分析-1" class="headerlink" title="源码分析"></a>源码分析</h4><p><code>CyclicBarrier</code>内部没有使用AQS实现，而是使用<code>ReentrantLock</code>和<code>Condition</code>实现</p>
+<p>内部维护了一个计数器，用<code>count</code>值存储，每次-1</p>
+<p>构造方法：</p>
+<pre><code class="java">public CyclicBarrier(int parties, Runnable barrierAction) {
+        if (parties &lt;= 0) throw new IllegalArgumentException();
+        this.parties = parties;
+        this.count = parties;
+        this.barrierCommand = barrierAction;
+    }</code></pre>
+<p>构造方法中使用了一个<code>count</code>变量和一个<code>parties</code>变量，不只是用parties的为了复用，在一次count=0后，创建新的<code>Generation</code>，把count的值赋值为parties的值达到复用。</p>
+<p>内部维护了一个<code>Generation</code>的类，用来维护<code>CyclicBarrier</code>的循环使用(复用)，每完成一次计数，通过<code>nextGeneration</code>方法，唤醒线程并创建一个新的Generation赋值给该屏障的<code>generation</code>变量(换代)</p>
+<ul>
+<li>里面只有一个变量<code>broken</code>：存储该屏障是否被破坏，被破坏则不能再使用</li>
+</ul>
+<pre><code class="java">private static class Generation {
+        boolean broken = false;
+    }</code></pre>
+<ul>
+<li>nextGeneration</li>
+</ul>
+<pre><code class="java">private void nextGeneration() {
+        // 使用Condition唤醒所有等待线程
+        trip.signalAll();
+        // 换代并更新count值达到复用
+        count = parties;
+        generation = new Generation();
+    }</code></pre>
+<ul>
+<li>最主要的await方法调用了下面的<code>dowait</code>方法<ol>
+<li>count-1，为0则更新并唤醒</li>
+<li>不为0，await，等待被唤醒并更新</li>
+</ol>
+</li>
+</ul>
+<pre><code class="java">private int dowait(boolean timed, long nanos)
+        throws InterruptedException, BrokenBarrierException,
+               TimeoutException {
+        final ReentrantLock lock = this.lock;
+        //count是共享变量，需要使用Lock
+        lock.lock();
+        try {
+            final Generation g = generation;//当前Generation赋值给g
+            if (g.broken)//如果当前代屏障已经被破坏则抛出异常，无法再使用
+                throw new BrokenBarrierException();
+            if (Thread.interrupted()) {//如果线程被中断，就破坏屏障，broken=true,并抛出异常
+                breakBarrier();
+                throw new InterruptedException();
+            }
+            //count递减，等待线程增加1个
+            int index = --count;
+            if (index == 0) {  // 如果等待线程数达到头，需要唤醒线程并执行屏障线程并换代
+                boolean ranAction = false;
+                try {
+                    final Runnable command = barrierCommand;
+                    if (command != null)
+                        command.run();//执行屏障线程
+                    ranAction = true;
+                    nextGeneration();//换代操作
+                    return 0;//返回0为结束了
+                } finally {
+                    if (!ranAction)//如果屏障线程执行出错,破坏该屏障，无法再次使用
+                        breakBarrier();
+                }
+            }
+
+            // 无限循环等待换代成功(全部线程通过屏障),或者抛出异常
+            for (;;) {
+                try {
+                    if (!timed)//如果没有超时要求,直接调用Condition的await
+                        trip.await();
+                    else if (nanos &gt; 0L)//否则等待相应超时时间
+                        nanos = trip.awaitNanos(nanos);
+                } catch (InterruptedException ie) {//发生小概率事件(被中断)
+                    if (g == generation &amp;&amp; ! g.broken) {//破坏该屏障
+                        breakBarrier();
+                        throw ie;
+                    } else {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                if (g.broken)//如果屏障被破坏了，抛出异常
+                    throw new BrokenBarrierException();
+                if (g != generation)//如果正常情况下等待后会换代成功，返回该线程所在屏障的下标
+                    return index;
+                if (timed &amp;&amp; nanos &lt;= 0L) {//超时，抛出异常并破坏屏障
+                    breakBarrier();
+                    throw new TimeoutException();
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+    }</code></pre>
+<p><strong><em>因为处于Lock中，唤醒操作是将线程从<code>condtion队列</code>(等待/条件队列)中全部放入AQS的同步队列中</em></strong></p>
+<h4 id="CyclicBarrier和CountDownLatch"><a href="#CyclicBarrier和CountDownLatch" class="headerlink" title="CyclicBarrier和CountDownLatch"></a>CyclicBarrier和CountDownLatch</h4><ul>
+<li>复用性：CyclicBarrier支持(更强大)，CountDownLatch不支持</li>
+<li>内部实现：CyclicBarrier使用Lock+Condition，CountDownLatch使用AQS的共享模式</li>
+<li>内部都使用一个计数器</li>
+</ul>
+<p>CountDownLatch需要使用<code>CountDownLatch</code>触发计数器事件，<code>CyclicBarrier</code>自动在await处计数。</p>
+<p>场景分析：</p>
+<ul>
+<li>CountDownLatch更注重在需要等待多个任务完成后执行</li>
+<li>CyclicBarrier更注重等待大家汇聚在每个屏障处再执行后面的任务</li>
+</ul>
+<h3 id="Semaphore——信号量"><a href="#Semaphore——信号量" class="headerlink" title="Semaphore——信号量"></a>Semaphore——信号量</h3><p><strong><em>信号量机制用于控制对一个或多个资源的访问。</em></strong></p>
+<ul>
+<li><p><code>acquire()</code></p>
+<p>调用该方法时，如果内部资源数&gt;0，则资源数<code>减一</code>并获取对该资源的访问；如果资源数=0，则线程会被祖塞，获取不到资源，直到某个线程调用<code>release</code>方法，才有可能被唤醒竞争资源。</p>
+</li>
+<li><p><code>release()</code></p>
+<p>调用该方法时，说明该线程访问的资源已经获取并使用完毕，需要归还给控制中心让其他线程竞争，资源数执行<code>加一</code>操作，会唤醒一个处于等待的线程，这个线程获取到该资源并结束它的<code>acquire</code>方法，其他线程将会一直等待，直到又有资源释放。</p>
+</li>
+</ul>
+<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><ul>
+<li><p>只传入一个资源访问控制数</p>
+<p>用于控制同时几个线程可以访问该资源，默认为非公平模式</p>
+</li>
+</ul>
+<pre><code class="java">public Semaphore(int permits) {
+        sync = new NonfairSync(permits);
+    }</code></pre>
+<ul>
+<li>传入访问控制数和一个boolean型变量(用于设置公平或者非公平模式)</li>
+</ul>
+<pre><code class="java">public Semaphore(int permits, boolean fair) {
+        sync = fair ? new FairSync(permits) : new NonfairSync(permits);
+    }</code></pre>
+<h4 id="使用-2"><a href="#使用-2" class="headerlink" title="使用"></a>使用</h4><p>上厕所的资源控制，5个坑，15个人上</p>
+<pre><code class="java">public class Toilet implements Runnable{
+    private Semaphore semaphore;
+    private static final int TOILET_SIZE = 5;
+    public Toilet(Semaphore semaphore){
+        this.semaphore = semaphore;
+    }
+    @Override
+    public void run() {
+        try {
+            System.out.println(Thread.currentThread().getName()+&quot;:我来上厕所了&quot;);
+            Thread.sleep(1000);
+            if (semaphore.availablePermits()&lt;=0){
+                System.out.println(Thread.currentThread().getName()+&quot;:怎么没位置了&quot;);
+            }
+            semaphore.acquire();
+            System.out.println(Thread.currentThread().getName()+&quot;:我抢到厕所了。&quot;);
+            Thread.sleep(3000);
+            System.out.println(Thread.currentThread().getName()+&quot;:我上完了，你们可以进去一个了。&quot;);
+            semaphore.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) {
+        Semaphore semaphore = new Semaphore(TOILET_SIZE);
+        for(int i=0;i&lt;15;i++){
+            new Thread(new Toilet(semaphore)).start();
+        }
+    }
+}</code></pre>
+<h4 id="源码分析-2"><a href="#源码分析-2" class="headerlink" title="源码分析"></a>源码分析</h4><p>内部是由AQS的同步器(公平和非公平)实现的，获取使用的是共享模式(Share)</p>
+<p><code>Semaphore</code>中使用一个<code>permits</code>变量存储能访问资源数，为1时，就是一个互斥锁，也由AQS的<code>state</code>来维护</p>
+<ul>
+<li><p>acquire方法调用 acquireSharedInterruptibly(1)</p>
+<pre><code class="java">public final void acquireSharedInterruptibly(int arg)
+            throws InterruptedException {
+        if (Thread.interrupted())
+            throw new InterruptedException();
+    //尝试获取一个访问资源
+        if (tryAcquireShared(arg) &lt; 0)
+            //&lt;0代表没有资源，获取失败，则执行等待并重新获取
+            doAcquireSharedInterruptibly(arg);
+}</code></pre>
+</li>
+</ul>
+<h5 id="acquire"><a href="#acquire" class="headerlink" title="acquire"></a>acquire</h5><ul>
+<li><p>doAcquireSharedInterruptibly</p>
+<p>AQS中的方法，循环获取该资源访问</p>
+</li>
+</ul>
+<pre><code class="java">private void doAcquireSharedInterruptibly(int arg)
+        throws InterruptedException {
+        final Node node = addWaiter(Node.SHARED);//添加节点到同步队列(共享模式)
+        boolean failed = true;
+        try {
+            for (;;) {//循环获取
+                final Node p = node.predecessor();//获取前一个节点
+                if (p == head) {
+                    int r = tryAcquireShared(arg);//尝试再次获取资源
+                    if (r &gt;= 0) {//获取资源成功
+                        setHeadAndPropagate(node, r);//设置为头结点并设置状态
+                        p.next = null; // help GC
+                        failed = false;
+                        return;
+                    }
+                }
+                if (shouldParkAfterFailedAcquire(p, node) &amp;&amp;
+                    parkAndCheckInterrupt())
+                    throw new InterruptedException();
+            }
+        } finally {
+            if (failed)
+                cancelAcquire(node);
+        }
+    }</code></pre>
+<ul>
+<li>非公平tryAcquireShared</li>
+</ul>
+<pre><code class="java">final int nonfairTryAcquireShared(int acquires) {
+            for (;;) {//循环知道获取失败或者成功
+                int available = getState();//获取AQS存储的state，即可获取的资源数
+                int remaining = available - acquires;//-1
+                if (remaining &lt; 0 ||//&lt;0则没有可获取的
+                    compareAndSetState(available, remaining))//获取成功并设置状态
+                    return remaining;
+            }
+        }</code></pre>
+<ul>
+<li><p>公平tryAcquireShared</p>
+<p>与非公平唯一区别就是 hasQueuedPredecessors 方法</p>
+<p>判断”当前线程”是不是在CLH队列的队首，来实现公平性。</p>
+</li>
+</ul>
+<pre><code class="java">protected int tryAcquireShared(int acquires) {
+            for (;;) {
+                if (hasQueuedPredecessors())
+                    return -1;
+                int available = getState();
+                int remaining = available - acquires;
+                if (remaining &lt; 0 ||
+                    compareAndSetState(available, remaining))
+                    return remaining;
+            }
+        }</code></pre>
+<h5 id="release"><a href="#release" class="headerlink" title="release"></a>release</h5><p> 与CountDownLatch 的<code>countDown</code>一样的实现</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/1.png">
+
+
+
+<h3 id="Exchanger——交换者"><a href="#Exchanger——交换者" class="headerlink" title="Exchanger——交换者"></a>Exchanger——交换者</h3><p>用于两个线程间的数据交换，如果有第三个线程，对不起，我做不到。</p>
+<p><code>Exchanger</code>提供一个同步点，在这个同步点处，两个线程进行数据交换。</p>
+<p>主要方法</p>
+<ul>
+<li><p><code>exchange(V v)</code> 返回值V</p>
+<p>线程会在这检查是否有线程等待交换，没有就继续等待，有就进行数据交换。</p>
+</li>
+</ul>
+<h4 id="使用-3"><a href="#使用-3" class="headerlink" title="使用"></a>使用</h4><p>还可以用于遗传算法，遗传需要两个对象，分别提供相应的基因，在进行交换根据一定规则进行遗传。</p>
+<p>例子：用于效验结果比对，模拟两个线程分别计算</p>
+<pre><code class="java">public class TaskA implements Runnable{
+    private Exchanger&lt;Integer&gt; exchanger;
+    public TaskA(Exchanger&lt;Integer&gt; exchanger){
+        this.exchanger = exchanger;
+    }
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName()+&quot;:正在进行计算&quot;);
+        try {
+            Thread.sleep(2000);
+            Integer x = 1026;
+            System.out.println(Thread.currentThread().getName()+&quot;:计算结束，等待效验&quot;);
+            exchanger.exchange(x);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+public class TaskB implements Runnable{
+    private Exchanger&lt;Integer&gt; exchanger;
+    public TaskB(Exchanger&lt;Integer&gt; exchanger){
+        this.exchanger = exchanger;
+    }
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName()+&quot;:正在进行计算&quot;);
+        try {
+            Thread.sleep(2000);
+            Integer res = 1026;
+            System.out.println(Thread.currentThread().getName()+&quot;:计算结束，等待效验&quot;);
+            Integer x = exchanger.exchange(res);
+            Thread.sleep(1000);
+            System.out.println(&quot;效验结果是：&quot;+x.equals(res));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+public class ExchangerTask {
+    public static void main(String[] args) {
+        Exchanger&lt;Integer&gt; exchanger = new Exchanger&lt;&gt;();
+        new Thread(new TaskA(exchanger)).start();
+        new Thread(new TaskB(exchanger)).start();
+    }
+}</code></pre>
+<h4 id="实现原理-2"><a href="#实现原理-2" class="headerlink" title="实现原理"></a>实现原理</h4><p>内部使用了<code>Node</code>存储每个线程的信息，包括数据，把它放在<code>Participant</code>中，这是一个继承自<code>ThreadLocal</code>并重写了其初始化方法的类，用于把Node保存到Participant中。实现类似SynchronousQueue，后面再继续学习。</p>
 
       
     </div>
@@ -798,6 +1655,8 @@ static final int EXCLUSIVE_MASK = (1 &lt;&lt; SHARED_SHIFT) - 1;</code></pre>
           
             <a href="/tags/并发编程/" rel="tag"># 并发编程</a>
           
+            <a href="/tags/同步器/" rel="tag"># 同步器</a>
+          
             <a href="/tags/锁/" rel="tag"># 锁</a>
           
             <a href="/tags/基础/" rel="tag"># 基础</a>
@@ -821,6 +1680,10 @@ static final int EXCLUSIVE_MASK = (1 &lt;&lt; SHARED_SHIFT) - 1;</code></pre>
             <a href="/tags/ReentrantLoc/" rel="tag"># ReentrantLoc</a>
           
             <a href="/tags/线程池/" rel="tag"># 线程池</a>
+          
+            <a href="/tags/并发工具包/" rel="tag"># 并发工具包</a>
+          
+            <a href="/tags/等待-通信/" rel="tag"># 等待/通信</a>
           
         </div>
       
@@ -971,7 +1834,7 @@ static final int EXCLUSIVE_MASK = (1 &lt;&lt; SHARED_SHIFT) - 1;</code></pre>
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-count">62</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -1067,7 +1930,7 @@ static final int EXCLUSIVE_MASK = (1 &lt;&lt; SHARED_SHIFT) - 1;</code></pre>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-创建线程方式"><span class="nav-number">1.</span> <span class="nav-text">一.创建线程方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-线程问题"><span class="nav-number">2.</span> <span class="nav-text">二.线程问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-活跃性问题"><span class="nav-number">2.1.</span> <span class="nav-text">1.活跃性问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-线程安全性"><span class="nav-number">2.2.</span> <span class="nav-text">2.线程安全性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-Synchronized"><span class="nav-number">3.</span> <span class="nav-text">三.Synchronized</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四-锁的类型"><span class="nav-number">4.</span> <span class="nav-text">四.锁的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-重入锁"><span class="nav-number">4.1.</span> <span class="nav-text">1.重入锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-自旋锁"><span class="nav-number">4.2.</span> <span class="nav-text">2.自旋锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-死锁"><span class="nav-number">4.3.</span> <span class="nav-text">3.死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五-volatile"><span class="nav-number">5.</span> <span class="nav-text">五.volatile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#volatile-与-synchronized比较"><span class="nav-number">5.0.1.</span> <span class="nav-text">volatile 与 synchronized比较</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#六-JDK-原子类"><span class="nav-number">6.</span> <span class="nav-text">六.JDK 原子类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原子类"><span class="nav-number">6.1.</span> <span class="nav-text">原子类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAS"><span class="nav-number">6.2.</span> <span class="nav-text">CAS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七-Lock"><span class="nav-number">7.</span> <span class="nav-text">七.Lock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lock接口方法"><span class="nav-number">7.1.</span> <span class="nav-text">Lock接口方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantLock"><span class="nav-number">7.2.</span> <span class="nav-text">ReentrantLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lock与synchronized比较"><span class="nav-number">7.3.</span> <span class="nav-text">lock与synchronized比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义锁"><span class="nav-number">7.4.</span> <span class="nav-text">自定义锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八-AbstractQueuedSynchronizer-AQS"><span class="nav-number">8.</span> <span class="nav-text">八.AbstractQueuedSynchronizer(AQS)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读写锁"><span class="nav-number">9.</span> <span class="nav-text">读写锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantReadWriteLock"><span class="nav-number">9.1.</span> <span class="nav-text">ReentrantReadWriteLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现原理"><span class="nav-number">9.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态维护"><span class="nav-number">9.3.</span> <span class="nav-text">状态维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#锁降级"><span class="nav-number">9.4.</span> <span class="nav-text">锁降级</span></a></li></ol></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-创建线程方式"><span class="nav-number">1.</span> <span class="nav-text">一.创建线程方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-线程问题"><span class="nav-number">2.</span> <span class="nav-text">二.线程问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-活跃性问题"><span class="nav-number">2.1.</span> <span class="nav-text">1.活跃性问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-线程安全性"><span class="nav-number">2.2.</span> <span class="nav-text">2.线程安全性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-Synchronized"><span class="nav-number">3.</span> <span class="nav-text">三.Synchronized</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四-锁的类型"><span class="nav-number">4.</span> <span class="nav-text">四.锁的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-重入锁"><span class="nav-number">4.1.</span> <span class="nav-text">1.重入锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-自旋锁"><span class="nav-number">4.2.</span> <span class="nav-text">2.自旋锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-死锁"><span class="nav-number">4.3.</span> <span class="nav-text">3.死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五-volatile"><span class="nav-number">5.</span> <span class="nav-text">五.volatile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#volatile-与-synchronized比较"><span class="nav-number">5.0.1.</span> <span class="nav-text">volatile 与 synchronized比较</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#六-JDK-原子类"><span class="nav-number">6.</span> <span class="nav-text">六.JDK 原子类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原子类"><span class="nav-number">6.1.</span> <span class="nav-text">原子类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAS"><span class="nav-number">6.2.</span> <span class="nav-text">CAS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七-Lock"><span class="nav-number">7.</span> <span class="nav-text">七.Lock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lock接口方法"><span class="nav-number">7.1.</span> <span class="nav-text">Lock接口方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantLock"><span class="nav-number">7.2.</span> <span class="nav-text">ReentrantLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lock与synchronized比较"><span class="nav-number">7.3.</span> <span class="nav-text">lock与synchronized比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义锁"><span class="nav-number">7.4.</span> <span class="nav-text">自定义锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八-AbstractQueuedSynchronizer-AQS"><span class="nav-number">8.</span> <span class="nav-text">八.AbstractQueuedSynchronizer(AQS)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#九-读写锁"><span class="nav-number">9.</span> <span class="nav-text">九.读写锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantReadWriteLock"><span class="nav-number">9.1.</span> <span class="nav-text">ReentrantReadWriteLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现原理"><span class="nav-number">9.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态维护"><span class="nav-number">9.3.</span> <span class="nav-text">状态维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#锁降级"><span class="nav-number">9.4.</span> <span class="nav-text">锁降级</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十-线程通信"><span class="nav-number">10.</span> <span class="nav-text">十.线程通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#wait-notify"><span class="nav-number">10.1.</span> <span class="nav-text">wait notify</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者和消费者"><span class="nav-number">10.2.</span> <span class="nav-text">生产者和消费者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Condition——线程通信更高效的方式"><span class="nav-number">10.3.</span> <span class="nav-text">Condition——线程通信更高效的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Condition实现的有界队列"><span class="nav-number">10.3.1.</span> <span class="nav-text">Condition实现的有界队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Condition源码分析"><span class="nav-number">10.3.2.</span> <span class="nav-text">Condition源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#await"><span class="nav-number">10.3.2.1.</span> <span class="nav-text">await</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#addConditionWaiter"><span class="nav-number">10.3.2.2.</span> <span class="nav-text">addConditionWaiter</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#unlinkCancelledWaiters"><span class="nav-number">10.3.2.3.</span> <span class="nav-text">unlinkCancelledWaiters</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#signal"><span class="nav-number">10.3.2.4.</span> <span class="nav-text">signal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#doSignal"><span class="nav-number">10.3.2.5.</span> <span class="nav-text">doSignal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#transferForSignal"><span class="nav-number">10.3.2.6.</span> <span class="nav-text">transferForSignal</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库连接池"><span class="nav-number">10.4.</span> <span class="nav-text">数据库连接池</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用Condition-ReentrantLock实现"><span class="nav-number">10.4.1.</span> <span class="nav-text">使用Condition+ReentrantLock实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程-Join"><span class="nav-number">10.5.</span> <span class="nav-text">线程 Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadLocal"><span class="nav-number">10.6.</span> <span class="nav-text">ThreadLocal</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用方法"><span class="nav-number">10.6.1.</span> <span class="nav-text">使用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现原理-1"><span class="nav-number">10.6.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">10.6.3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存泄露"><span class="nav-number">10.6.4.</span> <span class="nav-text">内存泄露</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal应用"><span class="nav-number">10.6.5.</span> <span class="nav-text">ThreadLocal应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#InheritableThreadLocal"><span class="nav-number">10.6.6.</span> <span class="nav-text">InheritableThreadLocal</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十一-并发工具类"><span class="nav-number">11.</span> <span class="nav-text">十一.并发工具类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CountDownLatch——共享锁"><span class="nav-number">11.1.</span> <span class="nav-text">CountDownLatch——共享锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用"><span class="nav-number">11.1.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析"><span class="nav-number">11.1.2.</span> <span class="nav-text">源码分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CyclicBarrier——屏障"><span class="nav-number">11.2.</span> <span class="nav-text">CyclicBarrier——屏障</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-1"><span class="nav-number">11.2.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析-1"><span class="nav-number">11.2.2.</span> <span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CyclicBarrier和CountDownLatch"><span class="nav-number">11.2.3.</span> <span class="nav-text">CyclicBarrier和CountDownLatch</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Semaphore——信号量"><span class="nav-number">11.3.</span> <span class="nav-text">Semaphore——信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化"><span class="nav-number">11.3.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-2"><span class="nav-number">11.3.2.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析-2"><span class="nav-number">11.3.3.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#acquire"><span class="nav-number">11.3.3.1.</span> <span class="nav-text">acquire</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#release"><span class="nav-number">11.3.3.2.</span> <span class="nav-text">release</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exchanger——交换者"><span class="nav-number">11.4.</span> <span class="nav-text">Exchanger——交换者</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-3"><span class="nav-number">11.4.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现原理-2"><span class="nav-number">11.4.2.</span> <span class="nav-text">实现原理</span></a></li></ol></li></ol></li></div>
             
 
           </div>
@@ -1108,7 +1971,7 @@ static final int EXCLUSIVE_MASK = (1 &lt;&lt; SHARED_SHIFT) - 1;</code></pre>
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">39.3k</span>
+    <span title="Site words total count">44.9k</span>
   
 </div>
 
