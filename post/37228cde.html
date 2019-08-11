@@ -100,7 +100,8 @@
 <meta property="og:description" content="并发编程是Java程序员最重要的技能之一，也是最难掌握的一种技能。它要求编程者对计算机最底层的运作原理有深刻的理解，同时要求编程者逻辑清晰、思维缜密，这样才能写出高效、安全、可靠的多线程并发程序。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/1.png">
-<meta property="og:updated_time" content="2019-08-10T11:35:15.636Z">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/2.png">
+<meta property="og:updated_time" content="2019-08-11T11:28:26.999Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发编程学习笔记-更新中">
 <meta name="twitter:description" content="并发编程是Java程序员最重要的技能之一，也是最难掌握的一种技能。它要求编程者对计算机最底层的运作原理有深刻的理解，同时要求编程者逻辑清晰、思维缜密，这样才能写出高效、安全、可靠的多线程并发程序。">
@@ -411,7 +412,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  8.5k字
+                  10.8k字
                 </span>
               
 
@@ -427,7 +428,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  35分
+                  46分
                 </span>
               
             </div>
@@ -1613,6 +1614,355 @@ public class ExchangerTask {
     }
 }</code></pre>
 <h4 id="实现原理-2"><a href="#实现原理-2" class="headerlink" title="实现原理"></a>实现原理</h4><p>内部使用了<code>Node</code>存储每个线程的信息，包括数据，把它放在<code>Participant</code>中，这是一个继承自<code>ThreadLocal</code>并重写了其初始化方法的类，用于把Node保存到Participant中。实现类似SynchronousQueue，后面再继续学习。</p>
+<h2 id="十二-Future"><a href="#十二-Future" class="headerlink" title="十二.Future"></a>十二.Future</h2><p><strong><em>异步：提供一种高效的线程执行方式，你可以在执行一个耗时长的任务时去做其他的事，而无需停在那等待。</em></strong></p>
+<h3 id="Callable"><a href="#Callable" class="headerlink" title="Callable"></a>Callable</h3><p>我们在看<code>Future</code>前先看一下<code>Callable</code>，我们都知道<code>Runnable</code>的线程是一种没有返回值的线程。</p>
+<p>当我们线程需要返回某个结果时，我们就需要使用<code>Callable&lt;V&gt;</code>，它是一种有返回值的线程。</p>
+<p>与Runnable函数式接口对应的，Callable的方法是：</p>
+<pre><code class="java">V call() throws Exception;</code></pre>
+<blockquote>
+<p>用<code>泛型</code>支持返回值</p>
+</blockquote>
+<ol>
+<li>线程返回值通过什么获取？</li>
+</ol>
+<p>答：<code>Future</code></p>
+<ol start="2">
+<li>Callable和Runnable区别</li>
+</ol>
+<p>答：Callable允许抛出异常(在被取消时抛出)；Callable的call方法由FutureTask中<code>run</code>方法调用</p>
+<h3 id="Future"><a href="#Future" class="headerlink" title="Future"></a>Future</h3><p>使用<code>Callable</code>的线程会把返回值存在一个<code>Future</code>中，Future就支持泛型了</p>
+<p>主要方法如下：</p>
+<pre><code class="java">    boolean cancel(boolean mayInterruptIfRunning);//取消线程执行
+    boolean isCancelled();//判断是否取消
+    boolean isDone();//判断是否完成任务
+    V get() throws InterruptedException, ExecutionException;//获取线程返回值</code></pre>
+<ul>
+<li>我们将通过<code>Future.get</code>获取返回值，如果未完成任务，会在get方法处<code>阻塞</code>，等待任务结束获取到返回值。</li>
+</ul>
+<h3 id="Future和Callable使用"><a href="#Future和Callable使用" class="headerlink" title="Future和Callable使用"></a>Future和Callable使用</h3><p>Runnable：我们一般可以使用<code>ExecutorService</code>接口中的<code>execute</code>方法执行没有返回值的线程</p>
+<p>Callable：现在有了有返回值的线程，我们可以使用<code>ExecutorService</code>中的<code>submit</code>方法提交线程任务并获取一个<code>Future</code>对象，通过该对象<code>get</code>方法获取返回值</p>
+<pre><code class="java">public class TestFuture {
+//Callable任务
+    public static class FutureTaskTest implements Callable&lt;Long&gt; {
+        @Override
+        public Long call() throws Exception {
+            long start = System.currentTimeMillis();
+            Thread.sleep(new Random().nextInt(3000));
+            long end = System.currentTimeMillis();
+            //返回值就是执行时间
+            return end-start;
+        }
+    }
+    public static void main(String[] args) {
+        ExecutorService es = Executors.newFixedThreadPool(10);
+        List&lt;Future&lt;Long&gt;&gt; result = new ArrayList&lt;&gt;();
+        //执行10个线程任务，通过submit把Future对象存在ArrayList中
+        for (int i=0;i&lt;10;i++) {
+            result.add(es.submit(new FutureTaskTest()));
+        }
+        //使用lambda输出返回值
+        result.forEach((o)-&gt;{
+            try {
+                System.out.println(o.get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+        es.shutdown();
+    }
+}</code></pre>
+<ul>
+<li>ExecutorService中的submit方法</li>
+</ul>
+<pre><code class="java">Future&lt;T&gt; submit(Callable&lt;T&gt; task);//获取返回值的Callable线程
+Future&lt;T&gt; submit(Runnable task, T result);//传入无返回值的线程和结果的引用，最后返回值存在result中，这是有返回值的submit
+Future&lt;?&gt; submit(Runnable task);//无返回值</code></pre>
+<p>看一下submit实现：</p>
+<p>在<code>AbstractExecutorService</code>类中实现</p>
+<pre><code class="java">public &lt;T&gt; Future&lt;T&gt; submit(Callable&lt;T&gt; task) {
+        if (task == null) throw new NullPointerException();
+        RunnableFuture&lt;T&gt; ftask = newTaskFor(task);
+        execute(ftask);
+        return ftask;
+    }
+
+public &lt;T&gt; Future&lt;T&gt; submit(Runnable task, T result) {
+        if (task == null) throw new NullPointerException();
+        RunnableFuture&lt;T&gt; ftask = newTaskFor(task, result);
+        execute(ftask);//执行了RunnableFuture的run方法，也就是FutureTask的run方法
+        return ftask;
+    }</code></pre>
+<blockquote>
+<p>可以看到他把线程任务封装成一个<code>RunnableFuture</code>接口的实现类<code>FutureTask</code>对象执行</p>
+</blockquote>
+<pre><code class="java">public interface RunnableFuture&lt;V&gt; extends Runnable, Future&lt;V&gt; {
+    void run();
+}</code></pre>
+<blockquote>
+<p>可以看到，RunnableFuture继承自Runnable和Future，它的<code>run</code>方法在<code>FutureTask</code>中实现</p>
+</blockquote>
+<pre><code class="java">protected &lt;T&gt; RunnableFuture&lt;T&gt; newTaskFor(Callable&lt;T&gt; callable) {
+        return new FutureTask&lt;T&gt;(callable);
+    }
+
+protected &lt;T&gt; RunnableFuture&lt;T&gt; newTaskFor(Runnable runnable, T value) {
+        return new FutureTask&lt;T&gt;(runnable, value);
+    }</code></pre>
+<blockquote>
+<p>这个方法返回了一个<code>FutureTask</code>对象，稍后讲到</p>
+</blockquote>
+<h3 id="FutureTask"><a href="#FutureTask" class="headerlink" title="FutureTask"></a>FutureTask</h3><p>封装了<code>Future</code>线程的执行和<code>Runnable</code>线程的执行，并返回返回值result，使用适配器模式将Runnable线程转换为Callable线程执行</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/2.png">
+
+<p>构造方法：</p>
+<ul>
+<li>传入Runnable和result</li>
+</ul>
+<pre><code class="java">public FutureTask(Runnable runnable, V result) {
+        this.callable = Executors.callable(runnable, result);
+        this.state = NEW;       // ensure visibility of callable
+    }</code></pre>
+<blockquote>
+<p>调用Executors中的callable方法，将Runnable线程转换为Callable线程作为FutureTask的callable参数</p>
+</blockquote>
+<ul>
+<li>传入Callable</li>
+</ul>
+<pre><code class="java">public FutureTask(Callable&lt;V&gt; callable) {
+        if (callable == null)
+            throw new NullPointerException();
+        this.callable = callable;
+        this.state = NEW;       // ensure visibility of callable
+    }</code></pre>
+<p>callable方法</p>
+<pre><code class="java">public static &lt;T&gt; Callable&lt;T&gt; callable(Runnable task, T result) {
+        if (task == null)
+            throw new NullPointerException();
+        return new RunnableAdapter&lt;T&gt;(task, result);
+    }</code></pre>
+<blockquote>
+<p>这个方法就是把Runnable线程转换为Callable线程执行，使用适配器模式</p>
+</blockquote>
+<ul>
+<li>RunnableAdapter</li>
+</ul>
+<pre><code class="java">static final class RunnableAdapter&lt;T&gt; implements Callable&lt;T&gt; {
+        final Runnable task;
+        final T result;
+        RunnableAdapter(Runnable task, T result) {
+            this.task = task;
+            this.result = result;
+        }
+        public T call() {
+            task.run();
+            return result;
+        }
+    }</code></pre>
+<blockquote>
+<p>这就是一种<code>适配器模式</code>的应用，实现目标接口Callable，在call方法中调用Runnable的run方法，并返回计算结果result</p>
+</blockquote>
+<p>可以参考我的另一篇博文，Java设计模式——适配器模式</p>
+<h3 id="FutureTask和Callable使用"><a href="#FutureTask和Callable使用" class="headerlink" title="FutureTask和Callable使用"></a>FutureTask和Callable使用</h3><ul>
+<li>不使用线程池的submit方法，创建一个FutureTask对象接收返回值</li>
+</ul>
+<pre><code class="java">public class TestCallable {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        Callable&lt;Porridge&gt; call = () -&gt; {
+            System.out.println(&quot;正在煮粥&quot;);
+            Thread.sleep(5000);
+            return new Porridge();
+        };
+        FutureTask&lt;Porridge&gt; task = new FutureTask&lt;&gt;(call);
+        new Thread(task).start();
+        Thread.sleep(500);
+        System.out.println(&quot;我去睡个觉&quot;);
+        Porridge i = task.get();
+        System.out.println(&quot;我拿到了煮粥结果：&quot;+i);
+    }
+
+    static class Porridge{
+        public Porridge(){}
+    }
+}</code></pre>
+<ul>
+<li>Future和FutureTask区别</li>
+</ul>
+<p>答：Future只支持Callable线程执行，FutureTask还支持Runnable线程，并且有返回值</p>
+<h3 id="FutureTask源码"><a href="#FutureTask源码" class="headerlink" title="FutureTask源码"></a>FutureTask源码</h3><ul>
+<li>变量</li>
+</ul>
+<pre><code class="java">/*当前任务的执行状态*/
+private volatile int state;
+/*当前要执行的任务，执行完后将被设置为null*/
+private Callable&lt;V&gt; callable;
+/*当前任务的执行结果，当发生异常或被取消时为对应异常，非volatile，由state状态保证线程安全*/
+private Object outcome; 
+/*执行当callable任务的线程引用，为当前线程通过CAS方式原子设置*/
+private volatile Thread runner;
+/*Treiber椎，用于保存由于调用Future.get方法而阻塞的线程*/
+private volatile WaitNode waiters;</code></pre>
+<ul>
+<li>状态</li>
+</ul>
+<pre><code class="java">//任务的初始化状态
+private static final int NEW          = 0;
+//正在执行状态
+private static final int COMPLETING   = 1;
+//任务正常执行完成的状态
+private static final int NORMAL       = 2;
+//任务执行抛出异常的状态
+private static final int EXCEPTIONAL  = 3;
+//调用Future.cancell取消任务的状态
+private static final int CANCELLED    = 4;
+//执行任务的线程被中断的中间状态
+private static final int INTERRUPTING = 5;
+//执行任务的线程被中断的最终状态
+private static final int INTERRUPTED  = 6;</code></pre>
+<p>上面已经提到，线程池调用submit的时候或者单独使用时都是由<code>AbstractExecutorService</code>类调用<code>FutureTask</code>的<code>run</code>方法</p>
+<h4 id="run"><a href="#run" class="headerlink" title="run"></a>run</h4><ul>
+<li>run</li>
+</ul>
+<pre><code class="java">public void run() {
+    //初始化状态并设置为当前线程
+        if (state != NEW ||
+            !UNSAFE.compareAndSwapObject(this, runnerOffset,
+                                         null, Thread.currentThread()))
+            return;//失败返回
+        try {
+            Callable&lt;V&gt; c = callable;//c=Callable线程
+            if (c != null &amp;&amp; state == NEW) {//如果非空并且为初始化状态执行任务
+                V result;
+                boolean ran;
+                try {
+                    result = c.call();//执行call获取返回结果
+                    ran = true;//成功设置ran为true
+                } catch (Throwable ex) {
+                    result = null;//失败设置ran为false，result为空
+                    ran = false;
+                    setException(ex);//并设置异常状态
+                }
+                if (ran)//执行成功则设置result
+                    set(result);
+            }
+        } finally {
+            runner = null;
+            int s = state;
+            if (s &gt;= INTERRUPTING)
+                handlePossibleCancellationInterrupt(s);
+        }</code></pre>
+<ul>
+<li><p>setException</p>
+<p>设置异常执行结果</p>
+</li>
+</ul>
+<pre><code class="java">protected void setException(Throwable t) {
+        if (UNSAFE.compareAndSwapInt(this, stateOffset, NEW, COMPLETING)) {//把状态设置为正在执行
+            outcome = t;//把异常作为执行任务结果
+            UNSAFE.putOrderedInt(this, stateOffset, EXCEPTIONAL); //再把状态设置为异常
+            finishCompletion();//任务执行失败，唤醒其他线程
+        }
+    }</code></pre>
+<ul>
+<li><p>finishCompletion</p>
+<p>唤醒其他线程</p>
+</li>
+</ul>
+<pre><code class="java">private void finishCompletion() {
+        for (WaitNode q; (q = waiters) != null;) {//等待线程不为空的话循环唤醒所有
+            if (UNSAFE.compareAndSwapObject(this, waitersOffset, q, null)) {//如果CAS设置等待线程为空成功
+                for (;;) {//就循环唤醒线程
+                    Thread t = q.thread;//t为当前等待线程
+                    if (t != null) {//不为空
+                        q.thread = null;//线程引用置为空
+                        LockSupport.unpark(t);//唤醒该线程
+                    }
+                    WaitNode next = q.next;//下个等待线程
+                    if (next == null)//为空结束
+                        break;
+                    q.next = null; // unlink to help gc
+                    q = next;//q为下一个，继续执行唤醒
+                }
+                break;
+            }
+        }
+        done();//结束唤醒
+        callable = null;        // to reduce footprint
+    }</code></pre>
+<ul>
+<li><p>set</p>
+<p>设置正常执行结果</p>
+</li>
+</ul>
+<pre><code class="java">protected void set(V v) {
+        if (UNSAFE.compareAndSwapInt(this, stateOffset, NEW, COMPLETING)) {//把状态设置为正在执行
+            outcome = v;//接受返回值作为任务执行结果
+            UNSAFE.putOrderedInt(this, stateOffset, NORMAL); //把状态设置为正常结束
+            finishCompletion();//任务正常结束，唤醒其他线程
+        }
+    }</code></pre>
+<h4 id="get"><a href="#get" class="headerlink" title="get"></a>get</h4><p>获取返回值</p>
+<ul>
+<li>get</li>
+</ul>
+<pre><code class="java">public V get() throws InterruptedException, ExecutionException {
+        int s = state;
+        if (s &lt;= COMPLETING)//如果状态&lt;=在执行状态
+            s = awaitDone(false, 0L);//执行等待
+        return report(s);//返回获取的结果(返回值或者异常)
+    }</code></pre>
+<ul>
+<li><p>awaitDone</p>
+<p>执行等待操作</p>
+</li>
+</ul>
+<pre><code class="java">private int awaitDone(boolean timed, long nanos)//是否设置超时时间
+        throws InterruptedException {
+        final long deadline = timed ? System.nanoTime() + nanos : 0L;
+        WaitNode q = null;
+        boolean queued = false;
+        for (;;) {//循环等待状态改变
+            if (Thread.interrupted()) {//如果被中断，删除等待线程，抛出异常
+                removeWaiter(q);
+                throw new InterruptedException();
+            }
+            int s = state;//获取状态
+            if (s &gt; COMPLETING) {//状态&gt;正在执行状态，即完成状态(正常、异常)
+                if (q != null)//等待线程不为null的话把它置为null，返回状态
+                    q.thread = null;
+                return s;
+            }
+            else if (s == COMPLETING) //如果正在执行，当前线程让出一会的CPU时间
+                Thread.yield();
+            else if (q == null)//如果等待线程为空，创建一个新的等待节点(第一次循环时)
+                q = new WaitNode();
+            else if (!queued)//为当前等待节点设置线程为当前线程
+                queued = UNSAFE.compareAndSwapObject(this, waitersOffset,
+                                                     q.next = waiters, q);
+            else if (timed) {//如果设置了超时时间，等待
+                nanos = deadline - System.nanoTime();
+                if (nanos &lt;= 0L) {//超时时间过了没有执行完成则终止该任务并删除当前等待线程并返回状态
+                    removeWaiter(q);
+                    return state;
+                }
+                LockSupport.parkNanos(this, nanos);//执行超时等待时间
+            }
+            else
+                LockSupport.park(this);//执行等待
+        }
+    }</code></pre>
+<ul>
+<li><p>report</p>
+<p>根据状态判断获取的返回值</p>
+</li>
+</ul>
+<pre><code class="java">private V report(int s) throws ExecutionException {
+        Object x = outcome;
+        if (s == NORMAL)//如果正常执行完毕
+            return (V)x;//返回执行的结果(正常返回值)
+        if (s &gt;= CANCELLED)//如果被取消或者被中断 抛出异常
+            throw new CancellationException();
+        throw new ExecutionException((Throwable)x);//否则为异常状态，则抛出outcome结果存储的异常
+    }</code></pre>
 
       
     </div>
@@ -1711,8 +2061,8 @@ public class ExchangerTask {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/post/f08593ab.html" rel="next" title="牛客网算法编程题--办公室路径走法 解答">
-                <i class="fa fa-chevron-left"></i> 牛客网算法编程题--办公室路径走法 解答
+              <a href="/post/b3bf778.html" rel="next" title="动态规划算法基本案例">
+                <i class="fa fa-chevron-left"></i> 动态规划算法基本案例
               </a>
             
           </div>
@@ -1721,8 +2071,8 @@ public class ExchangerTask {
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/post/6bb3246.html" rel="prev" title="Docker基础知识以及使用Docker部署Springboot项目">
-                Docker基础知识以及使用Docker部署Springboot项目 <i class="fa fa-chevron-right"></i>
+              <a href="/post/f08593ab.html" rel="prev" title="牛客网算法编程题--办公室路径走法 解答">
+                牛客网算法编程题--办公室路径走法 解答 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1812,7 +2162,7 @@ public class ExchangerTask {
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1930,7 +2280,7 @@ public class ExchangerTask {
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-创建线程方式"><span class="nav-number">1.</span> <span class="nav-text">一.创建线程方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-线程问题"><span class="nav-number">2.</span> <span class="nav-text">二.线程问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-活跃性问题"><span class="nav-number">2.1.</span> <span class="nav-text">1.活跃性问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-线程安全性"><span class="nav-number">2.2.</span> <span class="nav-text">2.线程安全性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-Synchronized"><span class="nav-number">3.</span> <span class="nav-text">三.Synchronized</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四-锁的类型"><span class="nav-number">4.</span> <span class="nav-text">四.锁的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-重入锁"><span class="nav-number">4.1.</span> <span class="nav-text">1.重入锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-自旋锁"><span class="nav-number">4.2.</span> <span class="nav-text">2.自旋锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-死锁"><span class="nav-number">4.3.</span> <span class="nav-text">3.死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五-volatile"><span class="nav-number">5.</span> <span class="nav-text">五.volatile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#volatile-与-synchronized比较"><span class="nav-number">5.0.1.</span> <span class="nav-text">volatile 与 synchronized比较</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#六-JDK-原子类"><span class="nav-number">6.</span> <span class="nav-text">六.JDK 原子类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原子类"><span class="nav-number">6.1.</span> <span class="nav-text">原子类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAS"><span class="nav-number">6.2.</span> <span class="nav-text">CAS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七-Lock"><span class="nav-number">7.</span> <span class="nav-text">七.Lock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lock接口方法"><span class="nav-number">7.1.</span> <span class="nav-text">Lock接口方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantLock"><span class="nav-number">7.2.</span> <span class="nav-text">ReentrantLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lock与synchronized比较"><span class="nav-number">7.3.</span> <span class="nav-text">lock与synchronized比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义锁"><span class="nav-number">7.4.</span> <span class="nav-text">自定义锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八-AbstractQueuedSynchronizer-AQS"><span class="nav-number">8.</span> <span class="nav-text">八.AbstractQueuedSynchronizer(AQS)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#九-读写锁"><span class="nav-number">9.</span> <span class="nav-text">九.读写锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantReadWriteLock"><span class="nav-number">9.1.</span> <span class="nav-text">ReentrantReadWriteLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现原理"><span class="nav-number">9.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态维护"><span class="nav-number">9.3.</span> <span class="nav-text">状态维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#锁降级"><span class="nav-number">9.4.</span> <span class="nav-text">锁降级</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十-线程通信"><span class="nav-number">10.</span> <span class="nav-text">十.线程通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#wait-notify"><span class="nav-number">10.1.</span> <span class="nav-text">wait notify</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者和消费者"><span class="nav-number">10.2.</span> <span class="nav-text">生产者和消费者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Condition——线程通信更高效的方式"><span class="nav-number">10.3.</span> <span class="nav-text">Condition——线程通信更高效的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Condition实现的有界队列"><span class="nav-number">10.3.1.</span> <span class="nav-text">Condition实现的有界队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Condition源码分析"><span class="nav-number">10.3.2.</span> <span class="nav-text">Condition源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#await"><span class="nav-number">10.3.2.1.</span> <span class="nav-text">await</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#addConditionWaiter"><span class="nav-number">10.3.2.2.</span> <span class="nav-text">addConditionWaiter</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#unlinkCancelledWaiters"><span class="nav-number">10.3.2.3.</span> <span class="nav-text">unlinkCancelledWaiters</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#signal"><span class="nav-number">10.3.2.4.</span> <span class="nav-text">signal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#doSignal"><span class="nav-number">10.3.2.5.</span> <span class="nav-text">doSignal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#transferForSignal"><span class="nav-number">10.3.2.6.</span> <span class="nav-text">transferForSignal</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库连接池"><span class="nav-number">10.4.</span> <span class="nav-text">数据库连接池</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用Condition-ReentrantLock实现"><span class="nav-number">10.4.1.</span> <span class="nav-text">使用Condition+ReentrantLock实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程-Join"><span class="nav-number">10.5.</span> <span class="nav-text">线程 Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadLocal"><span class="nav-number">10.6.</span> <span class="nav-text">ThreadLocal</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用方法"><span class="nav-number">10.6.1.</span> <span class="nav-text">使用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现原理-1"><span class="nav-number">10.6.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">10.6.3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存泄露"><span class="nav-number">10.6.4.</span> <span class="nav-text">内存泄露</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal应用"><span class="nav-number">10.6.5.</span> <span class="nav-text">ThreadLocal应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#InheritableThreadLocal"><span class="nav-number">10.6.6.</span> <span class="nav-text">InheritableThreadLocal</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十一-并发工具类"><span class="nav-number">11.</span> <span class="nav-text">十一.并发工具类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CountDownLatch——共享锁"><span class="nav-number">11.1.</span> <span class="nav-text">CountDownLatch——共享锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用"><span class="nav-number">11.1.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析"><span class="nav-number">11.1.2.</span> <span class="nav-text">源码分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CyclicBarrier——屏障"><span class="nav-number">11.2.</span> <span class="nav-text">CyclicBarrier——屏障</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-1"><span class="nav-number">11.2.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析-1"><span class="nav-number">11.2.2.</span> <span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CyclicBarrier和CountDownLatch"><span class="nav-number">11.2.3.</span> <span class="nav-text">CyclicBarrier和CountDownLatch</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Semaphore——信号量"><span class="nav-number">11.3.</span> <span class="nav-text">Semaphore——信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化"><span class="nav-number">11.3.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-2"><span class="nav-number">11.3.2.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析-2"><span class="nav-number">11.3.3.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#acquire"><span class="nav-number">11.3.3.1.</span> <span class="nav-text">acquire</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#release"><span class="nav-number">11.3.3.2.</span> <span class="nav-text">release</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exchanger——交换者"><span class="nav-number">11.4.</span> <span class="nav-text">Exchanger——交换者</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-3"><span class="nav-number">11.4.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现原理-2"><span class="nav-number">11.4.2.</span> <span class="nav-text">实现原理</span></a></li></ol></li></ol></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-创建线程方式"><span class="nav-number">1.</span> <span class="nav-text">一.创建线程方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-线程问题"><span class="nav-number">2.</span> <span class="nav-text">二.线程问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-活跃性问题"><span class="nav-number">2.1.</span> <span class="nav-text">1.活跃性问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-线程安全性"><span class="nav-number">2.2.</span> <span class="nav-text">2.线程安全性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-Synchronized"><span class="nav-number">3.</span> <span class="nav-text">三.Synchronized</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四-锁的类型"><span class="nav-number">4.</span> <span class="nav-text">四.锁的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-重入锁"><span class="nav-number">4.1.</span> <span class="nav-text">1.重入锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-自旋锁"><span class="nav-number">4.2.</span> <span class="nav-text">2.自旋锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-死锁"><span class="nav-number">4.3.</span> <span class="nav-text">3.死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五-volatile"><span class="nav-number">5.</span> <span class="nav-text">五.volatile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#volatile-与-synchronized比较"><span class="nav-number">5.0.1.</span> <span class="nav-text">volatile 与 synchronized比较</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#六-JDK-原子类"><span class="nav-number">6.</span> <span class="nav-text">六.JDK 原子类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原子类"><span class="nav-number">6.1.</span> <span class="nav-text">原子类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAS"><span class="nav-number">6.2.</span> <span class="nav-text">CAS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七-Lock"><span class="nav-number">7.</span> <span class="nav-text">七.Lock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lock接口方法"><span class="nav-number">7.1.</span> <span class="nav-text">Lock接口方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantLock"><span class="nav-number">7.2.</span> <span class="nav-text">ReentrantLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lock与synchronized比较"><span class="nav-number">7.3.</span> <span class="nav-text">lock与synchronized比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义锁"><span class="nav-number">7.4.</span> <span class="nav-text">自定义锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八-AbstractQueuedSynchronizer-AQS"><span class="nav-number">8.</span> <span class="nav-text">八.AbstractQueuedSynchronizer(AQS)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#九-读写锁"><span class="nav-number">9.</span> <span class="nav-text">九.读写锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantReadWriteLock"><span class="nav-number">9.1.</span> <span class="nav-text">ReentrantReadWriteLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现原理"><span class="nav-number">9.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态维护"><span class="nav-number">9.3.</span> <span class="nav-text">状态维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#锁降级"><span class="nav-number">9.4.</span> <span class="nav-text">锁降级</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十-线程通信"><span class="nav-number">10.</span> <span class="nav-text">十.线程通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#wait-notify"><span class="nav-number">10.1.</span> <span class="nav-text">wait notify</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者和消费者"><span class="nav-number">10.2.</span> <span class="nav-text">生产者和消费者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Condition——线程通信更高效的方式"><span class="nav-number">10.3.</span> <span class="nav-text">Condition——线程通信更高效的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Condition实现的有界队列"><span class="nav-number">10.3.1.</span> <span class="nav-text">Condition实现的有界队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Condition源码分析"><span class="nav-number">10.3.2.</span> <span class="nav-text">Condition源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#await"><span class="nav-number">10.3.2.1.</span> <span class="nav-text">await</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#addConditionWaiter"><span class="nav-number">10.3.2.2.</span> <span class="nav-text">addConditionWaiter</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#unlinkCancelledWaiters"><span class="nav-number">10.3.2.3.</span> <span class="nav-text">unlinkCancelledWaiters</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#signal"><span class="nav-number">10.3.2.4.</span> <span class="nav-text">signal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#doSignal"><span class="nav-number">10.3.2.5.</span> <span class="nav-text">doSignal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#transferForSignal"><span class="nav-number">10.3.2.6.</span> <span class="nav-text">transferForSignal</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库连接池"><span class="nav-number">10.4.</span> <span class="nav-text">数据库连接池</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用Condition-ReentrantLock实现"><span class="nav-number">10.4.1.</span> <span class="nav-text">使用Condition+ReentrantLock实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程-Join"><span class="nav-number">10.5.</span> <span class="nav-text">线程 Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadLocal"><span class="nav-number">10.6.</span> <span class="nav-text">ThreadLocal</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用方法"><span class="nav-number">10.6.1.</span> <span class="nav-text">使用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现原理-1"><span class="nav-number">10.6.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">10.6.3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存泄露"><span class="nav-number">10.6.4.</span> <span class="nav-text">内存泄露</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal应用"><span class="nav-number">10.6.5.</span> <span class="nav-text">ThreadLocal应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#InheritableThreadLocal"><span class="nav-number">10.6.6.</span> <span class="nav-text">InheritableThreadLocal</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十一-并发工具类"><span class="nav-number">11.</span> <span class="nav-text">十一.并发工具类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CountDownLatch——共享锁"><span class="nav-number">11.1.</span> <span class="nav-text">CountDownLatch——共享锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用"><span class="nav-number">11.1.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析"><span class="nav-number">11.1.2.</span> <span class="nav-text">源码分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CyclicBarrier——屏障"><span class="nav-number">11.2.</span> <span class="nav-text">CyclicBarrier——屏障</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-1"><span class="nav-number">11.2.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析-1"><span class="nav-number">11.2.2.</span> <span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CyclicBarrier和CountDownLatch"><span class="nav-number">11.2.3.</span> <span class="nav-text">CyclicBarrier和CountDownLatch</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Semaphore——信号量"><span class="nav-number">11.3.</span> <span class="nav-text">Semaphore——信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化"><span class="nav-number">11.3.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-2"><span class="nav-number">11.3.2.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析-2"><span class="nav-number">11.3.3.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#acquire"><span class="nav-number">11.3.3.1.</span> <span class="nav-text">acquire</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#release"><span class="nav-number">11.3.3.2.</span> <span class="nav-text">release</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exchanger——交换者"><span class="nav-number">11.4.</span> <span class="nav-text">Exchanger——交换者</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-3"><span class="nav-number">11.4.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现原理-2"><span class="nav-number">11.4.2.</span> <span class="nav-text">实现原理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十二-Future"><span class="nav-number">12.</span> <span class="nav-text">十二.Future</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Callable"><span class="nav-number">12.1.</span> <span class="nav-text">Callable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Future"><span class="nav-number">12.2.</span> <span class="nav-text">Future</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Future和Callable使用"><span class="nav-number">12.3.</span> <span class="nav-text">Future和Callable使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FutureTask"><span class="nav-number">12.4.</span> <span class="nav-text">FutureTask</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FutureTask和Callable使用"><span class="nav-number">12.5.</span> <span class="nav-text">FutureTask和Callable使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FutureTask源码"><span class="nav-number">12.6.</span> <span class="nav-text">FutureTask源码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#run"><span class="nav-number">12.6.1.</span> <span class="nav-text">run</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#get"><span class="nav-number">12.6.2.</span> <span class="nav-text">get</span></a></li></ol></li></ol></li></div>
             
 
           </div>
@@ -1971,7 +2321,7 @@ public class ExchangerTask {
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">46k</span>
+    <span title="Site words total count">50.7k</span>
   
 </div>
 
