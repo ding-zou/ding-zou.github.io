@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "d1f94239"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java基础,面试,Java,设计模式,状态模式">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dzou's Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="首先你可能会想用int值存储状态，实现状态切换，Java中很多地方都像这样使用，特别时并发JUC中，但是我们的设计模式将提供一个更符合设计原则，更有弹性的状态模式。(JUC中使用int存储状态是因为不想让一个并发类的实现需要依赖很多的状态类，int值已经可以满足需求，状态模式更多是针对系统的设计)。状态模式：允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类。">
+<meta name="keywords" content="Java基础,面试,Java,设计模式,状态模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java设计模式——状态模式">
+<meta property="og:url" content="https://www.dzou.top/post/94ac76a6.html">
+<meta property="og:site_name" content="Dzou&#39;s Blog">
+<meta property="og:description" content="首先你可能会想用int值存储状态，实现状态切换，Java中很多地方都像这样使用，特别时并发JUC中，但是我们的设计模式将提供一个更符合设计原则，更有弹性的状态模式。(JUC中使用int存储状态是因为不想让一个并发类的实现需要依赖很多的状态类，int值已经可以满足需求，状态模式更多是针对系统的设计)。状态模式：允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/25.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/24.png">
+<meta property="og:updated_time" content="2019-08-13T16:09:28.926Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java设计模式——状态模式">
+<meta name="twitter:description" content="首先你可能会想用int值存储状态，实现状态切换，Java中很多地方都像这样使用，特别时并发JUC中，但是我们的设计模式将提供一个更符合设计原则，更有弹性的状态模式。(JUC中使用int存储状态是因为不想让一个并发类的实现需要依赖很多的状态类，int值已经可以满足需求，状态模式更多是针对系统的设计)。状态模式：允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类。">
+<meta name="twitter:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/25.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'Q66404JRFM',
+      apiKey: '27dd0e53d330bf96c9826662fc30055a',
+      indexName: 'dzou',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.dzou.top/post/94ac76a6.html">
+
+
+
+
+
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
+  <title>Java设计模式——状态模式 | Dzou's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+  
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="bg_content">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dzou's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">No pains,no gains.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/94ac76a6.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dzou">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dzou's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Java设计模式——状态模式</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-14T00:08:23+08:00">
+                2019-08-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/94ac76a6.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/94ac76a6.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>&nbsp浏览次数：
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.3k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5分
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  首先你可能会想用int值存储状态，实现状态切换，Java中很多地方都像这样使用，特别时并发JUC中，但是我们的设计模式将提供一个更符合设计原则，更有弹性的状态模式。(JUC中使用int存储状态是因为不想让一个并发类的实现需要依赖很多的状态类，int值已经可以满足需求，状态模式更多是针对系统的设计)。状态模式：允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Java设计模式之状态模式"><a href="#Java设计模式之状态模式" class="headerlink" title="Java设计模式之状态模式"></a>Java设计模式之状态模式</h2><p><strong><em>首先你可能会想用int值存储状态，实现状态切换，Java中很多地方都像这样使用，特别时并发JUC中，但是我们的设计模式将提供一个更符合设计原则，更有弹性的状态模式。(JUC中使用int存储状态是因为不想让一个并发类的实现需要依赖很多的状态类，int值已经可以满足需求，状态模式更多是针对系统的设计)</em></strong></p>
+<p><strong><em>状态模式：允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类。</em></strong></p>
+<p>把对象设计成一个<code>接口</code>，该接口定义状态共同的方法，具体的状态的实现就实现该接口。</p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/25.png">
+
+<ol>
+<li>为状态定义一个接口(可能为抽象类)，接口中的方法定义一些动作</li>
+<li>为每个状态实现状态类，重写各个状态不同的行为实现</li>
+<li>在<code>Context</code>中将操作委托给状态</li>
+</ol>
+<blockquote>
+<p>但是状态模式有一个缺点就是，状态和状态之间依赖太强了，但是这种操作提供的是一个更有弹性的设计，而且<code>Context</code>只需要知道我需要提交的请求而不需要知道它是怎么执行的，因为实现是有<code>状态</code>内部负责的。</p>
+</blockquote>
+<h3 id="Head-first-设计模式例子"><a href="#Head-first-设计模式例子" class="headerlink" title="Head first 设计模式例子"></a>Head first 设计模式例子</h3><p>一个糖果机售卖糖果，你放入15分就可以后转动转盘就可以获取一个糖果，但是也有糖果售完的情况。</p>
+<p>我们有<code>放入钱</code>，<code>转动转盘</code>，<code>放出糖果</code>和<code>退款</code>四个操作，这些操作接口由一个<code>接口</code>或者<code>抽象类</code>定义(抽象类可实现默认方法)，这个类就是<code>状态抽象类</code>或者<code>状态接口类</code></p>
+<p>该糖果机这里就有以下4个状态：</p>
+<ul>
+<li>没有放钱的状态——NoMoney</li>
+<li>放入钱的状态——HasMoney</li>
+<li>售出糖果的状态——Sold</li>
+<li>售完的状态——SoldOut</li>
+</ul>
+<p>每一个状态都有对应操作的不同实现，像<code>NoMoney</code>状态就不可以操作退款和放出糖果，转动转盘也没有糖果掉出，所以我们可以使用抽象类的默认方法(无法进行该操作)或者使用重写的方法实现更人性化的操作。</p>
+<blockquote>
+<p>实现了对修改关闭，对扩展开放的原则，有新的状态只需新添加一个类并实现其方法</p>
+</blockquote>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/24.png">
+
+<ul>
+<li>State</li>
+</ul>
+<pre><code class="java">public abstract class State {
+    protected void insertMoney(){
+        System.out.println(&quot;错误的请求&quot;);
+    }
+    protected void returnMoney(){
+        System.out.println(&quot;错误的请求&quot;);
+    }
+    protected void turnCrank(){
+        System.out.println(&quot;错误的请求&quot;);
+    }
+    protected void distribute(){
+        System.out.println(&quot;错误的请求&quot;);
+    }
+}</code></pre>
+<ul>
+<li>HasMoney</li>
+</ul>
+<pre><code class="java">public class HasMoney extends State{
+    private CandyMachine candyMachine;
+    public HasMoney(CandyMachine candyMachine){
+        this.candyMachine = candyMachine;
+    }
+    protected void insertMoney() {
+        System.out.println(&quot;已经放入15分了。请不要再次放入&quot;);
+    }
+    protected void turnCrank() {
+        System.out.println(&quot;你转动了轮盘，等待糖果放出-------&quot;);
+        candyMachine.setCurrentState(candyMachine.getSoldSate());
+    }
+}</code></pre>
+<ul>
+<li>NoMoney</li>
+</ul>
+<pre><code class="java">public class NoMoney extends State{
+    private CandyMachine candyMachine;
+    public NoMoney(CandyMachine candyMachine){
+        this.candyMachine = candyMachine;
+    }
+    @Override
+    protected void insertMoney() {
+        System.out.println(&quot;你放入了15分,请你转动轮盘来获取糖果-------&quot;);
+        candyMachine.setCurrentState(candyMachine.getHasMoneyState());
+    }
+}</code></pre>
+<ul>
+<li>Sold</li>
+</ul>
+<pre><code class="java">public class Sold extends State{
+    private CandyMachine candyMachine;
+    public Sold(CandyMachine candyMachine){
+        this.candyMachine = candyMachine;
+    }
+    @Override
+    protected void distribute() {
+        if(candyMachine.getCount()&gt;0){
+            System.out.println(&quot;您好，这里是一个糖果-------&quot;);
+            candyMachine.setCount((candyMachine.getCount()-1));
+            candyMachine.setCurrentState(candyMachine.getNoMoneyState());
+        }else {
+            System.out.println(&quot;您好，不好意思，我们的糖果售空了，稍后将退钱给你-------&quot;);
+            candyMachine.setCurrentState(candyMachine.getSoldOutSate());
+            candyMachine.getCurrentState().returnMoney();
+        }
+    }
+}</code></pre>
+<ul>
+<li>SoldOut</li>
+</ul>
+<pre><code class="java">public class SoldOut extends State{
+    private CandyMachine candyMachine;
+    public SoldOut(CandyMachine candyMachine){
+        this.candyMachine = candyMachine;
+    }
+    @Override
+    protected void returnMoney() {
+        System.out.println(&quot;您好，不好意思，这里是给您退的15分-------&quot;);
+        candyMachine.setCurrentState(candyMachine.getNoMoneyState());
+    }
+}</code></pre>
+<ul>
+<li>CandyMachine：操作糖果机</li>
+</ul>
+<pre><code class="java">@Data
+public class CandyMachine {
+    private State noMoneyState;
+    private State hasMoneyState;
+    private State soldSate;
+    private State soldOutSate;
+    //糖果数量
+    private int count;
+    private State currentState;
+    public CandyMachine(int initCandyCount) {
+        count = initCandyCount;
+        noMoneyState = new NoMoney(this);
+        hasMoneyState = new HasMoney(this);
+        soldSate = new Sold(this);
+        soldOutSate = new SoldOut(this);
+        currentState = noMoneyState;
+    }
+    public void purchaseOneCandy(){
+        currentState.insertMoney();
+        currentState.turnCrank();
+        currentState.distribute();
+    }
+}</code></pre>
+<ul>
+<li>测试</li>
+</ul>
+<pre><code class="java">public class TestMain {
+    public static void main(String[] args) {
+        CandyMachine candyMachine = new CandyMachine(2);
+        candyMachine.purchaseOneCandy();
+        System.out.println(&quot;\n&quot;);
+        candyMachine.purchaseOneCandy();
+        System.out.println(&quot;\n&quot;);
+        candyMachine.purchaseOneCandy();
+    }
+}
+</code></pre>
+<ul>
+<li>输出</li>
+</ul>
+<pre><code class="java">你放入了15分,请你转动轮盘来获取糖果-------
+你转动了轮盘，等待糖果放出-------
+您好，这里是一个糖果-------
+
+你放入了15分,请你转动轮盘来获取糖果-------
+你转动了轮盘，等待糖果放出-------
+您好，这里是一个糖果-------
+
+你放入了15分,请你转动轮盘来获取糖果-------
+你转动了轮盘，等待糖果放出-------
+您好，不好意思，我们的糖果售空了，稍后将退钱给你-------
+您好，不好意思，这里是给您退的15分-------</code></pre>
+<h3 id="状态模式和策略模式"><a href="#状态模式和策略模式" class="headerlink" title="状态模式和策略模式"></a>状态模式和策略模式</h3><p>你可以看到，状态模式的类图和策略模式基本一致，它俩很相同，但是最大的区别是<code>意图</code>不同。</p>
+<ul>
+<li>状态模式将行为封装在状态中，Context的行为委托于状态对象，随着时间改变自己的状态</li>
+<li>策略模式是将行为封装起来，使用委托决定使用哪个行为</li>
+</ul>
+<p>Context有多个实例，共享状态对象：状态对象声明为<code>静态</code>的，通过引用传入</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    dzou  |  微信：17856530567
+  </li>
+  <li class="post-copyright-link">
+  <strong>本文链接：</strong>
+  <a href="http://www.dzou.top/post/94ac76a6.html" title="Java设计模式——状态模式">http://www.dzou.top/post/94ac76a6.html</a>
+</li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noopener noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+  <li class="post-copyright-license">
+    并保留本声明和上方二维码。感谢您的阅读和支持！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+            <a href="/tags/基础/" rel="tag"># 基础</a>
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/7244f815.html" rel="next" title="Java设计模式——迭代器模式和组合模式">
+                <i class="fa fa-chevron-left"></i> Java设计模式——迭代器模式和组合模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/653661c0.html" rel="prev" title="Java设计模式——代理模式">
+                Java设计模式——代理模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" rel="external nofollow noopener noreferrer" target="_blank">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/2.JPG" alt="dzou">
+            
+              <p class="site-author-name" itemprop="name">dzou</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ding-zou" target="_blank" title="GitHub" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="dingxiang.zoufubo@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://me.csdn.net/qq_44760332" target="_blank" title="CSDN" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                推荐链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/7a5625fe.html" title="Java并发之AQS源码分析" target="_blank">Java并发之AQS源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/19e1cc75.html" title="Linux基础命令" target="_blank">Linux基础命令</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/8184a8fd.html" title="JDK8新特性——流和Lambda表达式" target="_blank">JDK8新特性——流和Lambda表达式</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://music.163.com/#/user/home?id=564117665" title="网易云音乐" target="_blank" rel="external nofollow noopener noreferrer">网易云音乐</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java设计模式之状态模式"><span class="nav-number">1.</span> <span class="nav-text">Java设计模式之状态模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Head-first-设计模式例子"><span class="nav-number">1.1.</span> <span class="nav-text">Head first 设计模式例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态模式和策略模式"><span class="nav-number">1.2.</span> <span class="nav-text">状态模式和策略模式</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dzou</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">55.5k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问用户：
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问次数：
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://dzou.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://www.dzou.top/post/94ac76a6.html';
+          this.page.identifier = 'post/94ac76a6.html';
+          this.page.title = 'Java设计模式——状态模式';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://dzou.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "topCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "topRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>
+

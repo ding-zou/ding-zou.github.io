@@ -78,7 +78,7 @@
 
 
 
-  <meta name="keywords" content="Java,Java基础,并发编程,锁,同步,线程,多线程,死锁,线程安全性,Synchronized,volatile,重入锁,自旋锁,原子类,CAS,饥饿,Lock,ReentrantLock,Callable,Future,线程池,执行器,ThreadExecutorPool,Condition,Join,ExecutorService,Semaphore,CountDownLatch,CyclicBarrier,wait,notify,await,signal,ThreadLocal">
+  <meta name="keywords" content="Java,Java基础,并发编程,锁,同步,线程,多线程,死锁,线程安全性,Synchronized,volatile,重入锁,自旋锁,原子类,CAS,饥饿,Lock,ReentrantLock,Callable,Future,线程池,执行器,ThreadExecutorPool,Condition,Join,ExecutorService,Semaphore,CountDownLatch,CyclicBarrier,wait,notify,await,signal,ThreadLocal,ForkJoin,MapReduce">
 
 
 
@@ -92,7 +92,7 @@
 
 
 <meta name="description" content="并发编程是Java程序员最重要的技能之一，也是最难掌握的一种技能。它要求编程者对计算机最底层的运作原理有深刻的理解，同时要求编程者逻辑清晰、思维缜密，这样才能写出高效、安全、可靠的多线程并发程序。">
-<meta name="keywords" content="Java,Java基础,并发编程,锁,同步,线程,多线程,死锁,线程安全性,Synchronized,volatile,重入锁,自旋锁,原子类,CAS,饥饿,Lock,ReentrantLock,Callable,Future,线程池,执行器,ThreadExecutorPool,Condition,Join,ExecutorService,Semaphore,CountDownLatch,CyclicBarrier,wait,notify,await,signal,ThreadLocal">
+<meta name="keywords" content="Java,Java基础,并发编程,锁,同步,线程,多线程,死锁,线程安全性,Synchronized,volatile,重入锁,自旋锁,原子类,CAS,饥饿,Lock,ReentrantLock,Callable,Future,线程池,执行器,ThreadExecutorPool,Condition,Join,ExecutorService,Semaphore,CountDownLatch,CyclicBarrier,wait,notify,await,signal,ThreadLocal,ForkJoin,MapReduce">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java并发编程学习笔记-更新中">
 <meta property="og:url" content="https://www.dzou.top/post/37228cde.html">
@@ -101,7 +101,9 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/1.png">
 <meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/2.png">
-<meta property="og:updated_time" content="2019-08-11T11:28:26.999Z">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/4.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/3.png">
+<meta property="og:updated_time" content="2019-08-13T16:12:09.974Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发编程学习笔记-更新中">
 <meta name="twitter:description" content="并发编程是Java程序员最重要的技能之一，也是最难掌握的一种技能。它要求编程者对计算机最底层的运作原理有深刻的理解，同时要求编程者逻辑清晰、思维缜密，这样才能写出高效、安全、可靠的多线程并发程序。">
@@ -412,7 +414,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  10.8k字
+                  12.8k字
                 </span>
               
 
@@ -428,7 +430,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  46分
+                  54分
                 </span>
               
             </div>
@@ -1963,6 +1965,261 @@ private static final int INTERRUPTED  = 6;</code></pre>
             throw new CancellationException();
         throw new ExecutionException((Throwable)x);//否则为异常状态，则抛出outcome结果存储的异常
     }</code></pre>
+<h2 id="十三-Fork-Join框架"><a href="#十三-Fork-Join框架" class="headerlink" title="十三.Fork/Join框架"></a>十三.Fork/Join框架</h2><ul>
+<li>Fork：“分”</li>
+<li>Join：“加”</li>
+</ul>
+<p>意思就是<strong>把任务分成多个任务，每个任务执行完后合起来获得最终结果</strong>，也叫<code>分而治之</code>法</p>
+<blockquote>
+<p>为什么并发中要出现这种方法呢？</p>
+<p>答：我们都知道多线程是为了提高效率而同时执行多个任务的操作，但是这个时候出现了<code>多核CPU</code>，如果我们只利用一个核，那么CPU资源就浪费太多了，处于这一点考虑，我们为了<code>充分利用CPU</code>资源，提出了分而治之法，在JUC中就是<code>Fork/Join框架</code></p>
+</blockquote>
+<ul>
+<li>Fork/Join也属于一种执行器，也就是它的<code>ForkJoinPool</code></li>
+</ul>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/4.png">
+
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>分而治之把一个大任务分成多组若干个小任务，每组任务开辟一个线程执行，每组线程都有一个队列负责该组任务的执行和等待</p>
+<ul>
+<li>工作窃取算法：每组任务执行速度不同，有的快有的慢，快的执行完后等待慢的执行完的话就浪费资源了，所以快的执行完后会帮还未执行完成的线程从<code>队列</code>中拿出任务去执行，但是这样会很混乱，所以规定了<strong>自己线程的任务是从队列头获取，其他线程来拿的任务从队列尾获取</strong></li>
+</ul>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/3.png">
+
+
+
+<h3 id="局限性"><a href="#局限性" class="headerlink" title="局限性"></a>局限性</h3><ul>
+<li>具体使用Fork Join还需根据实际情况分析，较小或较大的数据量都会导致执行效率比串行执行慢</li>
+<li>如果是<code>IO</code>操作较多的任务，尽量不使用，因为IO占CPU较少，<code>计算</code>占CPU多，适用于多计算的任务</li>
+<li>不能在任务内部抛出效验异常，必须处理</li>
+<li>细分出来的基本任务不能过大或过小，保持在100-10000个基本计算之间</li>
+</ul>
+<h3 id="使用-4"><a href="#使用-4" class="headerlink" title="使用"></a>使用</h3><p>Fork/Join包括下面的几个基本类</p>
+<ul>
+<li>ForkJoinPool：实现了ExecutorService和Executor接口，Java提供一个默认的ForkJoinPool对象(公用池)</li>
+</ul>
+<pre><code class="java">ForkJoinPool.commonPool();</code></pre>
+<ul>
+<li>ForkJoinTask：实现了Future接口，作为ForkJoin任务的抽象类，<code>submit返回该类对象</code>接收结果(Future也行)，类似FutureTask</li>
+</ul>
+<pre><code class="java">public abstract class ForkJoinTask&lt;V&gt; implements Future&lt;V&gt;</code></pre>
+<ul>
+<li>RecursiveTask：常用，扩展ForkJoinTask，也是一个抽象类，通过<code>继承</code>让子类重写<code>compute</code>方法实现有<code>返回结果</code>的ForkJoin任务</li>
+<li>RecursiveAction：扩展ForkJoinTask，也是一个抽象类，通过<code>继承</code>让子类重写<code>compute</code>方法实现<code>不带返回结果</code>的ForkJoin任务</li>
+<li>CountedCompleter：扩展ForkJoinTask，也是抽象类，<code>实现某个大任务完成后执行其他任务</code>，子类重写<code>compute</code>方法实现完成大任务的计算和重写<code>onCompletion</code>方法实现完成之后任务的计算</li>
+</ul>
+<p><strong>方法</strong></p>
+<ul>
+<li>fork：把创建的新的小任务发送给<code>ForkJoinPool</code>执行器，由它管理并分到其他线程执行</li>
+<li>join：等待一个任务执行完成并获取它的<code>返回结果</code>，与JUC中join方法类似，多了返回值</li>
+<li>quietlyJoin：没有返回值，与join区别是join任务被<code>撤销</code>的话，就会抛出异常，该方法不抛出异常</li>
+</ul>
+<h4 id="案例1"><a href="#案例1" class="headerlink" title="案例1"></a>案例1</h4><p>计算1乘到100000的计算(过大，得使用BigInteger)，比较串行和ForkJoin的效率</p>
+<ul>
+<li>串行</li>
+</ul>
+<pre><code class="java">public class ForLoopTask {
+    public static void main(String[] args) {
+        long start = System.currentTimeMillis();
+        BigInteger res = BigInteger.valueOf(1);
+        for(int i=1;i&lt;=100000;i++){
+            res = res.multiply(BigInteger.valueOf(i));
+        }
+        System.out.println(res);
+        long end = System.currentTimeMillis();
+        System.out.println(&quot;耗时：&quot;+(end-start));
+    }
+}</code></pre>
+<p>耗时</p>
+<pre><code class="java">耗时：5464ms</code></pre>
+<ul>
+<li>ForkJoin</li>
+</ul>
+<pre><code class="java">public class MyForkJoinTask extends RecursiveTask&lt;BigInteger&gt; {
+    private long start;
+    private long end;
+    public MyForkJoinTask(long start,long end){
+        this.start = start;
+        this.end = end;
+    }
+    @Override
+    protected BigInteger compute() {
+        BigInteger res = new BigInteger(&quot;1&quot;);//使用BigInteger类型存储过大的数
+        if(end-start&lt;=2&amp;&amp;end-start&gt;0){//表示可以进行计算，最基本任务计算2个数相乘
+            //计算
+            for(long i=start;i&lt;=end;i++){
+                res = res.multiply(BigInteger.valueOf(i));
+            }
+        }else {
+            //分治
+            long half = (end-start)/2;
+            MyForkJoinTask leftTask = new MyForkJoinTask(start,start+half);
+            MyForkJoinTask rightTask = new MyForkJoinTask(start+half+1,end);
+            leftTask.fork();//提交任务到执行器
+            rightTask.fork();
+            BigInteger a = leftTask.join();//等待任务执行完并获取结果
+            BigInteger b = rightTask.join();
+            res = a.multiply(b);
+        }
+        return res;
+    }
+    public static void main(String[] args) {
+        long start = System.currentTimeMillis();
+        ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
+        MyForkJoinTask task = new MyForkJoinTask(1,100000);
+        Future&lt;BigInteger&gt; future = forkJoinPool.submit(task);//接受Future对象作为返回值
+        try {
+            System.out.println(future.get());
+            long end = System.currentTimeMillis();
+            System.out.println(&quot;耗时：&quot;+(end-start));
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+<p>耗时</p>
+<pre><code class="java">耗时：1143</code></pre>
+<blockquote>
+<p>可以明显看到，当数据计算较大时，使用ForkJoin比串行执行有高出4秒的效率</p>
+</blockquote>
+<h4 id="案例2"><a href="#案例2" class="headerlink" title="案例2"></a>案例2</h4><p>我们用一个12万数据量的样本来测试，筛选其中的某个key中value值等于一个值的全部数据</p>
+<p>样本：NBA投篮数据</p>
+<p>筛选：与Kobe有关的全部数据并打印</p>
+<p>样本地址：<a href="https://www.kaggle.com/dansbecker/nba-shot-logs/downloads/nba-shot-logs.zip/1" rel="external nofollow noopener noreferrer" target="_blank">https://www.kaggle.com/dansbecker/nba-shot-logs/downloads/nba-shot-logs.zip/1</a></p>
+<ul>
+<li>数据对象bean</li>
+</ul>
+<pre><code class="java">@Data
+@AllArgsConstructor
+public class ShotDataSet {
+    private String game_id;
+    private String matchUp;
+    private String location;
+    private String w;
+    private String finalMargin;
+    private String shot_number;
+    private String period;
+    private String gameClock;
+    private String shotClock;
+    private String dribbles;
+    private String touchTime;
+    private String shotDist;
+    private String ptsType;
+    private String shotRes;
+    private String closestDefend;
+    private String cDPId;
+    private String cDDist;
+    private String fgm;
+    private String points;
+    private String playName;
+    private String playId;
+}</code></pre>
+<ul>
+<li><p>CSV数据加载器</p>
+<p>把CSV中数据转换成一个存储<code>ShotDataSet</code>对象的集合<code>ArrayList</code>，使用了Github上的Java工具项目<code>Hutool</code></p>
+</li>
+</ul>
+<pre><code class="java">public class ShotDataSetLoader {
+    public static List&lt;ShotDataSet&gt; loadCsv(String path) {
+        List&lt;ShotDataSet&gt; res = new ArrayList&lt;ShotDataSet&gt;();
+        CsvReader reader = CsvUtil.getReader();
+//从文件中读取CSV数据
+        CsvData data = reader.read(FileUtil.file(path));
+        List&lt;CsvRow&gt; rows = data.getRows();
+//遍历行
+        for (CsvRow csvRow : rows) {
+            //getRawList返回一个List列表，列表的每一项为CSV中的一个单元格（既逗号分隔部分）
+            List&lt;String&gt; strList = csvRow.getRawList();
+            ShotDataSet dataSet = new ShotDataSet(strList.get(0),
+                    strList.get(1),strList.get(2),strList.get(3),
+                    strList.get(4),strList.get(5),strList.get(6),
+                    strList.get(7),strList.get(8),strList.get(9),
+                    strList.get(10),strList.get(11),strList.get(12),
+                    strList.get(13),strList.get(14),strList.get(15),
+                    strList.get(16),strList.get(17),strList.get(18),
+                    strList.get(19),strList.get(20));
+            res.add(dataSet);
+        }
+        return res;
+    }
+}</code></pre>
+<ul>
+<li><p>任务类 继承RecursiveTask</p>
+<p>Kobe的PlayerId值等于997，把加载出来的全部数据对象使用ForkJoin分治，保证最基本任务里执行计算的步骤不要太多或太少，我们选取最小集合中有50个对象时执行基本任务。</p>
+</li>
+</ul>
+<pre><code class="java">public class ShotDataSearchTask extends RecursiveTask&lt;List&lt;ShotDataSet&gt;&gt; {
+    private List&lt;ShotDataSet&gt; list;
+    private static List&lt;ShotDataSet&gt; resList = new ArrayList&lt;&gt;();
+    public ShotDataSearchTask(List&lt;ShotDataSet&gt;  list){
+        this.list = list;
+    }
+    @Override
+    protected List&lt;ShotDataSet&gt; compute() {
+        if(list.size()&lt;50){
+            for(int i=0;i&lt;50;i++){
+                ShotDataSet dataSet = list.get(i);
+                if(dataSet.getPlayId().trim().equals(&quot;977&quot;)){//kobe的playerId值等于997
+                    resList.add(dataSet);
+                }
+            }
+        }else {
+            long half = list.size()/2;
+            ShotDataSearchTask leftTask = new ShotDataSearchTask(list.stream().limit(half).collect(Collectors.toList()));//用limit限制集合里数量为一半并且是前一半
+            ShotDataSearchTask rightTask = new ShotDataSearchTask(list.stream().skip(half).collect(Collectors.toList()));//用skip跳过集合中前一半
+            leftTask.fork();
+            rightTask.fork();
+            leftTask.quietlyJoin();
+            rightTask.quietlyJoin();
+        }
+        return resList;
+    }
+    public static void main(String[] args) {
+        List&lt;ShotDataSet&gt; list = ShotDataSetLoader.loadCsv(&quot;/home/dzou/Documents/shot_logs.csv&quot;);
+        long start = System.currentTimeMillis();
+        ShotDataSearchTask task = new ShotDataSearchTask(list);
+        ForkJoinPool pool = ForkJoinPool.commonPool();
+        Future&lt;List&lt;ShotDataSet&gt;&gt; future = pool.submit(task);
+        try {
+            System.out.println(future.get());
+            long end = System.currentTimeMillis();
+            System.out.println(&quot;耗时：&quot;+(end-start));
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p>执行器中执行任务的方法：</p>
+<ul>
+<li><code>submit</code>：提交任务到执行器并获取返回对象Future，返回值用该对象或者ForkJoinTask接收，用get方法获取</li>
+<li><code>invoke</code>：提交任务到执行器，任务完后执行方可返回，不是Future。</li>
+<li><code>execute</code>：提交任务到执行器，没有返回值。</li>
+</ul>
+<p>ForkJoin任务基本形式如下：</p>
+<pre><code class="java">     if(size&gt;DEFALUT_SIZE){
+            MyForkJoinTask leftTask = new MyForkJoinTask();
+            MyForkJoinTask rightTask = new MyForkJoinTask();
+            leftTask.fork();//提交任务到执行器
+            rightTask.fork();
+            leftTask.join();//等待任务执行完并获取结果
+            rightTask.join();
+        }else {
+            //计算
+            res = solveProblem();
+            return res;
+        }</code></pre>
+<h2 id="十四-Map-Reduce"><a href="#十四-Map-Reduce" class="headerlink" title="十四.Map/Reduce"></a>十四.Map/Reduce</h2><p>一个主要区别是，<a href="http://gee.cs.oswego.edu/dl/papers/fj.pdf" rel="external nofollow noopener noreferrer" target="_blank">F-J</a>似乎设计为在单个Java VM上工作，而<a href="http://static.googleusercontent.com/external_content/untrusted_dlcp/labs.google.com/en/us/papers/mapreduce-osdi04.pdf" rel="external nofollow noopener noreferrer" target="_blank">M-R</a>则明确设计为在大型机器集群上工作。这些是非常不同的场景。</p>
+<p>MapReduce是一种编程模型，用于分布式大规模数据计算。</p>
+<ul>
+<li>Map：数据筛选和转换</li>
+<li>Reduce：数据汇总</li>
+</ul>
+<p>在Java中的API就是<code>Stream</code>，分为并行流和串行流</p>
+<p>使用：</p>
+<ul>
+<li>大数据数值分析</li>
+<li>信息检索</li>
+<li>推荐系统</li>
+</ul>
 
       
     </div>
@@ -2162,7 +2419,7 @@ private static final int INTERRUPTED  = 6;</code></pre>
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2280,7 +2537,7 @@ private static final int INTERRUPTED  = 6;</code></pre>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-创建线程方式"><span class="nav-number">1.</span> <span class="nav-text">一.创建线程方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-线程问题"><span class="nav-number">2.</span> <span class="nav-text">二.线程问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-活跃性问题"><span class="nav-number">2.1.</span> <span class="nav-text">1.活跃性问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-线程安全性"><span class="nav-number">2.2.</span> <span class="nav-text">2.线程安全性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-Synchronized"><span class="nav-number">3.</span> <span class="nav-text">三.Synchronized</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四-锁的类型"><span class="nav-number">4.</span> <span class="nav-text">四.锁的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-重入锁"><span class="nav-number">4.1.</span> <span class="nav-text">1.重入锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-自旋锁"><span class="nav-number">4.2.</span> <span class="nav-text">2.自旋锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-死锁"><span class="nav-number">4.3.</span> <span class="nav-text">3.死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五-volatile"><span class="nav-number">5.</span> <span class="nav-text">五.volatile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#volatile-与-synchronized比较"><span class="nav-number">5.0.1.</span> <span class="nav-text">volatile 与 synchronized比较</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#六-JDK-原子类"><span class="nav-number">6.</span> <span class="nav-text">六.JDK 原子类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原子类"><span class="nav-number">6.1.</span> <span class="nav-text">原子类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAS"><span class="nav-number">6.2.</span> <span class="nav-text">CAS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七-Lock"><span class="nav-number">7.</span> <span class="nav-text">七.Lock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lock接口方法"><span class="nav-number">7.1.</span> <span class="nav-text">Lock接口方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantLock"><span class="nav-number">7.2.</span> <span class="nav-text">ReentrantLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lock与synchronized比较"><span class="nav-number">7.3.</span> <span class="nav-text">lock与synchronized比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义锁"><span class="nav-number">7.4.</span> <span class="nav-text">自定义锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八-AbstractQueuedSynchronizer-AQS"><span class="nav-number">8.</span> <span class="nav-text">八.AbstractQueuedSynchronizer(AQS)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#九-读写锁"><span class="nav-number">9.</span> <span class="nav-text">九.读写锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantReadWriteLock"><span class="nav-number">9.1.</span> <span class="nav-text">ReentrantReadWriteLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现原理"><span class="nav-number">9.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态维护"><span class="nav-number">9.3.</span> <span class="nav-text">状态维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#锁降级"><span class="nav-number">9.4.</span> <span class="nav-text">锁降级</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十-线程通信"><span class="nav-number">10.</span> <span class="nav-text">十.线程通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#wait-notify"><span class="nav-number">10.1.</span> <span class="nav-text">wait notify</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者和消费者"><span class="nav-number">10.2.</span> <span class="nav-text">生产者和消费者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Condition——线程通信更高效的方式"><span class="nav-number">10.3.</span> <span class="nav-text">Condition——线程通信更高效的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Condition实现的有界队列"><span class="nav-number">10.3.1.</span> <span class="nav-text">Condition实现的有界队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Condition源码分析"><span class="nav-number">10.3.2.</span> <span class="nav-text">Condition源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#await"><span class="nav-number">10.3.2.1.</span> <span class="nav-text">await</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#addConditionWaiter"><span class="nav-number">10.3.2.2.</span> <span class="nav-text">addConditionWaiter</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#unlinkCancelledWaiters"><span class="nav-number">10.3.2.3.</span> <span class="nav-text">unlinkCancelledWaiters</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#signal"><span class="nav-number">10.3.2.4.</span> <span class="nav-text">signal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#doSignal"><span class="nav-number">10.3.2.5.</span> <span class="nav-text">doSignal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#transferForSignal"><span class="nav-number">10.3.2.6.</span> <span class="nav-text">transferForSignal</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库连接池"><span class="nav-number">10.4.</span> <span class="nav-text">数据库连接池</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用Condition-ReentrantLock实现"><span class="nav-number">10.4.1.</span> <span class="nav-text">使用Condition+ReentrantLock实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程-Join"><span class="nav-number">10.5.</span> <span class="nav-text">线程 Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadLocal"><span class="nav-number">10.6.</span> <span class="nav-text">ThreadLocal</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用方法"><span class="nav-number">10.6.1.</span> <span class="nav-text">使用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现原理-1"><span class="nav-number">10.6.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">10.6.3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存泄露"><span class="nav-number">10.6.4.</span> <span class="nav-text">内存泄露</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal应用"><span class="nav-number">10.6.5.</span> <span class="nav-text">ThreadLocal应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#InheritableThreadLocal"><span class="nav-number">10.6.6.</span> <span class="nav-text">InheritableThreadLocal</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十一-并发工具类"><span class="nav-number">11.</span> <span class="nav-text">十一.并发工具类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CountDownLatch——共享锁"><span class="nav-number">11.1.</span> <span class="nav-text">CountDownLatch——共享锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用"><span class="nav-number">11.1.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析"><span class="nav-number">11.1.2.</span> <span class="nav-text">源码分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CyclicBarrier——屏障"><span class="nav-number">11.2.</span> <span class="nav-text">CyclicBarrier——屏障</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-1"><span class="nav-number">11.2.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析-1"><span class="nav-number">11.2.2.</span> <span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CyclicBarrier和CountDownLatch"><span class="nav-number">11.2.3.</span> <span class="nav-text">CyclicBarrier和CountDownLatch</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Semaphore——信号量"><span class="nav-number">11.3.</span> <span class="nav-text">Semaphore——信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化"><span class="nav-number">11.3.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-2"><span class="nav-number">11.3.2.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析-2"><span class="nav-number">11.3.3.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#acquire"><span class="nav-number">11.3.3.1.</span> <span class="nav-text">acquire</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#release"><span class="nav-number">11.3.3.2.</span> <span class="nav-text">release</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exchanger——交换者"><span class="nav-number">11.4.</span> <span class="nav-text">Exchanger——交换者</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-3"><span class="nav-number">11.4.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现原理-2"><span class="nav-number">11.4.2.</span> <span class="nav-text">实现原理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十二-Future"><span class="nav-number">12.</span> <span class="nav-text">十二.Future</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Callable"><span class="nav-number">12.1.</span> <span class="nav-text">Callable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Future"><span class="nav-number">12.2.</span> <span class="nav-text">Future</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Future和Callable使用"><span class="nav-number">12.3.</span> <span class="nav-text">Future和Callable使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FutureTask"><span class="nav-number">12.4.</span> <span class="nav-text">FutureTask</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FutureTask和Callable使用"><span class="nav-number">12.5.</span> <span class="nav-text">FutureTask和Callable使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FutureTask源码"><span class="nav-number">12.6.</span> <span class="nav-text">FutureTask源码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#run"><span class="nav-number">12.6.1.</span> <span class="nav-text">run</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#get"><span class="nav-number">12.6.2.</span> <span class="nav-text">get</span></a></li></ol></li></ol></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-创建线程方式"><span class="nav-number">1.</span> <span class="nav-text">一.创建线程方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-线程问题"><span class="nav-number">2.</span> <span class="nav-text">二.线程问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-活跃性问题"><span class="nav-number">2.1.</span> <span class="nav-text">1.活跃性问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-线程安全性"><span class="nav-number">2.2.</span> <span class="nav-text">2.线程安全性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-Synchronized"><span class="nav-number">3.</span> <span class="nav-text">三.Synchronized</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四-锁的类型"><span class="nav-number">4.</span> <span class="nav-text">四.锁的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-重入锁"><span class="nav-number">4.1.</span> <span class="nav-text">1.重入锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-自旋锁"><span class="nav-number">4.2.</span> <span class="nav-text">2.自旋锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-死锁"><span class="nav-number">4.3.</span> <span class="nav-text">3.死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五-volatile"><span class="nav-number">5.</span> <span class="nav-text">五.volatile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#volatile-与-synchronized比较"><span class="nav-number">5.0.1.</span> <span class="nav-text">volatile 与 synchronized比较</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#六-JDK-原子类"><span class="nav-number">6.</span> <span class="nav-text">六.JDK 原子类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原子类"><span class="nav-number">6.1.</span> <span class="nav-text">原子类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAS"><span class="nav-number">6.2.</span> <span class="nav-text">CAS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七-Lock"><span class="nav-number">7.</span> <span class="nav-text">七.Lock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lock接口方法"><span class="nav-number">7.1.</span> <span class="nav-text">Lock接口方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantLock"><span class="nav-number">7.2.</span> <span class="nav-text">ReentrantLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lock与synchronized比较"><span class="nav-number">7.3.</span> <span class="nav-text">lock与synchronized比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义锁"><span class="nav-number">7.4.</span> <span class="nav-text">自定义锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八-AbstractQueuedSynchronizer-AQS"><span class="nav-number">8.</span> <span class="nav-text">八.AbstractQueuedSynchronizer(AQS)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#九-读写锁"><span class="nav-number">9.</span> <span class="nav-text">九.读写锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ReentrantReadWriteLock"><span class="nav-number">9.1.</span> <span class="nav-text">ReentrantReadWriteLock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现原理"><span class="nav-number">9.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态维护"><span class="nav-number">9.3.</span> <span class="nav-text">状态维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#锁降级"><span class="nav-number">9.4.</span> <span class="nav-text">锁降级</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十-线程通信"><span class="nav-number">10.</span> <span class="nav-text">十.线程通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#wait-notify"><span class="nav-number">10.1.</span> <span class="nav-text">wait notify</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者和消费者"><span class="nav-number">10.2.</span> <span class="nav-text">生产者和消费者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Condition——线程通信更高效的方式"><span class="nav-number">10.3.</span> <span class="nav-text">Condition——线程通信更高效的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Condition实现的有界队列"><span class="nav-number">10.3.1.</span> <span class="nav-text">Condition实现的有界队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Condition源码分析"><span class="nav-number">10.3.2.</span> <span class="nav-text">Condition源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#await"><span class="nav-number">10.3.2.1.</span> <span class="nav-text">await</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#addConditionWaiter"><span class="nav-number">10.3.2.2.</span> <span class="nav-text">addConditionWaiter</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#unlinkCancelledWaiters"><span class="nav-number">10.3.2.3.</span> <span class="nav-text">unlinkCancelledWaiters</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#signal"><span class="nav-number">10.3.2.4.</span> <span class="nav-text">signal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#doSignal"><span class="nav-number">10.3.2.5.</span> <span class="nav-text">doSignal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#transferForSignal"><span class="nav-number">10.3.2.6.</span> <span class="nav-text">transferForSignal</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库连接池"><span class="nav-number">10.4.</span> <span class="nav-text">数据库连接池</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用Condition-ReentrantLock实现"><span class="nav-number">10.4.1.</span> <span class="nav-text">使用Condition+ReentrantLock实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程-Join"><span class="nav-number">10.5.</span> <span class="nav-text">线程 Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadLocal"><span class="nav-number">10.6.</span> <span class="nav-text">ThreadLocal</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用方法"><span class="nav-number">10.6.1.</span> <span class="nav-text">使用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现原理-1"><span class="nav-number">10.6.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">10.6.3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存泄露"><span class="nav-number">10.6.4.</span> <span class="nav-text">内存泄露</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadLocal应用"><span class="nav-number">10.6.5.</span> <span class="nav-text">ThreadLocal应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#InheritableThreadLocal"><span class="nav-number">10.6.6.</span> <span class="nav-text">InheritableThreadLocal</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十一-并发工具类"><span class="nav-number">11.</span> <span class="nav-text">十一.并发工具类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CountDownLatch——共享锁"><span class="nav-number">11.1.</span> <span class="nav-text">CountDownLatch——共享锁</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用"><span class="nav-number">11.1.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析"><span class="nav-number">11.1.2.</span> <span class="nav-text">源码分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CyclicBarrier——屏障"><span class="nav-number">11.2.</span> <span class="nav-text">CyclicBarrier——屏障</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-1"><span class="nav-number">11.2.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析-1"><span class="nav-number">11.2.2.</span> <span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CyclicBarrier和CountDownLatch"><span class="nav-number">11.2.3.</span> <span class="nav-text">CyclicBarrier和CountDownLatch</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Semaphore——信号量"><span class="nav-number">11.3.</span> <span class="nav-text">Semaphore——信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化"><span class="nav-number">11.3.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-2"><span class="nav-number">11.3.2.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析-2"><span class="nav-number">11.3.3.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#acquire"><span class="nav-number">11.3.3.1.</span> <span class="nav-text">acquire</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#release"><span class="nav-number">11.3.3.2.</span> <span class="nav-text">release</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exchanger——交换者"><span class="nav-number">11.4.</span> <span class="nav-text">Exchanger——交换者</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-3"><span class="nav-number">11.4.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现原理-2"><span class="nav-number">11.4.2.</span> <span class="nav-text">实现原理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十二-Future"><span class="nav-number">12.</span> <span class="nav-text">十二.Future</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Callable"><span class="nav-number">12.1.</span> <span class="nav-text">Callable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Future"><span class="nav-number">12.2.</span> <span class="nav-text">Future</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Future和Callable使用"><span class="nav-number">12.3.</span> <span class="nav-text">Future和Callable使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FutureTask"><span class="nav-number">12.4.</span> <span class="nav-text">FutureTask</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FutureTask和Callable使用"><span class="nav-number">12.5.</span> <span class="nav-text">FutureTask和Callable使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FutureTask源码"><span class="nav-number">12.6.</span> <span class="nav-text">FutureTask源码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#run"><span class="nav-number">12.6.1.</span> <span class="nav-text">run</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#get"><span class="nav-number">12.6.2.</span> <span class="nav-text">get</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十三-Fork-Join框架"><span class="nav-number">13.</span> <span class="nav-text">十三.Fork/Join框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">13.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#局限性"><span class="nav-number">13.2.</span> <span class="nav-text">局限性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-4"><span class="nav-number">13.3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#案例1"><span class="nav-number">13.3.1.</span> <span class="nav-text">案例1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#案例2"><span class="nav-number">13.3.2.</span> <span class="nav-text">案例2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结-1"><span class="nav-number">13.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#十四-Map-Reduce"><span class="nav-number">14.</span> <span class="nav-text">十四.Map/Reduce</span></a></li></div>
             
 
           </div>
@@ -2321,7 +2578,7 @@ private static final int INTERRUPTED  = 6;</code></pre>
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">50.7k</span>
+    <span title="Site words total count">55.5k</span>
   
 </div>
 

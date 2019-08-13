@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "d1f94239"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java基础,面试,Java,设计模式,代理模式">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dzou's Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="代理模式：为另一种对象提供一个替身或者占位符来控制对这个对象的访问。使用代理对象创建代表对象，让代表对象控制对对象的访问，被代理对象可以使远程对象、创建开销大的对象或者是需要安全控制的对象。">
+<meta name="keywords" content="Java基础,面试,Java,设计模式,代理模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java设计模式——代理模式">
+<meta property="og:url" content="https://www.dzou.top/post/653661c0.html">
+<meta property="og:site_name" content="Dzou&#39;s Blog">
+<meta property="og:description" content="代理模式：为另一种对象提供一个替身或者占位符来控制对这个对象的访问。使用代理对象创建代表对象，让代表对象控制对对象的访问，被代理对象可以使远程对象、创建开销大的对象或者是需要安全控制的对象。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/26.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/27.png">
+<meta property="og:updated_time" content="2019-08-13T16:10:41.622Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java设计模式——代理模式">
+<meta name="twitter:description" content="代理模式：为另一种对象提供一个替身或者占位符来控制对这个对象的访问。使用代理对象创建代表对象，让代表对象控制对对象的访问，被代理对象可以使远程对象、创建开销大的对象或者是需要安全控制的对象。">
+<meta name="twitter:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/26.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'Q66404JRFM',
+      apiKey: '27dd0e53d330bf96c9826662fc30055a',
+      indexName: 'dzou',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.dzou.top/post/653661c0.html">
+
+
+
+
+
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
+  <title>Java设计模式——代理模式 | Dzou's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+  
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="bg_content">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dzou's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">No pains,no gains.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/653661c0.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dzou">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dzou's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Java设计模式——代理模式</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-14T00:09:42+08:00">
+                2019-08-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Java基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/653661c0.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/653661c0.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>&nbsp浏览次数：
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.5k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  6分
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  代理模式：为另一种对象提供一个替身或者占位符来控制对这个对象的访问。使用代理对象创建代表对象，让代表对象控制对对象的访问，被代理对象可以使远程对象、创建开销大的对象或者是需要安全控制的对象。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Java设计模式之代理模式"><a href="#Java设计模式之代理模式" class="headerlink" title="Java设计模式之代理模式"></a>Java设计模式之代理模式</h2><p><strong><em>代理模式：为另一种对象提供一个替身或者占位符来控制对这个对象的访问。</em></strong></p>
+<blockquote>
+<p>使用代理对象创建代表对象，让代表对象控制对对象的访问，被代理对象可以使远程对象、创建开销大的对象或者是需要安全控制的对象。</p>
+</blockquote>
+<p>代理访问控制：</p>
+<ul>
+<li><p>远程代理控制访问远程对象</p>
+<p>可以作为另一个JVM上的对象的本地代表，利用网络Socket进行连接，通过网络将结果返回给代理。</p>
+</li>
+<li><p>虚拟代理控制访问创建开销大的对象</p>
+</li>
+<li><p>保护代理基于权限控制对资源的访问</p>
+</li>
+<li><p>智能引用代理，相当于对原对象的一种功能扩展，在访问原对象时，加入了新功能，例如统计访问次数等。</p>
+</li>
+</ul>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/26.png">
+
+<ul>
+<li>Subject：提供统一接口，让Proxy可以替代RealSubject</li>
+<li>RealSubject：真正做事的对象，被Proxy代理控制访问</li>
+<li>Proxy：代理对象，持有RealSubject引用，负责客户的调用</li>
+</ul>
+<h3 id="静态代理"><a href="#静态代理" class="headerlink" title="静态代理"></a>静态代理</h3><blockquote>
+<p>静态代理在使用时,需要定义接口或者父类,被代理对象与代理对象一起实现相同的接口或者是继承相同父类.</p>
+</blockquote>
+<p><strong>关键：在程序未运行之前，代理对象就已经被创建出来了，.class文件存在。</strong></p>
+<p>优点：</p>
+<ul>
+<li>在不修改元对象的情况下，对目标进行扩展。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>每个方法都需要扩展，当有很多方法时，需要对每个方法都添加相应的操作，不方便维护。</li>
+</ul>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><ul>
+<li>点餐</li>
+</ul>
+<pre><code class="java">public interface MenuOrder {
+    public void order();
+}</code></pre>
+<ul>
+<li>被代理类——厨师</li>
+</ul>
+<pre><code class="java">public class ChefAcceptOrder implements MenuOrder{
+    public void order() {
+        System.out.println( new Meal().toString());
+    }
+}</code></pre>
+<ul>
+<li>任务返回值——Meal</li>
+</ul>
+<pre><code class="java">public class Meal {
+    private String[] names;
+    public Meal(){
+        names = new String[3];
+        names[0] = &quot;鱼香肉丝&quot;;
+        names[1] = &quot;宫保鸡丁&quot;;
+        names[2] = &quot;紫菜汤&quot;;
+    }
+    @Override
+    public String toString() {
+        return &quot;Meal{&quot; +
+                &quot;names=&quot; + Arrays.toString(names) +
+                &#39;}&#39;;
+    }
+}
+</code></pre>
+<ul>
+<li>代理类——女服务员</li>
+</ul>
+<pre><code class="java">public class WaitressProxy implements MenuOrder{
+    private ChefAcceptOrder acceptOrder;
+    public WaitressProxy(ChefAcceptOrder acceptOrder){
+        this.acceptOrder = acceptOrder;
+    }
+    public void order() {
+        System.out.println(&quot;请您稍等，正在为你备餐&quot;);
+        acceptOrder.order();
+        System.out.println(&quot;请您享用&quot;);
+    }
+}</code></pre>
+<ul>
+<li>测试</li>
+</ul>
+<pre><code class="java">public class Test {
+    public static void main(String[] args) {
+        ChefAcceptOrder acceptOrder = new ChefAcceptOrder();
+        WaitressProxy proxy = new WaitressProxy(acceptOrder);
+        proxy.order();
+    }
+}</code></pre>
+<h3 id="远程代理"><a href="#远程代理" class="headerlink" title="远程代理"></a>远程代理</h3><h4 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h4><ul>
+<li>远程方法调用接口</li>
+</ul>
+<pre><code class="java">public interface MyRemote extends Remote {
+    public String doSomething() throws RemoteException;
+}</code></pre>
+<ul>
+<li>远程方法调用实现——还需继承<code>UnicastRemoteObject</code></li>
+</ul>
+<pre><code class="java">public class MyRemoteImpl extends UnicastRemoteObject implements MyRemote{
+    protected MyRemoteImpl() throws RemoteException {
+    }
+
+    public String doSomething() throws RemoteException {
+        return &quot;我完成了一件事。&quot;;
+    }
+}</code></pre>
+<ul>
+<li>客户端测试远程调用</li>
+</ul>
+<pre><code class="java">    public static void main(String[] args) {
+        try {
+            MyRemote remote = new MyRemoteImpl();
+            Context context = new InitialContext();
+            LocateRegistry.createRegistry(8090);
+            context.bind(&quot;rmi://localhost:8090/myRemoteService&quot;,remote);
+            MyRemote remote1 = (MyRemote) context.lookup(&quot;rmi://localhost:8090/myRemoteService&quot;);
+            System.out.println(remote1.doSomething());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+    }</code></pre>
+<h3 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h3><p><strong><em>在运行时，为被代理对象利用反射创建代理对象</em></strong></p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/27.png">
+
+<blockquote>
+<p>其中Proxy实际没有，是由JDK为我们动态创建的</p>
+</blockquote>
+<p>动态代理有两种类型：</p>
+<ul>
+<li>有<code>接口</code>被实现的情况下，属于JDK中的<code>Proxy</code>代理</li>
+<li>没有接口被实现，属于<code>Cglib</code>代理</li>
+</ul>
+<p>优点：</p>
+<ul>
+<li>对代理类的函数进行统一的处理，而不用修改每个代理类的函数</li>
+</ul>
+<h4 id="JDK动态代理——Proxy"><a href="#JDK动态代理——Proxy" class="headerlink" title="JDK动态代理——Proxy"></a>JDK动态代理——Proxy</h4><p>通过<code>Proxy</code>类中静态方法<code>newProxyInstance</code>创建代理对象，<code>用代理对象class文件加载造出被代理对象，相当于复制一份</code></p>
+<pre><code class="java">newProxyInstance(ClassLoader loader, Class [] interfaces, InvocationHandler handler)
+</code></pre>
+<p>接受三个参数：</p>
+<ul>
+<li>被代理对象的类加载器，加载被代理对象</li>
+<li>被代理对象的方法数组</li>
+<li>方法执行处理器，<code>你需要实现一个调用处理器</code>，实现<code>InvocationHandler</code>接口</li>
+</ul>
+<p>所有方法都被提交到<code>InvocationHandler.invoke</code>中执行</p>
+<p><code>java.lang.reflect.InvocationHandler</code>类就一个<code>invoke</code>方法</p>
+<pre><code class="java">// 该方法负责集中处理动态代理类上的所有方法调用。第一个参数既是代理类实例，第二个参数是被调用的方法对象
+// 第三个方法是调用参数。
+Object invoke(Object proxy, Method method, Object[] args)
+</code></pre>
+<h5 id="使用-2"><a href="#使用-2" class="headerlink" title="使用"></a>使用</h5><ul>
+<li>调用方法接口</li>
+</ul>
+<pre><code class="java">public interface SayHello {
+    public void sayHello();
+}
+</code></pre>
+<ul>
+<li>调用方法接口实现</li>
+</ul>
+<pre><code class="java">public class SayHelloImpl implements SayHello {
+    public void sayHello() {
+        System.out.println(&quot;hello&quot;);
+    }
+}
+</code></pre>
+<ul>
+<li><code>InvocationHandler</code>-处理方法调用</li>
+</ul>
+<pre><code class="java">public class SayHelloInvocationHandler implements InvocationHandler {
+    private SayHello sayHello;
+    public SayHelloInvocationHandler(SayHello sayHello){
+        this.sayHello = sayHello;
+    }
+    public Object invoke(Object proxy, Method method, Object[] args) {
+        try {
+            System.out.println(&quot;before&quot;);
+            Object o = method.invoke(sayHello, args);
+            System.out.println(&quot;after&quot;);
+            return o;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+}
+</code></pre>
+<ul>
+<li>获取代理对象</li>
+</ul>
+<pre><code class="java">public class ProxyFactory {
+    //维护一个目标对象
+    private SayHello target;
+    public ProxyFactory(SayHello target){
+        this.target=target;
+    }
+    public Object getNewProxy(){
+        return Proxy.newProxyInstance(target.getClass().getClassLoader(),
+                target.getClass().getInterfaces(),
+                new SayHelloInvocationHandler(target));
+    }
+}
+</code></pre>
+<ul>
+<li>测试</li>
+</ul>
+<pre><code class="java">public static void main(String[] args) {
+        SayHelloImpl sayHello = new SayHelloImpl();
+        ProxyFactory proxyFactory = new ProxyFactory(sayHello);
+        SayHello proxy = (SayHello) proxyFactory.getNewProxy();
+        proxy.sayHello();
+    }
+</code></pre>
+<h4 id="动态代理——Cglib"><a href="#动态代理——Cglib" class="headerlink" title="动态代理——Cglib"></a>动态代理——Cglib</h4><p><strong><em>上面的静态代理和动态代理模式都是要求目标对象实现一个接口或者多个接口,但是有时候目标对象只是一个单独的对象,并没有实现任何的接口,这个时候就可以使用构建目标对象子类的方式实现代理,这种方法就叫做:Cglib代理</em></strong></p>
+<ul>
+<li>实现<code>MethodInterceptor</code>接口，提供<code>intercept</code>方法拦截</li>
+</ul>
+<h5 id="使用-3"><a href="#使用-3" class="headerlink" title="使用"></a>使用</h5><ul>
+<li>服务类——被代理对象</li>
+</ul>
+<pre><code class="java">public class TaskService {
+    public void doTask(){
+        System.out.println(&quot;正在进行紧张的计算&quot;);
+    }
+}
+</code></pre>
+<ul>
+<li>获取代理对象</li>
+</ul>
+<pre><code class="java">public class ProxyFactory implements MethodInterceptor {
+    private Object target;
+    public ProxyFactory(Object target){
+        this.target = target;
+    }
+    public Object getNewProxy(){
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(target.getClass());
+        enhancer.setCallback(this);
+        return enhancer.create();
+    }
+    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+        System.out.println(&quot;开始执行&quot;);
+        Object res = method.invoke(target,objects);
+        System.out.println(&quot;结束执行&quot;);
+        return res;
+    }
+}
+</code></pre>
+<ul>
+<li>测试</li>
+</ul>
+<pre><code class="java">public static void main(String[] args) {
+        TaskService taskService = new TaskService();
+        ProxyFactory proxyFactory = new ProxyFactory(taskService);
+        TaskService cglib = (TaskService) proxyFactory.getNewProxy();
+        cglib.doTask();
+    }
+</code></pre>
+<h3 id="代理模式和装饰者模式"><a href="#代理模式和装饰者模式" class="headerlink" title="代理模式和装饰者模式"></a>代理模式和装饰者模式</h3><p><strong><em>代理模式和装饰者模式UML基本一样，但是两者的核心不一样：</em></strong></p>
+<ul>
+<li><p>装饰者模式强调<code>添加行为</code></p>
+</li>
+<li><p>代理模式强调<code>控制访问</code></p>
+<hr>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    dzou  |  微信：17856530567
+  </li>
+  <li class="post-copyright-link">
+  <strong>本文链接：</strong>
+  <a href="http://www.dzou.top/post/653661c0.html" title="Java设计模式——代理模式">http://www.dzou.top/post/653661c0.html</a>
+</li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noopener noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+  <li class="post-copyright-license">
+    并保留本声明和上方二维码。感谢您的阅读和支持！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+            <a href="/tags/基础/" rel="tag"># 基础</a>
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/94ac76a6.html" rel="next" title="Java设计模式——状态模式">
+                <i class="fa fa-chevron-left"></i> Java设计模式——状态模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" rel="external nofollow noopener noreferrer" target="_blank">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/2.JPG" alt="dzou">
+            
+              <p class="site-author-name" itemprop="name">dzou</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ding-zou" target="_blank" title="GitHub" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="dingxiang.zoufubo@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://me.csdn.net/qq_44760332" target="_blank" title="CSDN" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                推荐链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/7a5625fe.html" title="Java并发之AQS源码分析" target="_blank">Java并发之AQS源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/19e1cc75.html" title="Linux基础命令" target="_blank">Linux基础命令</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/8184a8fd.html" title="JDK8新特性——流和Lambda表达式" target="_blank">JDK8新特性——流和Lambda表达式</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://music.163.com/#/user/home?id=564117665" title="网易云音乐" target="_blank" rel="external nofollow noopener noreferrer">网易云音乐</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java设计模式之代理模式"><span class="nav-number">1.</span> <span class="nav-text">Java设计模式之代理模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#静态代理"><span class="nav-number">1.1.</span> <span class="nav-text">静态代理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用"><span class="nav-number">1.1.1.</span> <span class="nav-text">使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#远程代理"><span class="nav-number">1.2.</span> <span class="nav-text">远程代理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态代理"><span class="nav-number">1.3.</span> <span class="nav-text">动态代理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JDK动态代理——Proxy"><span class="nav-number">1.3.1.</span> <span class="nav-text">JDK动态代理——Proxy</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#使用-2"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">使用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态代理——Cglib"><span class="nav-number">1.3.2.</span> <span class="nav-text">动态代理——Cglib</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#使用-3"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代理模式和装饰者模式"><span class="nav-number">1.4.</span> <span class="nav-text">代理模式和装饰者模式</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dzou</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">55.5k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问用户：
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问次数：
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://dzou.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://www.dzou.top/post/653661c0.html';
+          this.page.identifier = 'post/653661c0.html';
+          this.page.title = 'Java设计模式——代理模式';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://dzou.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "topCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "topRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>
+
