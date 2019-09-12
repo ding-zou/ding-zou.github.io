@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.dzou.top/post/read-config-springboot.html</loc>
+    
+    <lastmod>2019-09-12T12:05:24.301Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.dzou.top/post/diy-params-resolver.html</loc>
     
-    <lastmod>2019-09-12T12:00:12.643Z</lastmod>
+    <lastmod>2019-09-12T12:05:16.109Z</lastmod>
     
   </url>
   
@@ -19,13 +26,6 @@
     <loc>https://www.dzou.top/post/distributed-session.html</loc>
     
     <lastmod>2019-09-12T11:58:18.296Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.dzou.top/post/read-config-springboot.html</loc>
-    
-    <lastmod>2019-09-12T11:57:51.354Z</lastmod>
     
   </url>
   
