@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "d1f94239"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java Web,Java,分布式,秒杀,项目">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dzou's Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="关于Service层调用dao层，关于Dto、Vo和实体的使用，关于枚举类定义以及结果封装，关于注解的使用，异常的声明以及全局异常处理器，ThreadLocal使用，Redis深度使用，RabbitMQ使用，加密，压测JMeter，页面优化">
+<meta name="keywords" content="Java Web,Java,分布式,秒杀,项目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="秒杀Seckill项目总结">
+<meta property="og:url" content="https://www.dzou.top/post/seckill-sum.html">
+<meta property="og:site_name" content="Dzou&#39;s Blog">
+<meta property="og:description" content="关于Service层调用dao层，关于Dto、Vo和实体的使用，关于枚举类定义以及结果封装，关于注解的使用，异常的声明以及全局异常处理器，ThreadLocal使用，Redis深度使用，RabbitMQ使用，加密，压测JMeter，页面优化">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-09-12T11:36:31.656Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="秒杀Seckill项目总结">
+<meta name="twitter:description" content="关于Service层调用dao层，关于Dto、Vo和实体的使用，关于枚举类定义以及结果封装，关于注解的使用，异常的声明以及全局异常处理器，ThreadLocal使用，Redis深度使用，RabbitMQ使用，加密，压测JMeter，页面优化">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'Q66404JRFM',
+      apiKey: '27dd0e53d330bf96c9826662fc30055a',
+      indexName: 'dzou',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.dzou.top/post/seckill-sum.html">
+
+
+
+
+
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
+  <title>秒杀Seckill项目总结 | Dzou's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+  
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="bg_content">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dzou's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">No pains,no gains.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/seckill-sum.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dzou">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dzou's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">秒杀Seckill项目总结</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-12T09:55:55+08:00">
+                2019-09-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/项目/" itemprop="url" rel="index">
+                    <span itemprop="name">项目</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/seckill-sum.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/seckill-sum.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>&nbsp浏览次数：
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4.4k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  18分
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  关于Service层调用dao层，关于Dto、Vo和实体的使用，关于枚举类定义以及结果封装，关于注解的使用，异常的声明以及全局异常处理器，ThreadLocal使用，Redis深度使用，RabbitMQ使用，加密，压测JMeter，页面优化
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="秒杀项目总结"><a href="#秒杀项目总结" class="headerlink" title="秒杀项目总结"></a>秒杀项目总结</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p><strong>利用了两周时间完成了一个秒杀项目，这是第一次正式做项目，收获很多，下面记录一下自己的收获</strong></p>
+<h3 id="1-关于Service层调用dao层"><a href="#1-关于Service层调用dao层" class="headerlink" title="1.关于Service层调用dao层"></a>1.关于Service层调用dao层</h3><ul>
+<li>Service内只调自己的mapper，其他的Service  而不调其他的mapper</li>
+</ul>
+<blockquote>
+<p>Service中要更新缓存，如果你调用了其他的mapper更改了，那么缓存可能不更改，缓存不一致</p>
+</blockquote>
+<h3 id="2-关于Dto、Vo和实体的使用"><a href="#2-关于Dto、Vo和实体的使用" class="headerlink" title="2.关于Dto、Vo和实体的使用"></a>2.关于Dto、Vo和实体的使用</h3><ul>
+<li>Dto：数据传输对象，用于和前端交互数据的对象，可以简单理解为需要通过controller层传递给前端数据(可能是实体、vo的封装，集合或者只包括它们其中一些成员变量)</li>
+<li>Vo：包装类对象，用于对实体类和一些分离参数的封装，使得操作只需要操作该包装对象</li>
+<li>entity：实体对象，直接作用于dao层的对象，是数据库字段的封装</li>
+</ul>
+<p>例如：</p>
+<p><strong>DTO</strong>：我需要传递给前端我在Service或者controller层操作的一些数据(非实体内部成员)，那么我们需要把它封装为Dto对象</p>
+<p><strong>VO</strong>：像登录参数的封装就属于Vo对象，还有就是实体之间构成的一些参数封装成的对象(多个表中某些字段构成的)</p>
+<h3 id="3-关于枚举类定义以及结果封装"><a href="#3-关于枚举类定义以及结果封装" class="headerlink" title="3.关于枚举类定义以及结果封装"></a>3.关于枚举类定义以及结果封装</h3><p><strong>我们通常需要一个枚举类定义程序的状态，它包含两个可以获取到的元素(状态码和状态信息)，为了可以获取到这两个信息，我们会声明一个状态码的接口，声明两个get方法，再让枚举类实现该接口来获取状态信息</strong></p>
+<pre><code class="java">public interface IError {
+
+    int getCode();
+
+    String getMessage();
+
+}</code></pre>
+<pre><code class="java">@Getter
+@AllArgsConstructor
+public enum ErrorCodeEnum implements IError {
+    /**
+     * 100X  用户相关错误
+     * //
+     */
+    PASSWORD_EMPTY(1001, &quot;密码能不为空&quot;),
+    MOBILE_PATTERN_WRONG(1002, &quot;手机号格式错误&quot;),
+    MOBILE_NOT_EXIST(1003, &quot;手机号不存在&quot;),
+    LOGIN_FAIL(1004, &quot;登陆失败,密码错误&quot;),
+    USER_NOT_EXSIT(1005, &quot;用户不存在&quot;),
+    NOT_LOGIN(1006,&quot;尚未登录&quot;),
+    /**
+     * 000X 公共错误
+     */
+    SUCCESS(2000, &quot;OK&quot;),
+    NET_ERROR(2001, &quot;网络错误&quot;),
+    PARAM_ERROR(2002, &quot;参数错误&quot;),
+    /**
+     * 400X 业务错误
+     */
+    SECKILL_FAIL(4001, &quot;秒杀失败，库存不足&quot;);
+
+    private int code;
+
+    private String message;
+}
+</code></pre>
+<h4 id="结果封装"><a href="#结果封装" class="headerlink" title="结果封装"></a>结果封装</h4><p><strong>我们把数据和状态传递给前端的时候，需要把状态信息和状态码传递过去，我们前端才可以根据状态码判断需要执行的操作</strong></p>
+<blockquote>
+<p>该结果类需要在网路之间传输，需要进行序列化操作，最简单的序列化操作就是实现Serializable接口，定义一个全局的版本号。在该类中，包括状态码、状态信息msg、数据对象T和是否成功(成功或者错误信息)的标志</p>
+</blockquote>
+<pre><code class="java">@Data
+public class Result&lt;T&gt; implements Serializable {
+    private static final long serialVersionUID = 3956528717501837568L;
+    private boolean success;
+    private int code;
+    private String msg;
+    private T data;
+    public Result() {
+    }
+    public Result(boolean success, int code, String msg, T data) {
+        this.success = success;
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
+    }
+    public static &lt;T&gt; Result&lt;T&gt; error(IError error) {
+        return error(error.getCode(), error.getMessage());
+    }
+    public static &lt;T&gt; Result&lt;T&gt; success(T data) {
+        return new Result&lt;T&gt;(true, ErrorCodeEnum.SUCCESS.getCode(), ErrorCodeEnum.SUCCESS.getMessage(), data);
+    }
+    public static Result&lt;String&gt; ok() {
+        return success(&quot;ok&quot;);
+    }
+    public static &lt;T&gt; Result&lt;T&gt; fillArgs(IError iError, Object... args) {
+        return error(iError.getCode(), String.format(iError.getMessage(), args));
+    }
+}</code></pre>
+<blockquote>
+<p>我们可以注意到最后一个<code>fillArgs</code>方法是支持枚举类错误信息中带<code>%s</code>的，可以使用<code>String.format</code>替换，这就是支持带参数传递的错误信息</p>
+</blockquote>
+<h3 id="4-关于注解的使用"><a href="#4-关于注解的使用" class="headerlink" title="4.关于注解的使用"></a>4.关于注解的使用</h3><h4 id="注解效验器使用"><a href="#注解效验器使用" class="headerlink" title="注解效验器使用"></a>注解效验器使用</h4><p>我在另外一篇博文中说到了参数效验器的使用，也说到自定义效验器，就是基于注解的形式，<code>用于判断前端传来的数据在服务端再进行一次效验</code>，例如：传来的手机号是否符号格式要求</p>
+<ul>
+<li>声明一个注解<code>@IsMobile</code></li>
+<li>编写验证器代码(具体任何效验)，实现<code>ConstraintValidator</code>接口，重写<code>isValid</code>方法</li>
+<li>注解标注在具体成员变量上，再在封装类上标注<code>@Valid</code>注解</li>
+</ul>
+<h4 id="注解实现拦截器"><a href="#注解实现拦截器" class="headerlink" title="注解实现拦截器"></a>注解实现拦截器</h4><ul>
+<li>声明一个注解：拦截器拦截后你想实现的功能和具体的参数</li>
+</ul>
+<pre><code class="java">@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface AccessLimit {
+    int seconds();//时间范围
+    int maxCount();//最大尝试次数
+    boolean needLogin() default true;//声明是否需要登录
+}</code></pre>
+<ul>
+<li>编写拦截器，实现<code>HandlerInterceptor</code>接口，实现具体的拦截方法，重写<code>preHandler</code>方法</li>
+<li>在配置类中注入拦截器然后再重写方法把拦截器注册到拦截器工厂，并声明要拦截的URL</li>
+</ul>
+<pre><code class="java">@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    @Autowired
+    private LimitAccessCountInterceptor limitAccessCountInterceptor;
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(limitAccessCountInterceptor).addPathPatterns(&quot;/**&quot;).excludePathPatterns(&quot;/login/**&quot;);
+    }
+}</code></pre>
+<h4 id="注解mapper"><a href="#注解mapper" class="headerlink" title="注解mapper"></a>注解mapper</h4><pre><code class="java">public interface UserMapper {
+    @Select(&quot;select * from user where id = #{id};&quot;)
+    public User getById(int id);
+
+    @Insert(&quot;insert into user (name) values(#{name});&quot;)
+    public Boolean insert(User user);
+}</code></pre>
+<h3 id="5-异常的声明以及全局异常处理器"><a href="#5-异常的声明以及全局异常处理器" class="headerlink" title="5.异常的声明以及全局异常处理器"></a>5.异常的声明以及全局异常处理器</h3><p><strong>我们一般需要为我们的应用程序创建自己的异常，再抛出异常时打印到控制台和日志，我们可以声明一个全局异常类，并通过自定义异常处理器去操作异常</strong></p>
+<ul>
+<li>我们通过传入状态来创建一个异常，该异常属于运行时异常，需要继承<code>RuntimeException</code></li>
+</ul>
+<pre><code class="java">public class GlobalException extends RuntimeException {
+    private IError i;
+
+    public GlobalException(IError i) {
+        this.i = i;
+    }
+
+    public IError getI() {
+        return i;
+    }
+}</code></pre>
+<ul>
+<li>编写全局异常处理器—用于Service层抛出异常</li>
+</ul>
+<blockquote>
+<p>在方法上标注上@ExceptionHandler注解来拦截指定类型异常，这里我们拦截所有的异常</p>
+<ul>
+<li>如果是绑定异常则获取异常信息并通过参数传入结果返回</li>
+<li>如果是我们自定义的全局异常则作为错误信息返回</li>
+<li>如果是其他异常则返回网络错误的状态</li>
+</ul>
+</blockquote>
+<pre><code class="java">@ControllerAdvice
+@ResponseBody
+@Slf4j
+public class GlobalExceptionHandler {
+    @ExceptionHandler(value = Exception.class)//拦截所有异常
+    public Result&lt;String&gt; exceptionHandler(HttpServletRequest request, Exception e) {
+        e.printStackTrace();
+        if (e instanceof BindException) {
+            BindException ex = (BindException) e;
+            List&lt;ObjectError&gt; errors = ex.getAllErrors();
+            String error = errors.get(0).toString();
+            String reg = &quot;[^\u4e00-\u9fa5]&quot;;//使用正则提取错误中的中文信息
+            String str = error.replaceAll(reg, &quot;&quot;);
+            return Result.fillArgs(ErrorCodeEnum.BIND_ERROR, str);//带参数异常
+        } else if (e instanceof GlobalException) {
+            GlobalException ex = (GlobalException) e;
+            return Result.error(ex.getI());
+        } else {
+            log.error(&quot;其他异常&quot;);
+            return Result.error(ErrorCodeEnum.NET_ERROR);
+        }
+    }
+}</code></pre>
+<h3 id="6-ThreadLocal存储user"><a href="#6-ThreadLocal存储user" class="headerlink" title="6.ThreadLocal存储user"></a>6.ThreadLocal存储user</h3><p><strong>在页面中很多地方都需要用于处于登录状态才能获取并操作该页面，我们无法为每一个controller中每个方法都执行获取用户的操作，我们可以在第一次登录时把用户保存到Cookie中或者session中</strong></p>
+<p><strong>但是当后端在很多方法中都需要用户的时候我们没办法每次都去获取，我们可以在第一次获取到时把它保存到ThreadLocal中(一个用户操作对应一个线程，所以我们可以放心保存)，需要的时候直接拿出来使用</strong></p>
+<pre><code class="java">public class UserContext {
+    private static ThreadLocal&lt;User&gt; userContext = new ThreadLocal&lt;&gt;();
+
+    public static void setUserContext(User userContext) {
+        UserContext.userContext.set(userContext);
+    }
+
+    public static User getUserContext() {
+        return userContext.get();
+    }
+}</code></pre>
+<blockquote>
+<p>ThreadLocal当然可以保存很多东西，比如交易Id、票据等，当这些东西保存到数据库的话会浪费很多资源，我们可以直接放到ThreadLocal中</p>
+</blockquote>
+<h3 id="7-基于RabbitMQ实现商品秒杀扣减库存"><a href="#7-基于RabbitMQ实现商品秒杀扣减库存" class="headerlink" title="7.基于RabbitMQ实现商品秒杀扣减库存"></a>7.基于RabbitMQ实现商品秒杀扣减库存</h3><ul>
+<li>初始化将库存加载到Redis</li>
+<li>收到请求，预减库存，库存不足返回(利用Redis单线程)，已经有订单返回</li>
+<li>成功请求入队</li>
+<li>请求出队，生成订单；客户端轮询秒杀是否成功</li>
+</ul>
+<blockquote>
+<p>这样不仅把秒杀和扣减库存解耦，还让生成订单成为了异步操作，我们只需要提交秒杀请求，而不需要等到获取到结果再返回。</p>
+</blockquote>
+<h3 id="8-Redis的深度使用"><a href="#8-Redis的深度使用" class="headerlink" title="8.Redis的深度使用"></a>8.Redis的深度使用</h3><h4 id="Redis根据前缀存储"><a href="#Redis根据前缀存储" class="headerlink" title="Redis根据前缀存储"></a>Redis根据前缀存储</h4><p><strong>我们使用redis存储时，通常不会考虑到不同用户不同操作不同请求的存储方式，通过这个项目我学会了使用<code>前缀</code>的方式存储数据到Redis中，不同用户根据id存储，不同操作根据方式存储，不同请求根据url存储，这样就可以区分每个<code>put</code>的key是来自哪个操作哪个请求和哪个用户，进行后台管理时也会很方便</strong></p>
+<p><strong>最重要的一点是，我们可以通过前缀设置该<code>key</code>的过期时间</strong></p>
+<ul>
+<li>创建一个前缀接口</li>
+</ul>
+<pre><code class="java">public interface KeyPrefix {
+    public int expireSeconds();
+
+    public String getPrefix();
+
+}</code></pre>
+<ul>
+<li>创建一个抽象类实现该接口(提供一个实现模板)</li>
+</ul>
+<pre><code class="java">@AllArgsConstructor
+@RequiredArgsConstructor
+public abstract class BasePrefix implements KeyPrefix {
+    @NonNull
+    private String prefix;//前缀
+    private int expireSeconds;//过期时间，默认永久
+    @Override
+    public int expireSeconds() {
+        return expireSeconds;
+    }
+    @Override
+    public String getPrefix() {
+        String className = getClass().getSimpleName();
+        return className + &quot;:&quot; + prefix;
+    }
+}</code></pre>
+<ul>
+<li>就可以创建不同的前缀了，例如：根据用户获取方式不同的创建不同的前缀，不设置过期时间</li>
+</ul>
+<pre><code class="java">public class UserKey extends BasePrefix {
+
+    public UserKey(String prefix, int expireSeconds) {
+        super(prefix, expireSeconds);
+    }
+
+    public UserKey(String prefix) {
+        super(prefix);
+    }
+
+    public static UserKey getById = new UserKey(&quot;id&quot;);
+    public static UserKey getByName = new UserKey(&quot;name&quot;);
+}</code></pre>
+<ul>
+<li>要保存到Redis需要为RedisService实现自定义的set、get方法</li>
+</ul>
+<pre><code class="java"> public &lt;T&gt; boolean set(KeyPrefix prefix, String key, T value) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            String str = beanToString(value);
+            if (str == null || str.length() &lt;= 0) {
+                return false;
+            }
+            //生成真正的key
+            String realKey = prefix.getPrefix() + key;
+            int seconds = prefix.expireSeconds();
+            if (seconds &lt;= 0) {
+                jedis.set(realKey, str);
+            } else {
+                jedis.setex(realKey, seconds, str);
+            }
+            return true;
+        } finally {
+            returnToPool(jedis);
+        }
+    }</code></pre>
+<pre><code class="java">public &lt;T&gt; T get(KeyPrefix prefix, String key, Class&lt;T&gt; clazz) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            //生成真正的key
+            String realKey = prefix.getPrefix() + key;
+            String str = jedis.get(realKey);
+            T t = stringToBean(str, clazz);
+            return t;
+        } finally {
+            returnToPool(jedis);
+        }
+    }</code></pre>
+<h4 id="Redis在分布式session的使用"><a href="#Redis在分布式session的使用" class="headerlink" title="Redis在分布式session的使用"></a>Redis在分布式session的使用</h4><p><strong>在使用分布式Session的时候，我们需要把生成的token值作为key保存到redis中，依赖获取用户user对象</strong></p>
+<pre><code class="java">private String addOrUpdateCookie(HttpServletResponse response, String token, SeckillUser user) {
+        if (StringUtils.isEmpty(token)) {
+            token = UUIDUtil.uuid();
+        }
+        redisService.set(UserKey.token, token, user);//用户前缀中的token前缀，存储时将加上“token”
+        Cookie cookie = new Cookie(COOKIE_NAME_TOKEN, token);
+        int ex = SecKillUserKey.token.expireSeconds();
+        cookie.setMaxAge(ex);//过期时间子在前缀中获取
+        cookie.setPath(&quot;/&quot;);
+        response.addCookie(cookie);
+        return token;
+    }</code></pre>
+<h4 id="Redis缓存验证码结果"><a href="#Redis缓存验证码结果" class="headerlink" title="Redis缓存验证码结果"></a>Redis缓存验证码结果</h4><p><strong>我们为秒杀操作添加验证码的时候，我们需要有一个地方保存验证码的计算结果，我们选择Redis保存</strong></p>
+<h4 id="Redis缓存页面"><a href="#Redis缓存页面" class="headerlink" title="Redis缓存页面"></a>Redis缓存页面</h4><p><strong>页面每次渲染需要很长时间，我们可以把html缓存到redis中，过期时间短一些，防止页面不刷新</strong></p>
+<h4 id="Redis缓存库存数量"><a href="#Redis缓存库存数量" class="headerlink" title="Redis缓存库存数量"></a>Redis缓存库存数量</h4><p><strong>我们可以在加载商品信息页面的时候把商品的库存缓存到redis中，避免高并发情况下每次都去访问数据库，redis中预减库存为0后，其他线程都将直接返回秒杀失败</strong></p>
+<h4 id="Redis缓存加密后的秒杀接口需要的参数"><a href="#Redis缓存加密后的秒杀接口需要的参数" class="headerlink" title="Redis缓存加密后的秒杀接口需要的参数"></a>Redis缓存加密后的秒杀接口需要的参数</h4><p><strong>为了防止秒杀接口被刷，我们要携带参数请求并判断参数的正确性，该参数加密后存储到redis中，需要判断的时候拿出来与前端传来的进行判断</strong></p>
+<h3 id="9-加密"><a href="#9-加密" class="headerlink" title="9.加密"></a>9.加密</h3><h4 id="用户密码加密"><a href="#用户密码加密" class="headerlink" title="用户密码加密"></a>用户密码加密</h4><p><strong>只在前端进行加密是不行的，我们后端拿到表单密码(第一次加密后的密码)还需要在进行一次加密，在与数据库中的值进行比对，防止一次加密，前端直接获取到最终数据库中的密码</strong></p>
+<h4 id="秒杀请求接口加密"><a href="#秒杀请求接口加密" class="headerlink" title="秒杀请求接口加密"></a>秒杀请求接口加密</h4><p><strong>防止秒杀请求接口被获取到，直接访问接口秒杀商品，我们就需要对秒杀请求传入一个必须的参数，在后端进行加密后保存到redis并返回给前端，前端拿到数据后提交给真正的秒杀请求，后端判断拿到的数据和redis存储的是否对应，不对应则请求失败</strong></p>
+<pre><code class="java">1.前端携带id请求秒杀接口，实际上是获取秒杀路径的接口
+2.后端获取id加密保存到redis，并返回加密数据给前端
+3.前端成功获取到数据后跳转请求到真正的秒杀接口(携带后端传过来的加密数据)
+4.后端秒杀接口判断该参数和redis中的数据是否相等，不相等说明参数过期或者参数是错误的(伪造的)</code></pre>
+<h3 id="10-layer-web组件使用"><a href="#10-layer-web组件使用" class="headerlink" title="10.layer web组件使用"></a>10.layer web组件使用</h3><blockquote>
+<p>弹窗显示后端传来的结果中的msg信息</p>
+</blockquote>
+<h3 id="11-JMeter压测工具使用"><a href="#11-JMeter压测工具使用" class="headerlink" title="11.JMeter压测工具使用"></a>11.JMeter压测工具使用</h3><p><strong>用来压测秒杀可以承受的并发量</strong></p>
+<p>下载地址：<a href="https://jmeter.apache.org/download_jmeter.cgi" rel="external nofollow noopener noreferrer" target="_blank">https://jmeter.apache.org/download_jmeter.cgi</a></p>
+<p><code>bin/JMeter</code>就是可运行程序，Java GUI写的</p>
+<ul>
+<li>配置环境变量</li>
+</ul>
+<pre><code>vim /etc/profile
+
+在最后加入：
+
+export JMETER=/home/jmeter/apache-jmeter-2.13
+
+export CLASSPATH=${JMETER}/lib/ext/ApacheJMeter_core.jar:${JMETER}/lib/jorphan.jar:$JMETER/lib/logkit-2.0.jar:${CLASSPATH}
+
+export PATH=${JMETER}/bin/:${PATH}
+
+保存后，source /etc/profile 使环境变量生效。
+
+jmeter -v 确认是否配置成功。</code></pre><ul>
+<li>在电脑中创建好测试文件<code>.jmx</code>文件，上传到服务器</li>
+</ul>
+<p>通过执行<code>jmeter -n -t**/路径/*.jmx -l  *.jtl</code>进行压测，得到<code>.jtl</code>结果文件，下载到电脑就可以在JMeter中打开查看了</p>
+<h3 id="12-页面优化"><a href="#12-页面优化" class="headerlink" title="12.页面优化"></a>12.页面优化</h3><h4 id="页面缓存、URL缓存、对象缓存"><a href="#页面缓存、URL缓存、对象缓存" class="headerlink" title="页面缓存、URL缓存、对象缓存"></a>页面缓存、URL缓存、对象缓存</h4><p><strong>使用Springboot提供的Thymeleaf模板引擎获取页面html缓存到Redis中</strong></p>
+<blockquote>
+<p>首先我们要把前端需要的数据放到model对象中</p>
+</blockquote>
+<ul>
+<li>为Controller注入Thymeleaf解析器</li>
+</ul>
+<pre><code class="java">@Autowired
+    private ThymeleafViewResolver thymeleafViewResolver;</code></pre>
+<ul>
+<li>在请求方法中获取WebContext</li>
+</ul>
+<pre><code class="java">WebContext context = new WebContext(request, response, request.getServletContext(), request.getLocale(), model.asMap());</code></pre>
+<ul>
+<li>通过解析器和context参数获取html</li>
+</ul>
+<pre><code class="java">html = thymeleafViewResolver.getTemplateEngine().process(&quot;goods_list&quot;, context);</code></pre>
+<h5 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h5><ol>
+<li>加载页面时先查缓存，缓存有就直接获取</li>
+<li>没有的话执行完获取操作添加到model中后</li>
+<li>用Thymeleaf解析器解析页面并写入缓存</li>
+</ol>
+<pre><code class="java">@RequestMapping(value = &quot;/to_list&quot;, produces = &quot;text/html&quot;)
+    @ResponseBody
+    public String toList(HttpServletResponse response, HttpServletRequest request,
+                         Model model, SeckillUser user) throws IOException {
+        WebContext context = new WebContext(request, response, request.getServletContext(), request.getLocale(), model.asMap());
+        if (user == null) {
+            response.sendRedirect(&quot;/login/to_login&quot;);
+            return &quot;not login&quot;;
+        } else {
+            //查缓存
+            String html = redisService.get(GoodsKey.goodsList, &quot;&quot;, String.class);
+            if (!StringUtils.isEmpty(html)) {
+                return html;
+            }
+            model.addAttribute(&quot;user&quot;, user);
+            List&lt;GoodsVo&gt; goodsVoList = goodsService.getGoodsVoList();
+            log.info(&quot;goods list:{}&quot;, goodsVoList);
+            model.addAttribute(&quot;goodsList&quot;, goodsVoList);
+            /**
+             * 使用页面缓存
+             * 1.取缓存
+             * 2.为空则渲染写入缓存
+             */
+            html = thymeleafViewResolver.getTemplateEngine().process(&quot;goods_list&quot;, context);
+            redisService.set(GoodsKey.goodsList, &quot;&quot;, html);
+            return html;
+        }
+    }</code></pre>
+<h4 id="页面静态化"><a href="#页面静态化" class="headerlink" title="页面静态化"></a>页面静态化</h4><p><strong>在前后端分离后，静态资源不需要从服务器端加载渲染，浏览器会帮我们缓存到客户端，当然我们也可以使用CDN等加速(有限从最近节点获取)保存静态资源</strong></p>
+<ul>
+<li>JS/CSS压缩</li>
+<li>CDN加速</li>
+<li>合并CSS/JS文件，减少连接数</li>
+</ul>
+<h3 id="13-唯一索引防止超卖"><a href="#13-唯一索引防止超卖" class="headerlink" title="13.唯一索引防止超卖"></a>13.唯一索引防止超卖</h3><p><strong>除了在sql中加上库存判断外，我们为了保证商品不超卖还需要添加一个唯一索引</strong></p>
+<blockquote>
+<p>唯一索引，即是唯一的意思，在数据库表结构中对字段(一个或者多个字段)添加唯一索引后进行数据库进行存储操作时数据库会判断库中是否已经存在此数据，不存在此数据时才能进行插入操作。</p>
+</blockquote>
+<p>我们建立两个字段的唯一索引：商品id和用户id</p>
+<ul>
+<li>创建订单时，如果存在商品id和用户id都在存在(与待创建的一样)的订单，则不能插入</li>
+</ul>
+<h3 id="14-秒杀限流"><a href="#14-秒杀限流" class="headerlink" title="14.秒杀限流"></a>14.秒杀限流</h3><ul>
+<li>使用验证码减少同一时间内的请求数量</li>
+</ul>
+<p>使用<code>Graphics</code>画出表达式并通过<code>BufferedImage</code>生成验证码通过<code>ImageIO</code>通过write方法写到response，并使用JDK6提供的脚本支持<code>ScriptEngine</code>来调用<code>js.eval()</code>方法计算验证码不等式的值，保存到redis中，根据用户输入的去redis中比对。</p>
+<ol>
+<li>生成表达式</li>
+</ol>
+<pre><code class="java">private static char[] ops = new char[] {&#39;+&#39;, &#39;-&#39;, &#39;*&#39;};
+    private String generateVerifyCode(Random rdm) {
+        int num1 = rdm.nextInt(10);
+        int num2 = rdm.nextInt(10);
+        int num3 = rdm.nextInt(10);
+        char op1 = ops[rdm.nextInt(3)];
+        char op2 = ops[rdm.nextInt(3)];
+        String exp = &quot;&quot;+ num1 + op1 + num2 + op2 + num3;
+        return exp;
+    }</code></pre>
+<ol start="2">
+<li>生成验证码</li>
+</ol>
+<pre><code class="java">int width = 80;
+        int height = 32;
+        //create the image
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics g = image.getGraphics();
+        // set the background color
+        g.setColor(new Color(0xDCDCDC));
+        g.fillRect(0, 0, width, height);
+        // draw the border
+        g.setColor(Color.black);
+        g.drawRect(0, 0, width - 1, height - 1);
+        // create a random instance to generate the codes
+        Random rdm = new Random();
+        // make some confusion
+        for (int i = 0; i &lt; 50; i++) {
+            int x = rdm.nextInt(width);
+            int y = rdm.nextInt(height);
+            g.drawOval(x, y, 0, 0);
+        }
+        // generate a random code
+        String verifyCode = generateVerifyCode(rdm);
+        g.setColor(new Color(0, 100, 0));
+        g.setFont(new Font(&quot;Candara&quot;, Font.BOLD, 24));
+        g.drawString(verifyCode, 8, 24);
+        g.dispose();
+        //把验证码存到redis中
+        int rnd = calc(verifyCode);
+        redisService.set(SecKillUserKey.getVerifyCode, user.getId()+&quot;,&quot;+goodsId, rnd);
+        //输出图片
+        return image;</code></pre>
+<ol start="2">
+<li>ScriptEngine调用js的eval方法</li>
+</ol>
+<pre><code class="java">ScriptEngineManager manager = new ScriptEngineManager();
+            ScriptEngine engine = manager.getEngineByName(&quot;JavaScript&quot;);
+            return (Integer)engine.eval(exp);//计算表达式的值并返回结果</code></pre>
+<ul>
+<li>使用拦截器防止用户在几秒内多次请求(防刷)</li>
+</ul>
+<p>把最大限制次数在第一次请求时放到redis中，之后每请求一次redis对key执行<code>decr</code>方法，&lt;0的话则返回错误信息，限制访问。</p>
+<pre><code class="java">@Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if (handler instanceof HandlerMethod) {
+            //获取用户
+            SeckillUser user = getUser(request, response);
+            //放到UserContext的ThreadLocal存储
+            UserContext.setUserContext(user);
+            log.info(&quot;把用户{}存储到ThreadLocal中&quot;,user.getId());
+            HandlerMethod method = (HandlerMethod) handler;
+            AccessLimit limit = method.getMethodAnnotation(AccessLimit.class);
+            if (limit == null) {
+                return true;
+            }
+            int seconds = limit.seconds();
+            int maxCount = limit.maxCount();
+            boolean requiredLogin = limit.needLogin();
+
+            String key = request.getRequestURI();//用于redis查找防刷商品
+            if (requiredLogin) {
+                if (user == null) {
+                    log.error(&quot;用户登录信息获取错误&quot;);
+                    sendError(ErrorCodeEnum.NOT_LOGIN, response);
+                    return false;
+                } else {
+                    key += &quot;_&quot; + user.getId();
+                }
+            }
+            //限流防刷访问
+            SecKillUserKey getAccessCount = SecKillUserKey.getAccessCount(seconds);
+            Integer count = redisService.get(getAccessCount, key, Integer.class);
+            if (count == null) {
+                redisService.set(getAccessCount, key, maxCount);
+            } else if (count &gt; 0) {
+                redisService.decr(getAccessCount, key);
+            } else {
+                log.error(&quot;操作达到上限，稍等再试&quot;);
+                sendError(ErrorCodeEnum.REQUEST_TOO_MUCH, response);
+                return false;
+            }
+            return true;
+        }
+        return true;
+    }</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    dzou  |  微信：17856530567
+  </li>
+  <li class="post-copyright-link">
+  <strong>本文链接：</strong>
+  <a href="http://www.dzou.top/post/seckill-sum.html" title="秒杀Seckill项目总结">http://www.dzou.top/post/seckill-sum.html</a>
+</li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noopener noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+  <li class="post-copyright-license">
+    并保留本声明和上方二维码。感谢您的阅读和支持！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Web/" rel="tag"># Web</a>
+          
+            <a href="/tags/项目/" rel="tag"># 项目</a>
+          
+            <a href="/tags/秒杀/" rel="tag"># 秒杀</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/rabbitmq.html" rel="next" title="RabbitMQ理解和使用">
+                <i class="fa fa-chevron-left"></i> RabbitMQ理解和使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/diy-params-resolver.html" rel="prev" title="SpringBoot自定义参数解析器">
+                SpringBoot自定义参数解析器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" rel="external nofollow noopener noreferrer" target="_blank">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/2.JPG" alt="dzou">
+            
+              <p class="site-author-name" itemprop="name">dzou</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ding-zou" target="_blank" title="GitHub" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="dingxiang.zoufubo@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://me.csdn.net/qq_44760332" target="_blank" title="CSDN" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                推荐链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/7a5625fe.html" title="Java并发之AQS源码分析" target="_blank">Java并发之AQS源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/19e1cc75.html" title="Linux基础命令" target="_blank">Linux基础命令</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/8184a8fd.html" title="JDK8新特性——流和Lambda表达式" target="_blank">JDK8新特性——流和Lambda表达式</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://music.163.com/#/user/home?id=564117665" title="网易云音乐" target="_blank" rel="external nofollow noopener noreferrer">网易云音乐</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#秒杀项目总结"><span class="nav-number">1.</span> <span class="nav-text">秒杀项目总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-关于Service层调用dao层"><span class="nav-number">1.2.</span> <span class="nav-text">1.关于Service层调用dao层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-关于Dto、Vo和实体的使用"><span class="nav-number">1.3.</span> <span class="nav-text">2.关于Dto、Vo和实体的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-关于枚举类定义以及结果封装"><span class="nav-number">1.4.</span> <span class="nav-text">3.关于枚举类定义以及结果封装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#结果封装"><span class="nav-number">1.4.1.</span> <span class="nav-text">结果封装</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-关于注解的使用"><span class="nav-number">1.5.</span> <span class="nav-text">4.关于注解的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注解效验器使用"><span class="nav-number">1.5.1.</span> <span class="nav-text">注解效验器使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注解实现拦截器"><span class="nav-number">1.5.2.</span> <span class="nav-text">注解实现拦截器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注解mapper"><span class="nav-number">1.5.3.</span> <span class="nav-text">注解mapper</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-异常的声明以及全局异常处理器"><span class="nav-number">1.6.</span> <span class="nav-text">5.异常的声明以及全局异常处理器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-ThreadLocal存储user"><span class="nav-number">1.7.</span> <span class="nav-text">6.ThreadLocal存储user</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-基于RabbitMQ实现商品秒杀扣减库存"><span class="nav-number">1.8.</span> <span class="nav-text">7.基于RabbitMQ实现商品秒杀扣减库存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-Redis的深度使用"><span class="nav-number">1.9.</span> <span class="nav-text">8.Redis的深度使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis根据前缀存储"><span class="nav-number">1.9.1.</span> <span class="nav-text">Redis根据前缀存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis在分布式session的使用"><span class="nav-number">1.9.2.</span> <span class="nav-text">Redis在分布式session的使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis缓存验证码结果"><span class="nav-number">1.9.3.</span> <span class="nav-text">Redis缓存验证码结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis缓存页面"><span class="nav-number">1.9.4.</span> <span class="nav-text">Redis缓存页面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis缓存库存数量"><span class="nav-number">1.9.5.</span> <span class="nav-text">Redis缓存库存数量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis缓存加密后的秒杀接口需要的参数"><span class="nav-number">1.9.6.</span> <span class="nav-text">Redis缓存加密后的秒杀接口需要的参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-加密"><span class="nav-number">1.10.</span> <span class="nav-text">9.加密</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#用户密码加密"><span class="nav-number">1.10.1.</span> <span class="nav-text">用户密码加密</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#秒杀请求接口加密"><span class="nav-number">1.10.2.</span> <span class="nav-text">秒杀请求接口加密</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-layer-web组件使用"><span class="nav-number">1.11.</span> <span class="nav-text">10.layer web组件使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-JMeter压测工具使用"><span class="nav-number">1.12.</span> <span class="nav-text">11.JMeter压测工具使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-页面优化"><span class="nav-number">1.13.</span> <span class="nav-text">12.页面优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#页面缓存、URL缓存、对象缓存"><span class="nav-number">1.13.1.</span> <span class="nav-text">页面缓存、URL缓存、对象缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#代码"><span class="nav-number">1.13.1.1.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#页面静态化"><span class="nav-number">1.13.2.</span> <span class="nav-text">页面静态化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-唯一索引防止超卖"><span class="nav-number">1.14.</span> <span class="nav-text">13.唯一索引防止超卖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-秒杀限流"><span class="nav-number">1.15.</span> <span class="nav-text">14.秒杀限流</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dzou</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">96.8k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问用户：
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问次数：
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://dzou.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://www.dzou.top/post/seckill-sum.html';
+          this.page.identifier = 'post/seckill-sum.html';
+          this.page.title = '秒杀Seckill项目总结';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://dzou.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "topCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "topRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>
+

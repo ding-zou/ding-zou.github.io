@@ -99,12 +99,14 @@
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="redis非关系型数据库，redis实现缓存存储，高效查询">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/redis/1.png">
+<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/redis/2.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190612152347346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
-<meta property="og:updated_time" content="2019-08-02T11:51:47.436Z">
+<meta property="og:updated_time" content="2019-09-01T15:50:04.257Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis非关系型数据库学习笔记--更新中">
 <meta name="twitter:description" content="redis非关系型数据库，redis实现缓存存储，高效查询">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190612152347346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
+<meta name="twitter:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/redis/1.png">
 
 
 
@@ -411,7 +413,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.7k字
+                  2.2k字
                 </span>
               
 
@@ -427,7 +429,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6分
+                  8分
                 </span>
               
             </div>
@@ -491,15 +493,90 @@ redis 127.0.0.1:6379&gt; zadd redis.net.cn 0 rabitmq
 redis 127.0.0.1:6379&gt; zadd redis.net.cn 0 rabitmq
 (integer) 0
 redis 127.0.0.1:6379&gt; ZRANGEBYSCORE redis.net.cn 0 1000</code></pre><hr>
-<h2 id="Redis持久化"><a href="#Redis持久化" class="headerlink" title="Redis持久化"></a>Redis持久化</h2><p><strong>1.rdb：redis Database</strong><br>将redis存储的数据生成<strong>快照snapshot并存储到磁盘</strong>等介质上<br>对于RDB方式，redis会单独创建（<strong>fork</strong>）一个子进程来进行持久化，而主进程是不会进行任何IO操作的，这样就确保了redis极高的性能。<br>redis在进行数据持久化的过程中，会先将数据写入到一个临时文件中，待持久化过程都结束了，才会用这个临时文件替换上次持久化好的文件。<br>保存dump.rdb（备份）</p>
-<p><strong>2.aof：append only file</strong><br>以日志记录形式写操作，只能<strong>追不能改写</strong><br>AOF方式是将执行过的写指令记录下来，在数据恢复时按照<strong>从前到后</strong>的顺序再将指令都执行一遍，就这么简单。</p>
+<h2 id="Redis持久化"><a href="#Redis持久化" class="headerlink" title="Redis持久化"></a>Redis持久化</h2><blockquote>
+<p>为了让数据在Redis<code>重启</code>后还可用，Redis提供了两种<code>rdb</code>、<code>aof</code>持久化机制。</p>
+</blockquote>
+<h3 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h3><p><strong>rdb：redis Database</strong><br>将redis存储的数据生成<strong>快照snapshot并存储到磁盘</strong>等介质上<br>对于RDB方式，redis会单独创建（<strong>fork</strong>）一个子进程来进行持久化，而主进程是不会进行任何IO操作的，这样就确保了redis极高的性能。<br>redis在进行数据持久化的过程中，会先将数据写入到一个临时文件中，待持久化过程都结束了，才会用这个临时文件替换上次持久化好的文件。</p>
+<p><strong>rdb核心就是：rdbSave和rdbLoad函数，前者用于生成RDB文件到磁盘，后者用于将磁盘文件加载到内存中。</strong></p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/redis/1.png">
+
+<h4 id="保存"><a href="#保存" class="headerlink" title="保存"></a>保存</h4><ul>
+<li><code>SAVE</code>：直接调用rdbSave，阻塞主线程，直到保存完成，阻塞期间，服务器不能处理客户端任何请求。</li>
+<li><code>BGSAVE</code>：fork出一个子线程，负责调用rdbSave，保存完成发送信号给主线程，主线程在期间可以处理客户端请求。</li>
+</ul>
+<blockquote>
+<p>BGSAVE执行期间不能执行SAVE，避免执行两个rdbSave，造成条件竞争。</p>
+</blockquote>
+<h3 id="载入"><a href="#载入" class="headerlink" title="载入"></a>载入</h3><p><strong>当Redis服务器启动时，rdbLoad执行，读取RDB文件，写入内存中。</strong></p>
+<blockquote>
+<p>aof保存频率比rdb高，所以一半aof文件数据比rdb数据更新。</p>
+</blockquote>
+<h3 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h3><p><strong>aof：append only file</strong><br>以日志记录形式写操作，只能<strong>追不能改写</strong><br><strong>AOF方式是将执行过的写指令记录下来，在数据恢复时按照从前到后的顺序再将指令都执行一遍<code>使用Queue</code>，就这么简单。</strong></p>
+<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/redis/2.png">
+
+<blockquote>
 <p>AOF方式的另一个好处，我们通过一个“场景再现”来说明。某同学在操作redis时，不小心执行了FLUSHALL，导致redis内存中的数据全部被清空了，这是很悲剧的事情。不过这也不是世界末日，只要redis配置了AOF持久化方式，且AOF文件还没有被重写（rewrite），我们就可以用最快的速度暂停redis并编辑AOF文件，将最后一行的FLUSHALL命令删除，然后重启redis，就可以恢复redis的所有数据到FLUSHALL之前的状态了。是不是很神奇，这就是AOF持久化方式的好处之一。但是如果AOF文件已经被重写了，那就无法通过这种方法来恢复数据了。</p>
-<p><strong><em>aof重写</em></strong><br>因为采用了追加方式，如果不做任何处理的话，AOF文件会变得<strong>越来越大</strong>，为此，redis提供了AOF文件重写（rewrite）机制，即当AOF文件的大小超过所设定的阈值时，redis就会启动AOF文件的<strong>内容压缩</strong>，只保留可以<strong>恢复数据的最小指令集</strong>。<br>2、在重写即将开始之际，redis会创建（fork）一个“重写子进程”，这个子进程会首先读取现有的AOF文件，并将其包含的指令进行分析压缩并写入到一个临时文件中。</p>
-<p>3、与此同时，主工作进程会将新接收到的写指令一边累积到内存缓冲区中，一边继续写入到原有的AOF文件中，这样做是保证原有的AOF文件的可用性，避免在重写过程中出现意外。</p>
-<p>4、当“重写子进程”完成重写工作后，它会给父进程发一个信号，父进程收到信号后就会将内存中缓存的写指令追加到新AOF文件中。</p>
-<p>5、当追加结束后，redis就会用新AOF文件来代替旧AOF文件，之后再有新的写指令，就都会追加到新的AOF文件中了。</p>
-<hr>
-<p><strong>aof和rdb比较</strong><br>官方的建议是两个同时使用。这样可以提供更可靠的持久化方案<br>RDB需要定时持久化，风险是可能会丢两次持久之间的数据，量可能很大。<br>在同样数据规模的情况下，AOF文件要比RDB文件的体积大。而且，AOF方式的恢复速度也要慢于RDB方式。</p>
+</blockquote>
+<h4 id="AOF-文件写入过程"><a href="#AOF-文件写入过程" class="headerlink" title="AOF 文件写入过程"></a>AOF 文件写入过程</h4><ol>
+<li>命令传播:Redis 将执行完的命令、命令的参数、命令的参数个数等信息发送到 AOF 程序中。</li>
+<li>缓存追加:AOF 程序根据接收到的命令数据，将命令转换为网络通讯协议的格式，然后将协议内容追加到服务器的 AOF 缓存中。(追加到redisServer的<code>aof_buf</code>)</li>
+<li>文件写入和保存:AOF 缓存中的内容被写入到 AOF 文件末尾，如果设定的 AOF 保存条件被满足的话，fsync 函数或者 fdatasync 函数会被调用，将写入的内容真正地保存到磁盘中。</li>
+</ol>
+<blockquote>
+<p><code>WRITER</code>：将<code>aof_buf</code>写入AOF文件</p>
+<p><code>SAVE</code>：将AOF文件写入磁盘</p>
+</blockquote>
+<h4 id="AOF保存模式"><a href="#AOF保存模式" class="headerlink" title="AOF保存模式"></a>AOF保存模式</h4><ul>
+<li>AOF_FSYNC_NO 不保存：SAVE不执行</li>
+<li>AOF_FSYNC_EVERYSEC 每一秒钟保存一次：SAVE由子线程调用，不阻塞服务器主进程</li>
+<li>AOF_FSYNC_ALWAYS 执行一个命令保存一次：SAVE由服务器主进程执行，会阻塞</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">模式</th>
+<th align="left">WRITE 是否阻塞？</th>
+<th align="left">SAVE 是否阻塞？</th>
+<th align="left">停机时丢失的数据量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>AOF_FSYNC_NO</code></td>
+<td align="left">阻塞</td>
+<td align="left">阻塞</td>
+<td align="left">操作系统最后一次对 AOF 文件触发 SAVE 操作之后的数据。</td>
+</tr>
+<tr>
+<td align="left"><code>AOF_FSYNC_EVERYSEC</code></td>
+<td align="left">阻塞</td>
+<td align="left">不阻塞</td>
+<td align="left">一般情况下不超过 2 秒钟的数据。</td>
+</tr>
+<tr>
+<td align="left"><code>AOF_FSYNC_ALWAYS</code></td>
+<td align="left">阻塞</td>
+<td align="left">阻塞</td>
+<td align="left">最多只丢失一个命令的数据。</td>
+</tr>
+</tbody></table>
+<h4 id="AOF重写"><a href="#AOF重写" class="headerlink" title="AOF重写"></a>AOF重写</h4><blockquote>
+<p>因为采用了追加方式，如果不做任何处理的话，AOF文件会变得<strong>越来越大</strong>，为此，redis提供了AOF文件重写（rewrite）机制，即当AOF文件的大小超过所设定的阈值时，redis就会启动AOF文件的<strong>内容压缩</strong>，只保留可以<code>恢复数据的最小指令集</code>。</p>
+<p>即：</p>
+<p>使用<code>lpush list 1 2 3</code></p>
+<p>代替</p>
+<p><code>lpush list 1</code></p>
+<p><code>lpush list 2</code></p>
+<p><code>lpush list 3</code></p>
+</blockquote>
+<p>1、在重写即将开始之际，redis会创建（fork）一个“重写子进程”，这个子进程会首先读取现有的AOF文件，并将其包含的指令进行分析压缩并写入到一个临时文件中。(<code>使用子线程重写是为了期间Redis主进程可以处理客户端请求</code>)</p>
+<p>2、与此同时，主工作进程会将新接收到的写指令一边累积到内存缓冲区中，一边继续写入到原有的AOF文件中，这样做是保证原有的AOF文件的可用性，避免在重写过程中出现意外。(<code>使用缓冲区是防止重写时Redis处理新的请求使得数据更新</code>)</p>
+<p>3、当“重写子进程”完成重写工作后，它会给父进程发一个信号，父进程收到信号后就会将内存中缓存的写指令追加到新AOF文件中。</p>
+<p>4、当追加结束后，redis就会用新AOF文件来代替旧AOF文件，之后再有新的写指令，就都会追加到新的AOF文件中了。</p>
+<h3 id="AOF和RDB比较"><a href="#AOF和RDB比较" class="headerlink" title="AOF和RDB比较"></a>AOF和RDB比较</h3><ul>
+<li>官方的建议是两个同时使用。这样可以提供更可靠的持久化方案</li>
+<li>RDB需要定时持久化，风险是可能会丢两次持久之间的数据，量可能很大。</li>
+<li>在同样数据规模的情况下，AOF文件要比RDB文件的体积大。而且，AOF方式的恢复速度也要慢于RDB方式。</li>
+</ul>
 <h2 id="Redis事务"><a href="#Redis事务" class="headerlink" title="Redis事务"></a>Redis事务</h2><p>一次执行多个命令，批处理（一起成功、一起失败）<br><img src="https://img-blog.csdnimg.cn/20190612152347346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <pre><code>redis 127.0.0.1:6379&gt; MULTI 
 OK 
@@ -524,10 +601,7 @@ QUEUED
 QUEUED
 127.0.0.1:6379&gt; EXEC
 1) (integer) 80
-2) (integer) 40</code></pre><hr>
-<h2 id="Redis发布和订阅（少用）-有专门的消息中间件"><a href="#Redis发布和订阅（少用）-有专门的消息中间件" class="headerlink" title="Redis发布和订阅（少用） 有专门的消息中间件"></a><del>Redis发布和订阅</del>（少用） 有专门的消息中间件</h2><p>Redis 发布订阅(pub/sub)实现了消息系统，发送者(在redis术语中称为发布者)在接收者(订阅者)接收消息时发送消息。传送消息的链路称为信道。</p>
-<hr>
-
+2) (integer) 40</code></pre>
       
     </div>
     
@@ -565,9 +639,9 @@ QUEUED
       
         <div class="post-tags">
           
-            <a href="/tags/分布式/" rel="tag"># 分布式</a>
-          
             <a href="/tags/后端/" rel="tag"># 后端</a>
+          
+            <a href="/tags/分布式/" rel="tag"># 分布式</a>
           
             <a href="/tags/NoSql/" rel="tag"># NoSql</a>
           
@@ -700,7 +774,7 @@ QUEUED
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-count">70</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -711,7 +785,7 @@ QUEUED
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -722,7 +796,7 @@ QUEUED
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">64</span>
+                  <span class="site-state-item-count">75</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -780,7 +854,7 @@ QUEUED
                   </li>
                 
                   <li class="links-of-blogroll-item">
-                    <a href="http://localhost:4000/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank" rel="external nofollow noopener noreferrer">SpringBoot自动配置原理-源码分析</a>
+                    <a href="https://www.dzou.top/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank">SpringBoot自动配置原理-源码分析</a>
                   </li>
                 
                   <li class="links-of-blogroll-item">
@@ -818,7 +892,7 @@ QUEUED
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NoSql（Not-Only-Sql）非关系型数据库"><span class="nav-number">1.</span> <span class="nav-text">NoSql（Not Only Sql）非关系型数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型"><span class="nav-number">2.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis持久化"><span class="nav-number">3.</span> <span class="nav-text">Redis持久化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis事务"><span class="nav-number">4.</span> <span class="nav-text">Redis事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis发布和订阅（少用）-有专门的消息中间件"><span class="nav-number">5.</span> <span class="nav-text">Redis发布和订阅（少用） 有专门的消息中间件</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NoSql（Not-Only-Sql）非关系型数据库"><span class="nav-number">1.</span> <span class="nav-text">NoSql（Not Only Sql）非关系型数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型"><span class="nav-number">2.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis持久化"><span class="nav-number">3.</span> <span class="nav-text">Redis持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RDB"><span class="nav-number">3.1.</span> <span class="nav-text">RDB</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#保存"><span class="nav-number">3.1.1.</span> <span class="nav-text">保存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#载入"><span class="nav-number">3.2.</span> <span class="nav-text">载入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF"><span class="nav-number">3.3.</span> <span class="nav-text">AOF</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF-文件写入过程"><span class="nav-number">3.3.1.</span> <span class="nav-text">AOF 文件写入过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF保存模式"><span class="nav-number">3.3.2.</span> <span class="nav-text">AOF保存模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF重写"><span class="nav-number">3.3.3.</span> <span class="nav-text">AOF重写</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF和RDB比较"><span class="nav-number">3.4.</span> <span class="nav-text">AOF和RDB比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis事务"><span class="nav-number">4.</span> <span class="nav-text">Redis事务</span></a></li></ol></div>
             
 
           </div>
@@ -859,7 +933,7 @@ QUEUED
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">77.4k</span>
+    <span title="Site words total count">96.8k</span>
   
 </div>
 

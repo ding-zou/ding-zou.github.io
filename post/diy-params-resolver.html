@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "d1f94239"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java Web,Java,参数解析器,SpringBoot,项目">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dzou's Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="SpringBoot自定义参数解析器,我们可以利用解析器解析自定义的参数(类、注解)，在我们需要的传入的controller方法上传入它(不需要每次都要在方法内部通过request、response等参数做一系列操作来获取该类对象)addArgumentResolvers">
+<meta name="keywords" content="Java Web,Java,参数解析器,SpringBoot,项目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot自定义参数解析器">
+<meta property="og:url" content="https://www.dzou.top/post/diy-params-resolver.html">
+<meta property="og:site_name" content="Dzou&#39;s Blog">
+<meta property="og:description" content="SpringBoot自定义参数解析器,我们可以利用解析器解析自定义的参数(类、注解)，在我们需要的传入的controller方法上传入它(不需要每次都要在方法内部通过request、response等参数做一系列操作来获取该类对象)addArgumentResolvers">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-09-12T12:00:12.643Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot自定义参数解析器">
+<meta name="twitter:description" content="SpringBoot自定义参数解析器,我们可以利用解析器解析自定义的参数(类、注解)，在我们需要的传入的controller方法上传入它(不需要每次都要在方法内部通过request、response等参数做一系列操作来获取该类对象)addArgumentResolvers">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'Q66404JRFM',
+      apiKey: '27dd0e53d330bf96c9826662fc30055a',
+      indexName: 'dzou',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.dzou.top/post/diy-params-resolver.html">
+
+
+
+
+
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
+  <title>SpringBoot自定义参数解析器 | Dzou's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+  
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="bg_content">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dzou's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">No pains,no gains.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/diy-params-resolver.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dzou">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dzou's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">SpringBoot自定义参数解析器</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-12T15:55:55+08:00">
+                2019-09-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/消息中间件/" itemprop="url" rel="index">
+                    <span itemprop="name">消息中间件</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/diy-params-resolver.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/diy-params-resolver.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>&nbsp浏览次数：
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.2k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5分
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  SpringBoot自定义参数解析器,我们可以利用解析器解析自定义的参数(类、注解)，在我们需要的传入的controller方法上传入它(不需要每次都要在方法内部通过request、response等参数做一系列操作来获取该类对象)addArgumentResolvers
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="SpringBoot自定义参数解析器"><a href="#SpringBoot自定义参数解析器" class="headerlink" title="SpringBoot自定义参数解析器"></a>SpringBoot自定义参数解析器</h2><p><strong>我们都知道SpringMvc的Controller的方法上可以接收各种各样的参数，比如<code>HttpServletRequest</code>或<code>HttpServletResponse</code>，各种注解<code>@RequestParam</code>、<code>@RequestHeader</code>、<code>@RequestBody</code>、<code>@PathVariable</code>、<code>@ModelAttribute</code>，这些参数是从哪里获取的？</strong></p>
+<blockquote>
+<p>这些参数都是由不同的参数解析器为我们解析出来的，可以解析类也可以解析带注解的类</p>
+</blockquote>
+<ul>
+<li>我们可以利用解析器解析自定义的参数(类、注解)，在我们需要的传入的controller方法上传入它(不需要每次都要在方法内部通过<code>request</code>、<code>response</code>等参数做一系列操作来获取该类对象)</li>
+</ul>
+<h3 id="添加解析器"><a href="#添加解析器" class="headerlink" title="添加解析器"></a>添加解析器</h3><ul>
+<li>我们想要自定义解析参数的时候我们就需要通过更改SpringBoot的配置来添加自己实现的解析类</li>
+</ul>
+<p>自定义配置类实现<code>WebMvcConfigurer</code>接口，重写其中的<code>addArgumentResolvers</code>方法来添加自己的解析类(通过自动注入的方法注入)</p>
+<pre><code class="java">@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private SecKillUserArgumentResolvers secKillUserArgumentResolvers;
+
+    @Override
+    public void addArgumentResolvers(List&lt;HandlerMethodArgumentResolver&gt; argumentResolvers) {
+        argumentResolvers.add(secKillUserArgumentResolvers);
+    }
+}</code></pre>
+<h3 id="实现自定义解析器"><a href="#实现自定义解析器" class="headerlink" title="实现自定义解析器"></a>实现自定义解析器</h3><ul>
+<li>我们自定义解析器需要实现<code>HandlerMethodArgumentResolver处理器方法解析器</code>接口，并实现其中的<code>supportsParameter</code>和<code>resolveArgument</code>方法</li>
+</ul>
+<p><code>HandlerMethodArgumentResolver</code>的接口定义如下：</p>
+<p>（1）<code>supportsParameter</code> 用于判断是否支持对某种参数的解析(支持则返回true)</p>
+<p>（2）<code>resolveArgument</code> 将请求中的参数值解析为某种对象(具体的操作获取解析对象)</p>
+<p>下面这个自定义解析器用于获取User对象(通过token获取保存在redis中的user)，无需每次使用resquest和response在controller方法内部获取，可以直接获取到作为参数传入</p>
+<pre><code class="java">/**
+ * 自定义参数解析器
+ * 解析每次都要获取的user自动传入，无需每次获取
+ */
+@Component
+public class SecKillUserArgumentResolvers implements HandlerMethodArgumentResolver {
+
+    @Autowired
+    private UserService userService;
+
+    @Override
+    public boolean supportsParameter(MethodParameter methodParameter) {
+        Class&lt;?&gt; c = methodParameter.getParameterType();
+        return c == User.class;
+    }
+
+    @Override
+    public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
+        HttpServletRequest request = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
+        HttpServletResponse response = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
+        assert request != null;
+        String paramToken = request.getParameter(UserServiceImpl.COOKIE_NAME_TOKEN);//COOKIE_NAME_TOKEN=&quot;token&quot;
+        String cookieToken = getCookieValue(request);
+        if(StringUtils.isEmpty(cookieToken)&amp;&amp;StringUtils.isEmpty(paramToken)){//通过两种方式获取，如果都获取失败则返回null
+            return null;
+        }else {
+            String token = StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
+            return UserService.getUserByToken(response,token);
+        }
+    }
+//遍历cookie获取名称相同的那个cookie的值
+    private String getCookieValue(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie:cookies){
+            if(cookie.getName().equals(SecKillUserServiceImpl.COOKIE_NAME_TOKEN)){
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
+}</code></pre>
+<blockquote>
+<p>到此，一个自定义参数解析器就实现好了，我们可以通过传入参数的形式直接通过解析器帮我们获取到</p>
+</blockquote>
+<h3 id="解析对象的使用"><a href="#解析对象的使用" class="headerlink" title="解析对象的使用"></a>解析对象的使用</h3><ul>
+<li>我们在controller方法中传入该参数，可以直接为我们获取到User对象</li>
+</ul>
+<pre><code class="java">@RequestMapping(&quot;/to_list&quot;)
+    public String toList(Model model,User user){
+    }</code></pre>
+<h3 id="Springboot中其他参数解析器"><a href="#Springboot中其他参数解析器" class="headerlink" title="Springboot中其他参数解析器"></a>Springboot中其他参数解析器</h3><h4 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h4><ul>
+<li>我们知道我们可以传入<code>Model</code>对象参数就可以直接使用它，我们看看它的参数解析器</li>
+</ul>
+<p><code>ModelAttributeMethodProcessor</code>类</p>
+<pre><code class="java">public boolean supportsParameter(MethodParameter parameter) {
+        return parameter.hasParameterAnnotation(ModelAttribute.class) || this.annotationNotRequired &amp;&amp; !BeanUtils.isSimpleProperty(parameter.getParameterType());
+    }
+
+    @Nullable
+    public final Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer, NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
+        Assert.state(mavContainer != null, &quot;ModelAttributeMethodProcessor requires ModelAndViewContainer&quot;);
+        Assert.state(binderFactory != null, &quot;ModelAttributeMethodProcessor requires WebDataBinderFactory&quot;);
+        String name = ModelFactory.getNameForParameter(parameter);
+        ModelAttribute ann = (ModelAttribute)parameter.getParameterAnnotation(ModelAttribute.class);
+        if (ann != null) {
+            mavContainer.setBinding(name, ann.binding());
+        }
+        Object attribute = null;
+        BindingResult bindingResult = null;
+        if (mavContainer.containsAttribute(name)) {
+            attribute = mavContainer.getModel().get(name);
+        } else {
+            try {
+                attribute = this.createAttribute(name, parameter, binderFactory, webRequest);
+            } catch (BindException var10) {
+                if (this.isBindExceptionRequired(parameter)) {
+                    throw var10;
+                }
+                if (parameter.getParameterType() == Optional.class) {
+                    attribute = Optional.empty();
+                }
+                bindingResult = var10.getBindingResult();
+            }
+        }
+        if (bindingResult == null) {
+            WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name);
+            if (binder.getTarget() != null) {
+                if (!mavContainer.isBindingDisabled(name)) {
+                    this.bindRequestParameters(binder, webRequest);
+                }
+                this.validateIfApplicable(binder, parameter);
+                if (binder.getBindingResult().hasErrors() &amp;&amp; this.isBindExceptionRequired(binder, parameter)) {
+                    throw new BindException(binder.getBindingResult());
+                }
+            }
+            if (!parameter.getParameterType().isInstance(attribute)) {
+                attribute = binder.convertIfNecessary(binder.getTarget(), parameter.getParameterType(), parameter);
+            }
+            bindingResult = binder.getBindingResult();
+        }
+        Map&lt;String, Object&gt; bindingResultModel = bindingResult.getModel();
+        mavContainer.removeAttributes(bindingResultModel);
+        mavContainer.addAllAttributes(bindingResultModel);
+        return attribute;
+    }</code></pre>
+<h4 id="RequestParam"><a href="#RequestParam" class="headerlink" title="RequestParam"></a>RequestParam</h4><p><code>RequestParamMethodArgumentResolver</code>类，基于注解的方式</p>
+<p>如果传入参数parameter上有该注解，则可以解析</p>
+<pre><code class="java">public boolean supportsParameter(MethodParameter parameter) {
+        if (parameter.hasParameterAnnotation(RequestParam.class)) {
+            if (!Map.class.isAssignableFrom(parameter.nestedIfOptional().getNestedParameterType())) {
+                return true;
+            } else {
+                RequestParam requestParam = (RequestParam)parameter.getParameterAnnotation(RequestParam.class);
+                return requestParam != null &amp;&amp; StringUtils.hasText(requestParam.name());
+            }
+        } else if (parameter.hasParameterAnnotation(RequestPart.class)) {
+            return false;
+        } else {
+            parameter = parameter.nestedIfOptional();
+            if (MultipartResolutionDelegate.isMultipartArgument(parameter)) {
+                return true;
+            } else {
+                return this.useDefaultResolution ? BeanUtils.isSimpleProperty(parameter.getNestedParameterType()) : false;
+            }
+        }
+    }</code></pre>
+<h4 id="PathVariable"><a href="#PathVariable" class="headerlink" title="PathVariable"></a>PathVariable</h4><p><code>PathVariableMethodArgumentResolver</code>类，也是基于注解，与RequestParam类似</p>
+<pre><code class="java">public boolean supportsParameter(MethodParameter parameter) {
+        if (!parameter.hasParameterAnnotation(PathVariable.class)) {
+            return false;
+        } else if (!Map.class.isAssignableFrom(parameter.nestedIfOptional().getNestedParameterType())) {
+            return true;
+        } else {
+            PathVariable pathVariable = (PathVariable)parameter.getParameterAnnotation(PathVariable.class);
+            return pathVariable != null &amp;&amp; StringUtils.hasText(pathVariable.value());
+        }
+    }</code></pre>
+<h3 id="基于注解自定义参数解析器"><a href="#基于注解自定义参数解析器" class="headerlink" title="基于注解自定义参数解析器"></a>基于注解自定义参数解析器</h3><ul>
+<li>编写注解类，需要解析的类需要有此注解</li>
+</ul>
+<pre><code class="java">@Target(value = ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ParamModel {
+}</code></pre>
+<ul>
+<li>实现解析器</li>
+</ul>
+<pre><code class="java">public class MyArgumentResolver implements HandlerMethodArgumentResolver {
+    @Override
+    public boolean supportsParameter(MethodParameter methodParameter) {
+        return methodParameter.hasParameterAnnotation(ParamModel.class);//带有注解就解析
+    }
+    @Override
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer container,
+            NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        //实现解析对象代码
+    }</code></pre>
+<ul>
+<li>配置到<code>WebMvcConfigurer</code></li>
+</ul>
+<pre><code class="java">@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private MyArgumentResolvers myArgumentResolvers;
+
+    @Override
+    public void addArgumentResolvers(List&lt;HandlerMethodArgumentResolver&gt; argumentResolvers) {
+        argumentResolvers.add(myArgumentResolvers);
+    }
+}</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    dzou  |  微信：17856530567
+  </li>
+  <li class="post-copyright-link">
+  <strong>本文链接：</strong>
+  <a href="http://www.dzou.top/post/diy-params-resolver.html" title="SpringBoot自定义参数解析器">http://www.dzou.top/post/diy-params-resolver.html</a>
+</li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noopener noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+  <li class="post-copyright-license">
+    并保留本声明和上方二维码。感谢您的阅读和支持！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/SpringBoot/" rel="tag"># SpringBoot</a>
+          
+            <a href="/tags/Web/" rel="tag"># Web</a>
+          
+            <a href="/tags/项目/" rel="tag"># 项目</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/seckill-sum.html" rel="next" title="秒杀Seckill项目总结">
+                <i class="fa fa-chevron-left"></i> 秒杀Seckill项目总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" rel="external nofollow noopener noreferrer" target="_blank">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/2.JPG" alt="dzou">
+            
+              <p class="site-author-name" itemprop="name">dzou</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ding-zou" target="_blank" title="GitHub" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="dingxiang.zoufubo@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://me.csdn.net/qq_44760332" target="_blank" title="CSDN" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                推荐链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/7a5625fe.html" title="Java并发之AQS源码分析" target="_blank">Java并发之AQS源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/19e1cc75.html" title="Linux基础命令" target="_blank">Linux基础命令</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/8184a8fd.html" title="JDK8新特性——流和Lambda表达式" target="_blank">JDK8新特性——流和Lambda表达式</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://music.163.com/#/user/home?id=564117665" title="网易云音乐" target="_blank" rel="external nofollow noopener noreferrer">网易云音乐</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringBoot自定义参数解析器"><span class="nav-number">1.</span> <span class="nav-text">SpringBoot自定义参数解析器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加解析器"><span class="nav-number">1.1.</span> <span class="nav-text">添加解析器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现自定义解析器"><span class="nav-number">1.2.</span> <span class="nav-text">实现自定义解析器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解析对象的使用"><span class="nav-number">1.3.</span> <span class="nav-text">解析对象的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Springboot中其他参数解析器"><span class="nav-number">1.4.</span> <span class="nav-text">Springboot中其他参数解析器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Model"><span class="nav-number">1.4.1.</span> <span class="nav-text">Model</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RequestParam"><span class="nav-number">1.4.2.</span> <span class="nav-text">RequestParam</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PathVariable"><span class="nav-number">1.4.3.</span> <span class="nav-text">PathVariable</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于注解自定义参数解析器"><span class="nav-number">1.5.</span> <span class="nav-text">基于注解自定义参数解析器</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dzou</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">96.8k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问用户：
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问次数：
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://dzou.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://www.dzou.top/post/diy-params-resolver.html';
+          this.page.identifier = 'post/diy-params-resolver.html';
+          this.page.title = 'SpringBoot自定义参数解析器';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://dzou.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "topCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "topRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>
+
