@@ -99,21 +99,21 @@
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="并发编程是Java程序员最重要的技能之一，也是最难掌握的一种技能。它要求编程者对计算机最底层的运作原理有深刻的理解，同时要求编程者逻辑清晰、思维缜密，这样才能写出高效、安全、可靠的多线程并发程序。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/1.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/2.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/4.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/3.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/5.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/6.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/7.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/8.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/9.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/10.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/concurrent/1.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/concurrent/2.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/concurrent/4.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/concurrent/3.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/concurrent/5.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/concurrent/6.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/concurrent/7.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/concurrent/8.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/concurrent/9.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/concurrent/10.png">
 <meta property="og:updated_time" content="2019-08-31T13:38:17.062Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发编程学习笔记-更新中">
 <meta name="twitter:description" content="并发编程是Java程序员最重要的技能之一，也是最难掌握的一种技能。它要求编程者对计算机最底层的运作原理有深刻的理解，同时要求编程者逻辑清晰、思维缜密，这样才能写出高效、安全、可靠的多线程并发程序。">
-<meta name="twitter:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/1.png">
+<meta name="twitter:image" content="http://dzou.wangminwei.top/static/images/concurrent/1.png">
 
 
 
@@ -1689,7 +1689,7 @@ latch.countDown();//计数任务-1
             }
         }</code></pre>
 <h5 id="release"><a href="#release" class="headerlink" title="release"></a>release</h5><p> 与CountDownLatch 的<code>countDown</code>一样的实现</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/1.png">
+<img src="http://dzou.wangminwei.top/static/images/concurrent/1.png">
 
 
 
@@ -1858,7 +1858,7 @@ protected &lt;T&gt; RunnableFuture&lt;T&gt; newTaskFor(Runnable runnable, T valu
 <p>这个方法返回了一个<code>FutureTask</code>对象，稍后讲到</p>
 </blockquote>
 <h3 id="FutureTask"><a href="#FutureTask" class="headerlink" title="FutureTask"></a>FutureTask</h3><p>封装了<code>Future</code>线程的执行和<code>Runnable</code>线程的执行，并返回返回值result，使用适配器模式将Runnable线程转换为Callable线程执行</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/2.png">
+<img src="http://dzou.wangminwei.top/static/images/concurrent/2.png">
 
 <p>构造方法：</p>
 <ul>
@@ -2135,13 +2135,13 @@ private static final int INTERRUPTED  = 6;
 <ul>
 <li>Fork/Join也属于一种执行器，也就是它的<code>ForkJoinPool</code></li>
 </ul>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/4.png">
+<img src="http://dzou.wangminwei.top/static/images/concurrent/4.png">
 
 <h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>分而治之把一个大任务分成多组若干个小任务，每组任务开辟一个线程执行，每组线程都有一个队列负责该组任务的执行和等待</p>
 <ul>
 <li>工作窃取算法：每组任务执行速度不同，有的快有的慢，快的执行完后等待慢的执行完的话就浪费资源了，所以快的执行完后会帮还未执行完成的线程从<code>队列</code>中拿出任务去执行，但是这样会很混乱，所以规定了<strong>自己线程的任务是从队列头获取，其他线程来拿的任务从队列尾获取</strong></li>
 </ul>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/3.png">
+<img src="http://dzou.wangminwei.top/static/images/concurrent/3.png">
 
 
 
@@ -2493,10 +2493,10 @@ public class ShotDataSet {
 <li>首先将数据分成一段一段的存储，然后给每一段数据配一把锁，当一个线程占用锁访问其中一个段数据的时候，其他段的数据也能被其他线程访问。</li>
 </ul>
 <p>Segment中有一把可重入锁ReentrantLock，一段数据对应一个Segment</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/5.png">
+<img src="http://dzou.wangminwei.top/static/images/concurrent/5.png">
 
 <h4 id="JDK-1-8"><a href="#JDK-1-8" class="headerlink" title="JDK 1.8"></a>JDK 1.8</h4><p>1.8中放弃了Segment臃肿的设计，取而代之的是采用Node+CAS+Synchronized来保证并发安全进行实现，结构如下：</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/6.png">
+<img src="http://dzou.wangminwei.top/static/images/concurrent/6.png">
 
 <h3 id="fail-fast机制"><a href="#fail-fast机制" class="headerlink" title="fail fast机制"></a>fail fast机制</h3><p><strong>“快速失败”也就是 fail-fast，它是 Java 集合的一种错误检测机制。当多个线程对集合进行结构上的改变的操作时，有可能会产生 fail-fast 机制。记住是有可能，而不是一定。例如：假设存在两个线程（线程 1、线程 2），线程 1 通过 Iterator 在遍历集合 A 中的元素，在某个时候线程 2 修改了集合 A 的结构（是结构上面的修改，而不是简单的修改集合元素的内容），那么这个时候程序就会抛出 ConcurrentModificationException 异常，从而产生 fail-fast 机制。</strong></p>
 <h2 id="十六-阻塞和非阻塞队列"><a href="#十六-阻塞和非阻塞队列" class="headerlink" title="十六.阻塞和非阻塞队列"></a>十六.阻塞和非阻塞队列</h2><h3 id="ConcurrentLinkedQueue—非阻塞队列"><a href="#ConcurrentLinkedQueue—非阻塞队列" class="headerlink" title="ConcurrentLinkedQueue—非阻塞队列"></a>ConcurrentLinkedQueue—非阻塞队列</h3><p><strong><em>这是一种<code>非阻塞</code>的线程安全性<code>链队列</code>，使用<code>循环CAS</code>方式保证非阻塞</em></strong></p>
@@ -2506,7 +2506,7 @@ public class ShotDataSet {
         head = tail = new Node&lt;E&gt;(null);//初始化时插入一个空节点，head=tail
     }
 </code></pre>
-<h4 id="入队-offer方法"><a href="#入队-offer方法" class="headerlink" title="入队 offer方法"></a>入队 <code>offer</code>方法</h4><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/7.png">
+<h4 id="入队-offer方法"><a href="#入队-offer方法" class="headerlink" title="入队 offer方法"></a>入队 <code>offer</code>方法</h4><img src="http://dzou.wangminwei.top/static/images/concurrent/7.png">
 
 <p>入队过程：</p>
 <ul>
@@ -2539,7 +2539,7 @@ public class ShotDataSet {
         }
     }
 </code></pre>
-<h4 id="出队-poll方法"><a href="#出队-poll方法" class="headerlink" title="出队 poll方法"></a>出队 <code>poll</code>方法</h4><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/8.png">
+<h4 id="出队-poll方法"><a href="#出队-poll方法" class="headerlink" title="出队 poll方法"></a>出队 <code>poll</code>方法</h4><img src="http://dzou.wangminwei.top/static/images/concurrent/8.png">
 
 <p>出队流程：</p>
 <ul>
@@ -2583,7 +2583,7 @@ public class ShotDataSet {
 <p>参考博文：</p>
 <p><a href="https://www.cnblogs.com/huangjuncong/p/9196240.html" rel="external nofollow noopener noreferrer" target="_blank">https://www.cnblogs.com/huangjuncong/p/9196240.html</a></p>
 <p><a href="https://blog.csdn.net/qq_38293564/article/details/80798310" rel="external nofollow noopener noreferrer" target="_blank">https://blog.csdn.net/qq_38293564/article/details/80798310</a></p>
-<h3 id="阻塞队列"><a href="#阻塞队列" class="headerlink" title="阻塞队列"></a>阻塞队列</h3><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/9.png">
+<h3 id="阻塞队列"><a href="#阻塞队列" class="headerlink" title="阻塞队列"></a>阻塞队列</h3><img src="http://dzou.wangminwei.top/static/images/concurrent/9.png">
 
 <p>阻塞队列：</p>
 <ul>
@@ -2978,7 +2978,7 @@ private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
     private static final int STOP       =  1 &lt;&lt; COUNT_BITS;//001
     private static final int TIDYING    =  2 &lt;&lt; COUNT_BITS;//010
     private static final int TERMINATED =  3 &lt;&lt; COUNT_BITS;//011</code></pre>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/concurrent/10.png">
+<img src="http://dzou.wangminwei.top/static/images/concurrent/10.png">
 
 
 

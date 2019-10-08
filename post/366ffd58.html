@@ -99,19 +99,19 @@
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="我们都知道一个SpringBoot主配置类只要标注上@SpringBootApplication的注解，Spring就会帮我们自动配置各个组件和实例化Bean，我们来通过源码分析一下SpringBoot自动配置原理。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/9.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/2.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/3.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/4.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/10.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/8.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/7.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/1.1.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/autoconfig/9.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/autoconfig/2.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/autoconfig/3.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/autoconfig/4.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/autoconfig/10.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/autoconfig/8.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/autoconfig/7.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/autoconfig/1.1.png">
 <meta property="og:updated_time" content="2019-08-02T12:11:53.759Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SpringBoot自动配置源码分析及详解">
 <meta name="twitter:description" content="我们都知道一个SpringBoot主配置类只要标注上@SpringBootApplication的注解，Spring就会帮我们自动配置各个组件和实例化Bean，我们来通过源码分析一下SpringBoot自动配置原理。">
-<meta name="twitter:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/9.png">
+<meta name="twitter:image" content="http://dzou.wangminwei.top/static/images/autoconfig/9.png">
 
 
 
@@ -489,19 +489,19 @@
 <li>registry 用作注册的Bean注册器</li>
 </ul>
 <p>目录结构如下：</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/9.png">
+<img src="http://dzou.wangminwei.top/static/images/autoconfig/9.png">
 
 
 
 <p>元信息如下：</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/2.png">
+<img src="http://dzou.wangminwei.top/static/images/autoconfig/2.png">
 
 
 
 
 
 <p>new AutoConfigurationPackages.PackageImport(metadata)).getPackageName()获取到该启动类所在路径的包名，传如register方法注册该包名下的所有需要注册并实例化的Bean（包括@Component @Service @Mapper @Repository等）</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/3.png">
+<img src="http://dzou.wangminwei.top/static/images/autoconfig/3.png">
 
 
 
@@ -565,14 +565,14 @@ if (this.hasBeanCreationStarted()) {
     this.manualSingletonNames.remove(beanName);
 }</code></pre>
 <p>下图就是beanDefinitionMap返回的值，里面除了Spring框架提供的一些必要的Bean需要注册外，就是我们主启动类所在包下的所有需要扫描的Bean，我只有一个主启动类和一个controller 下面标出</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/4.png">
+<img src="http://dzou.wangminwei.top/static/images/autoconfig/4.png">
 
 
 
 
 
 <p>当我尝试把写的HelloWorldController的@RestController注解注释掉以后，SpringBoot没有扫描到这个Controller，也就没有把它注册到BeanFactory中</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/10.png">
+<img src="http://dzou.wangminwei.top/static/images/autoconfig/10.png">
 
 
 
@@ -587,7 +587,7 @@ if (this.hasBeanCreationStarted()) {
 </ul>
 <p>注解元信息的参数（配置类上添加的@ComponentScan(Exclude)）：</p>
 <p>excludeName和exclude表示需要排除扫描自动配置的类，String[0]表示了没有需要排除的</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/8.png">
+<img src="http://dzou.wangminwei.top/static/images/autoconfig/8.png">
 
 
 
@@ -605,7 +605,7 @@ configurations = this.filter(configurations, autoConfigurationMetadata);
 this.fireAutoConfigurationImportEvents(configurations, exclusions);
 return new AutoConfigurationImportSelector.AutoConfigurationEntry(configurations, exclusions);
 </code></pre>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/7.png">
+<img src="http://dzou.wangminwei.top/static/images/autoconfig/7.png">
 
 
 
@@ -620,7 +620,7 @@ return new AutoConfigurationImportSelector.AutoConfigurationEntry(configurations
         return configurations;
     }</code></pre>
 <p>返回结果如下:</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/autoconfig/1.1.png">
+<img src="http://dzou.wangminwei.top/static/images/autoconfig/1.1.png">
 
 
 

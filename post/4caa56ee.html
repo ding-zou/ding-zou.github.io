@@ -99,15 +99,15 @@
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="工厂方法模式：定义了一个创建对象的接口，但由子类决定要实例化哪一个。工厂方法把类实例化延迟到子类。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/11.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/12.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/9.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/10.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/design_mode/11.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/design_mode/12.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/design_mode/9.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/design_mode/10.png">
 <meta property="og:updated_time" content="2019-08-16T16:50:07.594Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java 设计模式——工厂模式">
 <meta name="twitter:description" content="工厂方法模式：定义了一个创建对象的接口，但由子类决定要实例化哪一个。工厂方法把类实例化延迟到子类。">
-<meta name="twitter:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/11.png">
+<meta name="twitter:image" content="http://dzou.wangminwei.top/static/images/design_mode/11.png">
 
 
 
@@ -479,14 +479,14 @@
 <li>具体创建者类：创建者的子类，实现了工厂方法，由该子类决定要实例化哪一个类不代表子类真正决定创建哪一个产品，而是说编写创建者类时，不需要具体知道需要创建哪一个类，而是根据选择哪一个类，就自然在运行时创建该产品类。</li>
 <li>产品类：抽象类或接口，实现该产品接口创建具体的产品类，在使用时只需要把引用指向他，而不是具体的类(<code>多态</code>)。</li>
 </ul>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/11.png">
+<img src="http://dzou.wangminwei.top/static/images/design_mode/11.png">
 
 <p>这样做的目的：</p>
 <ul>
 <li>使用子类实现创建产品帮助我们将产品的<code>实现</code>和<code>使用</code>解耦，需要增加产品或者改变产品的实现时，创建者都不受影响。</li>
 <li>客户端不需要知道具体产品类的类名，只需要知道所对应的工厂即可。</li>
 </ul>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/12.png">
+<img src="http://dzou.wangminwei.top/static/images/design_mode/12.png">
 
 <h4 id="依赖倒置"><a href="#依赖倒置" class="headerlink" title="依赖倒置"></a>依赖倒置</h4><p>设计原则：</p>
 <ul>
@@ -496,7 +496,7 @@
 <p>不能让<code>高层组件</code>依赖<code>低层组件</code>。高层组件：由其他低层组件定义其行为的类（有低层组件构成，具体更复杂的功能），面向接口编程的思想。</p>
 </blockquote>
 <p>问题：类A直接依赖类B，假如要将类A改为依赖类C，则必须通过修改类A的代码来达成。这种场景下，类A一般是高层模块，负责复杂的业务逻辑；类B和类C是低层模块，负责基本的原子操作；假如修改类A，会给程序带来不必要的风险。</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/9.png">
+<img src="http://dzou.wangminwei.top/static/images/design_mode/9.png">
 
 
 
@@ -504,7 +504,7 @@
 
 <h3 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h3><p><strong><em>抽象工厂模式：提供一个接口，用于创建相关或者依赖对象的家族，而不需要明确指定具体类。</em></strong></p>
 <p>接口中创建每个产品的接口就使用了工厂方法。</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/10.png">
+<img src="http://dzou.wangminwei.top/static/images/design_mode/10.png">
 
 
 
@@ -593,9 +593,9 @@
           
             <a href="/tags/基础/" rel="tag"># 基础</a>
           
-            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
-          
             <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
           
         </div>
       

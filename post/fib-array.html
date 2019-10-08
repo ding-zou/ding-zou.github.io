@@ -99,13 +99,13 @@
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="剑指offer—斐波那契数列.斐波那契数，通常用 F(n) 表示，形成的序列称为斐波那契数列。该数列由 0 和 1 开始，后面的每一项数字都是前面两项数字的和。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/algorithm/5.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/algorithm/6.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/algorithm/5.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/algorithm/6.png">
 <meta property="og:updated_time" content="2019-09-12T10:55:55.930Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="牛客网算法编程题 剑指offer—斐波那契数列 解答">
 <meta name="twitter:description" content="剑指offer—斐波那契数列.斐波那契数，通常用 F(n) 表示，形成的序列称为斐波那契数列。该数列由 0 和 1 开始，后面的每一项数字都是前面两项数字的和。">
-<meta name="twitter:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/algorithm/5.png">
+<meta name="twitter:image" content="http://dzou.wangminwei.top/static/images/algorithm/5.png">
 
 
 
@@ -513,7 +513,7 @@ F(N) = F(N - 1) + F(N - 2), 其中 N &gt; 1.
     }
 }</code></pre>
 <h3 id="更优化的动态规划"><a href="#更优化的动态规划" class="headerlink" title="更优化的动态规划"></a>更优化的动态规划</h3><p><strong>不使用数组存储每个位置的值，而用两个变量分别存储<code>前一个pre</code>和前前一个<code>prepre</code>的值，在循环中计算前一个与后一个相加再把值重新赋给这两个变量</strong></p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/algorithm/5.png">
+<img src="http://dzou.wangminwei.top/static/images/algorithm/5.png">
 
 
 
@@ -581,7 +581,7 @@ F(N) = F(N - 1) + F(N - 2), 其中 N &gt; 1.
     }
 }</code></pre>
 <h4 id="矩形覆盖"><a href="#矩形覆盖" class="headerlink" title="矩形覆盖"></a>矩形覆盖</h4><h5 id="题目描述-2"><a href="#题目描述-2" class="headerlink" title="题目描述"></a>题目描述</h5><p>我们可以用2<em>1的小矩形横着或者竖着去覆盖更大的矩形。请问用n个2</em>1的小矩形无重叠地覆盖一个2*n的大矩形，总共有多少种方法？</p>
-<h5 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h5><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/algorithm/6.png">
+<h5 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h5><img src="http://dzou.wangminwei.top/static/images/algorithm/6.png">
 
 <h5 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h5><pre><code class="java">public class Solution {
     public int RectCover(int target) {

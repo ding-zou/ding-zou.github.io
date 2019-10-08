@@ -99,14 +99,14 @@
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="装饰者模式：装饰者和被装饰者有相同的超类-可以用一个或者多个装饰者包装一个对象，因为装饰者和被装饰者有相同的超类，所以在任何需要原始对象（被包装的）的时候，你都可以用装饰过的对象替代，装饰者可以在被装饰者的行为前后添加自己的行为，装饰者可以如何时候被装饰，可以运行时动态地装饰对象。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/6.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/8.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/7.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/design_mode/6.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/design_mode/8.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/design_mode/7.png">
 <meta property="og:updated_time" content="2019-08-16T16:50:54.107Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java设计模式——装饰者模式">
 <meta name="twitter:description" content="装饰者模式：装饰者和被装饰者有相同的超类-可以用一个或者多个装饰者包装一个对象，因为装饰者和被装饰者有相同的超类，所以在任何需要原始对象（被包装的）的时候，你都可以用装饰过的对象替代，装饰者可以在被装饰者的行为前后添加自己的行为，装饰者可以如何时候被装饰，可以运行时动态地装饰对象。">
-<meta name="twitter:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/6.png">
+<meta name="twitter:image" content="http://dzou.wangminwei.top/static/images/design_mode/6.png">
 
 
 
@@ -485,7 +485,7 @@
 <p>我们使用一个抽象的<code>Beverage</code>类描述星巴克的咖啡（当然也可以使用接口），各个不同种类的咖啡继承该抽象类，我们还需要一个抽象的装饰者类，继承该装饰者类实现具体的原料装饰类，根据装饰者模式的<code>被装饰者和装饰者用相同的超类</code>，我们的装饰者抽象类需要继承<code>Beverage</code>类</p>
 <p>计算价格我们要调用最外层的<code>cost</code>方法，每一层会委托<code>它装饰的对象-被装饰者</code>计算出价格</p>
 <p>当我们最外层装饰者为奶泡<code>Whip</code>时，它会委托给上一层装饰者摩卡<code>Mocha</code>计算出摩卡所装饰的具体咖啡的价格+摩卡的价格；然后再加上自己奶泡的价格。(之所以可以这样实现调用多层cost是因为他们都来自一个超类对象)</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/6.png">
+<img src="http://dzou.wangminwei.top/static/images/design_mode/6.png">
 
 <p>Beverage类：</p>
 <pre><code class="java">public abstract class Beverage {
@@ -663,10 +663,10 @@ DarkRoast BIG with Whip,cost:55.15
 DarkRoast BIG with Milk with Milk,cost:48.2
 DarkRoast BIG with Milk with Milk with Soy,cost:53.2
 DarkRoast BIG with Milk with Milk with Soy with Whip,cost:68.2</code></pre>
-<h3 id="JDK中装饰者——IO"><a href="#JDK中装饰者——IO" class="headerlink" title="JDK中装饰者——IO"></a>JDK中装饰者——IO</h3><img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/8.png">
+<h3 id="JDK中装饰者——IO"><a href="#JDK中装饰者——IO" class="headerlink" title="JDK中装饰者——IO"></a>JDK中装饰者——IO</h3><img src="http://dzou.wangminwei.top/static/images/design_mode/8.png">
 
 <p>IO中<code>InputStream</code>和<code>OutputStream</code>就是抽象的超类，<code>Reader</code>和<code>Writer</code>也是抽象的超类。整个IO家族都是由装饰者模式构成的。</p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/design_mode/7.png">
+<img src="http://dzou.wangminwei.top/static/images/design_mode/7.png">
 
 
 
@@ -734,9 +734,9 @@ DarkRoast BIG with Milk with Milk with Soy with Whip,cost:68.2</code></pre>
           
             <a href="/tags/基础/" rel="tag"># 基础</a>
           
-            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
-          
             <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
           
         </div>
       

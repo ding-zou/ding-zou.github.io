@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.dzou.top/post/seckill-sum.html</loc>
+    
+    <lastmod>2019-09-16T08:09:59.920Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.dzou.top/post/read-config-springboot.html</loc>
     
     <lastmod>2019-09-12T12:05:24.301Z</lastmod>
@@ -40,13 +47,6 @@
     <loc>https://www.dzou.top/post/params-valid.html</loc>
     
     <lastmod>2019-09-12T11:52:02.939Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.dzou.top/post/seckill-sum.html</loc>
-    
-    <lastmod>2019-09-12T11:36:31.656Z</lastmod>
     
   </url>
   

@@ -99,14 +99,14 @@
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="redis非关系型数据库，redis实现缓存存储，高效查询">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/redis/1.png">
-<meta property="og:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/redis/2.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/redis/1.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/redis/2.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190612152347346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0NzYwMzMy,size_16,color_FFFFFF,t_70">
 <meta property="og:updated_time" content="2019-09-01T15:50:04.257Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis非关系型数据库学习笔记--更新中">
 <meta name="twitter:description" content="redis非关系型数据库，redis实现缓存存储，高效查询">
-<meta name="twitter:image" content="http://pv4qgqg7s.bkt.clouddn.com/static/images/redis/1.png">
+<meta name="twitter:image" content="http://dzou.wangminwei.top/static/images/redis/1.png">
 
 
 
@@ -498,7 +498,7 @@ redis 127.0.0.1:6379&gt; ZRANGEBYSCORE redis.net.cn 0 1000</code></pre><hr>
 </blockquote>
 <h3 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h3><p><strong>rdb：redis Database</strong><br>将redis存储的数据生成<strong>快照snapshot并存储到磁盘</strong>等介质上<br>对于RDB方式，redis会单独创建（<strong>fork</strong>）一个子进程来进行持久化，而主进程是不会进行任何IO操作的，这样就确保了redis极高的性能。<br>redis在进行数据持久化的过程中，会先将数据写入到一个临时文件中，待持久化过程都结束了，才会用这个临时文件替换上次持久化好的文件。</p>
 <p><strong>rdb核心就是：rdbSave和rdbLoad函数，前者用于生成RDB文件到磁盘，后者用于将磁盘文件加载到内存中。</strong></p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/redis/1.png">
+<img src="http://dzou.wangminwei.top/static/images/redis/1.png">
 
 <h4 id="保存"><a href="#保存" class="headerlink" title="保存"></a>保存</h4><ul>
 <li><code>SAVE</code>：直接调用rdbSave，阻塞主线程，直到保存完成，阻塞期间，服务器不能处理客户端任何请求。</li>
@@ -512,7 +512,7 @@ redis 127.0.0.1:6379&gt; ZRANGEBYSCORE redis.net.cn 0 1000</code></pre><hr>
 <p>aof保存频率比rdb高，所以一半aof文件数据比rdb数据更新。</p>
 </blockquote>
 <h3 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h3><p><strong>aof：append only file</strong><br>以日志记录形式写操作，只能<strong>追不能改写</strong><br><strong>AOF方式是将执行过的写指令记录下来，在数据恢复时按照从前到后的顺序再将指令都执行一遍<code>使用Queue</code>，就这么简单。</strong></p>
-<img src="http://pv4qgqg7s.bkt.clouddn.com/static/images/redis/2.png">
+<img src="http://dzou.wangminwei.top/static/images/redis/2.png">
 
 <blockquote>
 <p>AOF方式的另一个好处，我们通过一个“场景再现”来说明。某同学在操作redis时，不小心执行了FLUSHALL，导致redis内存中的数据全部被清空了，这是很悲剧的事情。不过这也不是世界末日，只要redis配置了AOF持久化方式，且AOF文件还没有被重写（rewrite），我们就可以用最快的速度暂停redis并编辑AOF文件，将最后一行的FLUSHALL命令删除，然后重启redis，就可以恢复redis的所有数据到FLUSHALL之前的状态了。是不是很神奇，这就是AOF持久化方式的好处之一。但是如果AOF文件已经被重写了，那就无法通过这种方法来恢复数据了。</p>
