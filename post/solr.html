@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "d1f94239"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java基础,JavaWeb,面试,Java,全文搜索引擎,分词器,solr,lucene">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dzou's Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="全文检索使用到了倒排索引，相比与顺序查询：不需要那么多的查询(一个文档一个文档找索引，找到就匹配，需要全部查询，效率很低)，而且可以在索引上定位，出现在哪个文档哪个地方，支持高亮。Solr是java全文检索api工具接口lucene的封装，用于全文检索。">
+<meta name="keywords" content="Java基础,JavaWeb,面试,Java,全文搜索引擎,分词器,solr,lucene">
+<meta property="og:type" content="article">
+<meta property="og:title" content="全文搜索引擎—Solr具体实现和使用">
+<meta property="og:url" content="https://www.dzou.top/post/solr.html">
+<meta property="og:site_name" content="Dzou&#39;s Blog">
+<meta property="og:description" content="全文检索使用到了倒排索引，相比与顺序查询：不需要那么多的查询(一个文档一个文档找索引，找到就匹配，需要全部查询，效率很低)，而且可以在索引上定位，出现在哪个文档哪个地方，支持高亮。Solr是java全文检索api工具接口lucene的封装，用于全文检索。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/8.png">
+<meta property="og:image" content="http://images.cnblogs.com/cnblogs_com/forfuture1978/WindowsLiveWriter/LuceneLucene_FCFA/lucene%20%20zong%20ti%20jia%20gou_2.jpg">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/5.png">
+<meta property="og:image" content="https://www.dzou.top/home/dzou/.config/Typora/typora-user-images/1569244970967.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/6.png">
+<meta property="og:image" content="https://www.dzou.top/home/dzou/.config/Typora/typora-user-images/1569245699512.png">
+<meta property="og:image" content="https://www.dzou.top/home/dzou/.config/Typora/typora-user-images/1569246955242.png">
+<meta property="og:updated_time" content="2019-10-09T16:07:56.167Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="全文搜索引擎—Solr具体实现和使用">
+<meta name="twitter:description" content="全文检索使用到了倒排索引，相比与顺序查询：不需要那么多的查询(一个文档一个文档找索引，找到就匹配，需要全部查询，效率很低)，而且可以在索引上定位，出现在哪个文档哪个地方，支持高亮。Solr是java全文检索api工具接口lucene的封装，用于全文检索。">
+<meta name="twitter:image" content="http://dzou.wangminwei.top/static/images/8.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'Q66404JRFM',
+      apiKey: '27dd0e53d330bf96c9826662fc30055a',
+      indexName: 'dzou',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.dzou.top/post/solr.html">
+
+
+
+
+
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
+  <title>全文搜索引擎—Solr具体实现和使用 | Dzou's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+  
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="bg_content">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dzou's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">No pains,no gains.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/solr.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dzou">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dzou's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">全文搜索引擎—Solr具体实现和使用</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-28T14:15:05+08:00">
+                2019-09-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/solr.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/solr.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>&nbsp浏览次数：
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.7k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  8分
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  全文检索使用到了倒排索引，相比与顺序查询：不需要那么多的查询(一个文档一个文档找索引，找到就匹配，需要全部查询，效率很低)，而且可以在索引上定位，出现在哪个文档哪个地方，支持高亮。Solr是java全文检索api工具接口lucene的封装，用于全文检索。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="全文检索"><a href="#全文检索" class="headerlink" title="全文检索"></a>全文检索</h2><h3 id="倒排索引"><a href="#倒排索引" class="headerlink" title="倒排索引"></a>倒排索引</h3><p><strong>根据文档创建索引，再对索引进行查询获取文档。</strong></p>
+<blockquote>
+<p>相比与顺序查询：不需要那么多的查询(一个文档一个文档找索引，找到就匹配，需要全部查询，效率很低)，而且可以在索引上定位，出现在哪个文档哪个地方，支持高亮</p>
+</blockquote>
+<img src="http://dzou.wangminwei.top/static/images/8.png">
+
+<p><img src="http://images.cnblogs.com/cnblogs_com/forfuture1978/WindowsLiveWriter/LuceneLucene_FCFA/lucene%20%20zong%20ti%20jia%20gou_2.jpg" alt></p>
+<h2 id="Lucene"><a href="#Lucene" class="headerlink" title="Lucene"></a>Lucene</h2><p><strong>Lucene是一个基于Java的全文检索库，可以看成一个持久层框架，与Lucene索引交互</strong></p>
+<img src="http://dzou.wangminwei.top/static/images/5.png">
+
+<p><img src="/home/dzou/.config/Typora/typora-user-images/1569244970967.png" alt="1569244970967"></p>
+<h3 id="倒排索引存储信息"><a href="#倒排索引存储信息" class="headerlink" title="倒排索引存储信息"></a>倒排索引存储信息</h3><p>左边保存的是一系列字符串，称为<strong>词典</strong>。</p>
+<p>每个字符串都指向包含此字符串的文档(Document)链表(每个节点还包含文档中出现该索引的频率)，此文档链表称为<strong>倒排表</strong>(Posting List)。</p>
+<img src="http://dzou.wangminwei.top/static/images/6.png">
+
+<p><img src="/home/dzou/.config/Typora/typora-user-images/1569245699512.png" alt="1569245699512"></p>
+<blockquote>
+<p>如果我们需要查询包含两个索引的文档，只需要将两个文档共有的文档标号连接成链表</p>
+</blockquote>
+<h3 id="索引创建"><a href="#索引创建" class="headerlink" title="索引创建"></a>索引创建</h3><ul>
+<li><strong>对文档进行分词，使用Tokenizer ，得到<code>词元</code></strong></li>
+</ul>
+<blockquote>
+<p>分词器一般使用训练的模型，<code>Word</code>、<code>IK</code>等</p>
+</blockquote>
+<ol>
+<li>去除标点</li>
+<li>去除停用词(我、是)</li>
+</ol>
+<ul>
+<li><strong>还需要把词元传递给语言处理器组件处理</strong></li>
+</ul>
+<p>英文：复数-&gt;单数，大写-&gt;小写</p>
+<ul>
+<li><strong>若索引库存在相同索引，需要合并成一个链表</strong></li>
+</ul>
+<h3 id="索引查询"><a href="#索引查询" class="headerlink" title="索引查询"></a>索引查询</h3><ul>
+<li><strong>输入查询关键字词</strong></li>
+</ul>
+<pre><code>keyword:Java</code></pre><ul>
+<li><strong>进行语法分析得到一棵语法分析树</strong></li>
+</ul>
+{% qnimg 7.png %}
+
+<p><img src="/home/dzou/.config/Typora/typora-user-images/1569246955242.png" alt="1569246955242"></p>
+<ul>
+<li><p><strong>搜索索引库，得到符合的文档以及索引的信息</strong></p>
+</li>
+<li><p><strong>得到文档后，根据频率，相关性排序，分数越高的排在越前面</strong></p>
+</li>
+</ul>
+<h3 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h3><p><strong>1. 索引过程：</strong></p>
+<p><strong>1)</strong> <strong>有一系列被索引文件</strong></p>
+<p><strong>2)</strong> <strong>被索引文件经过语法分析和语言处理形成一系列词(Term)**</strong>。**</p>
+<p><strong>3)</strong> <strong>经过索引创建形成词典和反向索引表。</strong></p>
+<p><strong>4)</strong> <strong>通过索引存储将索引写入硬盘。</strong></p>
+<p><strong>2. 搜索过程：</strong></p>
+<p><strong>a)</strong> <strong>用户输入查询语句。</strong></p>
+<p><strong>b)</strong> <strong>对查询语句经过语法分析和语言分析得到一系列词(Term)**</strong>。**</p>
+<p><strong>c)</strong> <strong>通过语法分析得到一个查询树。</strong></p>
+<p><strong>d)</strong> <strong>通过索引存储将索引读入到内存。</strong></p>
+<p><strong>e)</strong> <strong>利用查询树搜索索引，从而得到每个词(Term)**</strong>的文档链表，对文档链表进行交，差，并得到结果文档。**</p>
+<p><strong>f)</strong> <strong>将搜索到的结果文档对查询的相关性进行排序。</strong></p>
+<p><strong>g)</strong> <strong>返回查询结果给用户。</strong></p>
+<h3 id="Solr"><a href="#Solr" class="headerlink" title="Solr"></a>Solr</h3><p><strong>Solr是Lucene的封装，提供分布式索引，负载均衡查询，配置式使用，基本只支持Java</strong></p>
+<ul>
+<li>安装：官网</li>
+<li>API：SolrJ、SpringBoot中的SolrClient</li>
+<li>core：相当于一张数据库的表</li>
+<li>创建core：<code>solr create -c “name”</code></li>
+<li>web客户端：<code>http://localhost:8983/solr</code></li>
+<li>core目录：solr-8.2.0/server/solr下</li>
+</ul>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><ul>
+<li>managed-schema</li>
+</ul>
+<p>在其中配置core的field字段、分词器等</p>
+<blockquote>
+<p>name：数据库字段，type：类型，indexed：是否索引，stored：是否缓存，required：是否必须，multiValued：是否多值</p>
+</blockquote>
+<pre><code class="xml">    &lt;!-- ik分词器 --&gt;
+    &lt;fieldType name=&quot;text_ik&quot; class=&quot;solr.TextField&quot;&gt;
+      &lt;analyzer type=&quot;index&quot;&gt;
+          &lt;tokenizer class=&quot;org.wltea.analyzer.lucene.IKTokenizerFactory&quot; useSmart=&quot;false&quot; conf=&quot;ik.conf&quot;/&gt;
+          &lt;filter class=&quot;solr.LowerCaseFilterFactory&quot;/&gt;
+      &lt;/analyzer&gt;
+      &lt;analyzer type=&quot;query&quot;&gt;
+          &lt;tokenizer class=&quot;org.wltea.analyzer.lucene.IKTokenizerFactory&quot; useSmart=&quot;true&quot; conf=&quot;ik.conf&quot;/&gt;
+          &lt;filter class=&quot;solr.LowerCaseFilterFactory&quot;/&gt;
+      &lt;/analyzer&gt;
+    &lt;/fieldType&gt;
+
+
+    &lt;!-- 数据库字段 --&gt;
+    &lt;field name=&quot;id&quot; type=&quot;string&quot; indexed=&quot;true&quot; stored=&quot;true&quot; required=&quot;true&quot; multiValued=&quot;false&quot; /&gt;
+    &lt;field name=&quot;shoes_name&quot; type=&quot;text_ik&quot; indexed=&quot;true&quot; stored=&quot;true&quot; multiValued=&quot;false&quot;/&gt;
+    &lt;field name=&quot;price&quot; type=&quot;string&quot; indexed=&quot;false&quot; stored=&quot;true&quot; multiValued=&quot;false&quot;/&gt;
+    &lt;field name=&quot;details&quot; type=&quot;text_ik&quot; indexed=&quot;true&quot; stored=&quot;true&quot; multiValued=&quot;false&quot;/&gt;
+    &lt;field name=&quot;url&quot; type=&quot;string&quot; indexed=&quot;false&quot; stored=&quot;true&quot; multiValued=&quot;false&quot;/&gt;
+    &lt;field name=&quot;pic_url&quot; type=&quot;string&quot; indexed=&quot;false&quot; stored=&quot;true&quot; multiValued=&quot;false&quot;/&gt;</code></pre>
+<ul>
+<li>solrconfig.xml</li>
+</ul>
+<p>当你需要使用web客户端dataimport时，需要添加：</p>
+<pre><code class="xml">&lt;requestHandler name=&quot;/dataimport&quot; class=&quot;org.apache.solr.handler.dataimport.DataImportHandler&quot;&gt;
+      &lt;lst name=&quot;defaults&quot;&gt;
+        &lt;str name=&quot;config&quot;&gt;data-config.xml&lt;/str&gt;
+      &lt;/lst&gt;
+    &lt;/requestHandler&gt;</code></pre>
+<ul>
+<li>在统计目录下创建一个data-config.xml，建立数据库字段和core field映射</li>
+</ul>
+<pre><code class="xml"> &lt;dataConfig&gt;
+    &lt;dataSource type=&quot;JdbcDataSource&quot; driver=&quot;com.mysql.cj.jdbc.Driver&quot; url=&quot;jdbc:mysql://127.0.0.1:3306/priceCompare_goods&quot; user=&quot;dzou&quot; password=&quot;1234&quot;/&gt;
+    &lt;document&gt;
+       &lt;entity name=&quot;adidas_goods&quot; transformer=&quot;DateFormatTransformer&quot; query=&quot;SELECT id,shoes_name,details,pic_url,price,url,store_name,comment,shoes_kind FROM adidas_goods&quot;&gt;
+          &lt;field column=&quot;id&quot; name=&quot;id&quot;/&gt;
+          &lt;field column=&quot;shoes_name&quot; name=&quot;shoes_name&quot;/&gt;
+          &lt;field column=&quot;price&quot; name=&quot;price&quot;/&gt;
+          &lt;field column=&quot;details&quot; name=&quot;details&quot;/&gt;
+          &lt;field column=&quot;url&quot; name=&quot;url&quot;/&gt;
+          &lt;field column=&quot;pic_url&quot; name=&quot;pic_url&quot;/&gt;
+          &lt;field column=&quot;shoes_kind&quot; name=&quot;shoes_kind&quot;/&gt;
+          &lt;field column=&quot;store_name&quot; name=&quot;store_name&quot;/&gt;
+          &lt;field column=&quot;score&quot; name=&quot;score&quot;&gt;
+        &lt;/entity&gt;
+
+    &lt;/document&gt;
+&lt;/dataConfig&gt;</code></pre>
+<h4 id="SolrClient-API调用"><a href="#SolrClient-API调用" class="headerlink" title="SolrClient API调用"></a>SolrClient API调用</h4><ul>
+<li>依赖</li>
+</ul>
+<pre><code class="xml">&lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-data-solr&lt;/artifactId&gt;
+        &lt;/dependency&gt;</code></pre>
+<ul>
+<li>添加记录到core</li>
+</ul>
+<pre><code class="java">@RequestMapping(&quot;/add&quot;)
+    public String add() throws IOException, SolrServerException {
+        SolrInputDocument doc = new SolrInputDocument();
+        doc.setField();
+        doc.setField();
+        doc.setField();
+        solrClient.add(&quot;&quot;,doc);
+        solrClient.commit(&quot;&quot;);
+        return &quot;&quot;;
+    }</code></pre>
+<ul>
+<li>删除core记录</li>
+</ul>
+<pre><code class="java">@RequestMapping(&quot;/delete&quot;)
+    public String delete(String id) throws IOException, SolrServerException {
+        solrClient.deleteById(id);
+        solrClient.commit(&quot;&quot;);
+        return &quot;&quot;;
+    }
+
+/**
+     * 删除所有的索引
+     * @return
+     */
+    @RequestMapping(&quot;deleteAll&quot;)
+    public String deleteAll(){
+        try {
+
+            solrClient.deleteByQuery(&quot;&quot;,&quot;*:*&quot;);
+            solrClient.commit(&quot;&quot;);
+
+            return &quot;success&quot;;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return &quot;error&quot;;
+    }</code></pre>
+<ul>
+<li>更新记录</li>
+</ul>
+<pre><code class="java">Map&lt;String, String&gt; map = new HashMap&lt;&gt;();
+map.put(&quot;set&quot;, o.getScore());
+SolrInputDocument doc = new SolrInputDocument();
+doc.addField(&quot;id&quot;, o.getId());
+doc.addField(&quot;score&quot;, map);
+solrClient.add(&quot;am_goods&quot;, doc);
+solrClient.commit(&quot;am_goods&quot;);</code></pre>
+<ul>
+<li>查询记录</li>
+</ul>
+<pre><code class="java">    /**
+     * 根据id查询索引
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(&quot;getById&quot;)
+    public String getById() throws Exception {
+        SolrDocument document = solrClient.getById(&quot;collection1&quot;, &quot;536563&quot;);
+        System.out.println(document);
+        return document.toString();
+    }
+
+    /**
+     * 综合查询: 在综合查询中, 有按条件查询, 条件过滤, 排序, 分页, 高亮显示, 获取部分域信息
+     * @return
+     */
+    @RequestMapping(&quot;search/{keyword}&quot;)
+    public String search(@PathVariable(&quot;keyword&quot;)String keyword){
+
+        try {
+            SolrQuery params = new SolrQuery();
+            //查询条件, 这里的 q 对应 下面图片标红的地方
+            params.set(&quot;q&quot;, &quot;shoes_name:&quot;+keyword);
+            //过滤条件
+            //params.set(&quot;fq&quot;, &quot;product_price:[100 TO 100000]&quot;);
+            //排序
+            params.addSort(&quot;price&quot;, SolrQuery.ORDER.asc);
+            //分页
+            params.setStart(0);
+            params.setRows(20);
+            //默认域
+            params.set(&quot;df&quot;, &quot;shoes_name&quot;);
+            //只查询指定域
+            //params.set(&quot;fl&quot;, &quot;id,shoes_name,shoes_kind,shop_name&quot;);
+            //高亮
+            //打开开关
+            params.setHighlight(true);
+            //指定高亮域
+            params.addHighlightField(&quot;shoes_name&quot;);
+            //设置前缀
+            params.setHighlightSimplePre(&quot;&lt;span style=&#39;color:red&#39;&gt;&quot;);
+            //设置后缀
+            params.setHighlightSimplePost(&quot;&lt;/span&gt;&quot;);
+            QueryResponse queryResponse = solrClient.query(params);
+            /*SolrDocumentList results = queryResponse.getResults();
+            results.forEach(System.out::println);*/
+            List&lt;HupuGoods&gt; s = queryResponse.getBeans(HupuGoods.class);
+            return s.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }</code></pre>
+<h3 id="ES和Solr区别"><a href="#ES和Solr区别" class="headerlink" title="ES和Solr区别"></a>ES和Solr区别</h3><ul>
+<li><p>Solr是配置式，ES是基于RestFul的</p>
+</li>
+<li><p>ES除了搜索还可以处理分析查询</p>
+</li>
+<li><p>Solr更面向文本搜索，对于已有数据的查询Solr更快</p>
+</li>
+<li><p>ES更轻量，发展很快，使用量已经超越Solr</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    dzou  |  微信：17856530567
+  </li>
+  <li class="post-copyright-link">
+  <strong>本文链接：</strong>
+  <a href="http://www.dzou.top/post/solr.html" title="全文搜索引擎—Solr具体实现和使用">http://www.dzou.top/post/solr.html</a>
+</li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noopener noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+  <li class="post-copyright-license">
+    并保留本声明和上方二维码。感谢您的阅读和支持！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/全文搜索引擎/" rel="tag"># 全文搜索引擎</a>
+          
+            <a href="/tags/Solr/" rel="tag"># Solr</a>
+          
+            <a href="/tags/索引/" rel="tag"># 索引</a>
+          
+            <a href="/tags/分词/" rel="tag"># 分词</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/diy-params-resolver.html" rel="next" title="SpringBoot自定义参数解析器">
+                <i class="fa fa-chevron-left"></i> SpringBoot自定义参数解析器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/mongodb.html" rel="prev" title="MongoDB学习笔记—更新中">
+                MongoDB学习笔记—更新中 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" rel="external nofollow noopener noreferrer" target="_blank">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/2.JPG" alt="dzou">
+            
+              <p class="site-author-name" itemprop="name">dzou</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">87</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ding-zou" target="_blank" title="GitHub" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="dingxiang.zoufubo@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://me.csdn.net/qq_44760332" target="_blank" title="CSDN" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                推荐链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/7a5625fe.html" title="Java并发之AQS源码分析" target="_blank">Java并发之AQS源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/19e1cc75.html" title="Linux基础命令" target="_blank">Linux基础命令</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/8184a8fd.html" title="JDK8新特性——流和Lambda表达式" target="_blank">JDK8新特性——流和Lambda表达式</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://music.163.com/#/user/home?id=564117665" title="网易云音乐" target="_blank" rel="external nofollow noopener noreferrer">网易云音乐</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#全文检索"><span class="nav-number">1.</span> <span class="nav-text">全文检索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#倒排索引"><span class="nav-number">1.1.</span> <span class="nav-text">倒排索引</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lucene"><span class="nav-number">2.</span> <span class="nav-text">Lucene</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#倒排索引存储信息"><span class="nav-number">2.1.</span> <span class="nav-text">倒排索引存储信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引创建"><span class="nav-number">2.2.</span> <span class="nav-text">索引创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引查询"><span class="nav-number">2.3.</span> <span class="nav-text">索引查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#过程"><span class="nav-number">2.4.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Solr"><span class="nav-number">2.5.</span> <span class="nav-text">Solr</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配置"><span class="nav-number">2.5.1.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SolrClient-API调用"><span class="nav-number">2.5.2.</span> <span class="nav-text">SolrClient API调用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ES和Solr区别"><span class="nav-number">2.6.</span> <span class="nav-text">ES和Solr区别</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dzou</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">103.3k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问用户：
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问次数：
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://dzou.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://www.dzou.top/post/solr.html';
+          this.page.identifier = 'post/solr.html';
+          this.page.title = '全文搜索引擎—Solr具体实现和使用';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://dzou.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "topCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "topRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>
+
