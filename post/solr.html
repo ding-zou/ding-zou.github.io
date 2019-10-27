@@ -100,13 +100,9 @@
 <meta property="og:description" content="全文检索使用到了倒排索引，相比与顺序查询：不需要那么多的查询(一个文档一个文档找索引，找到就匹配，需要全部查询，效率很低)，而且可以在索引上定位，出现在哪个文档哪个地方，支持高亮。Solr是java全文检索api工具接口lucene的封装，用于全文检索。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://dzou.wangminwei.top/static/images/8.png">
-<meta property="og:image" content="http://images.cnblogs.com/cnblogs_com/forfuture1978/WindowsLiveWriter/LuceneLucene_FCFA/lucene%20%20zong%20ti%20jia%20gou_2.jpg">
 <meta property="og:image" content="http://dzou.wangminwei.top/static/images/5.png">
-<meta property="og:image" content="https://www.dzou.top/home/dzou/.config/Typora/typora-user-images/1569244970967.png">
 <meta property="og:image" content="http://dzou.wangminwei.top/static/images/6.png">
-<meta property="og:image" content="https://www.dzou.top/home/dzou/.config/Typora/typora-user-images/1569245699512.png">
-<meta property="og:image" content="https://www.dzou.top/home/dzou/.config/Typora/typora-user-images/1569246955242.png">
-<meta property="og:updated_time" content="2019-10-09T16:07:56.167Z">
+<meta property="og:updated_time" content="2019-10-20T09:02:01.175Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="全文搜索引擎—Solr具体实现和使用">
 <meta name="twitter:description" content="全文检索使用到了倒排索引，相比与顺序查询：不需要那么多的查询(一个文档一个文档找索引，找到就匹配，需要全部查询，效率很低)，而且可以在索引上定位，出现在哪个文档哪个地方，支持高亮。Solr是java全文检索api工具接口lucene的封装，用于全文检索。">
@@ -464,16 +460,16 @@
 </blockquote>
 <img src="http://dzou.wangminwei.top/static/images/8.png">
 
-<p><img src="http://images.cnblogs.com/cnblogs_com/forfuture1978/WindowsLiveWriter/LuceneLucene_FCFA/lucene%20%20zong%20ti%20jia%20gou_2.jpg" alt></p>
+
+
 <h2 id="Lucene"><a href="#Lucene" class="headerlink" title="Lucene"></a>Lucene</h2><p><strong>Lucene是一个基于Java的全文检索库，可以看成一个持久层框架，与Lucene索引交互</strong></p>
 <img src="http://dzou.wangminwei.top/static/images/5.png">
 
-<p><img src="/home/dzou/.config/Typora/typora-user-images/1569244970967.png" alt="1569244970967"></p>
 <h3 id="倒排索引存储信息"><a href="#倒排索引存储信息" class="headerlink" title="倒排索引存储信息"></a>倒排索引存储信息</h3><p>左边保存的是一系列字符串，称为<strong>词典</strong>。</p>
 <p>每个字符串都指向包含此字符串的文档(Document)链表(每个节点还包含文档中出现该索引的频率)，此文档链表称为<strong>倒排表</strong>(Posting List)。</p>
 <img src="http://dzou.wangminwei.top/static/images/6.png">
 
-<p><img src="/home/dzou/.config/Typora/typora-user-images/1569245699512.png" alt="1569245699512"></p>
+
 <blockquote>
 <p>如果我们需要查询包含两个索引的文档，只需要将两个文档共有的文档标号连接成链表</p>
 </blockquote>
@@ -502,7 +498,7 @@
 </ul>
 {% qnimg 7.png %}
 
-<p><img src="/home/dzou/.config/Typora/typora-user-images/1569246955242.png" alt="1569246955242"></p>
+
 <ul>
 <li><p><strong>搜索索引库，得到符合的文档以及索引的信息</strong></p>
 </li>
@@ -885,7 +881,7 @@ solrClient.commit(&quot;am_goods&quot;);</code></pre>
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-count">77</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -896,7 +892,7 @@ solrClient.commit(&quot;am_goods&quot;);</code></pre>
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -907,7 +903,7 @@ solrClient.commit(&quot;am_goods&quot;);</code></pre>
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">87</span>
+                  <span class="site-state-item-count">91</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -1044,7 +1040,7 @@ solrClient.commit(&quot;am_goods&quot;);</code></pre>
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">103.3k</span>
+    <span title="Site words total count">110.7k</span>
   
 </div>
 

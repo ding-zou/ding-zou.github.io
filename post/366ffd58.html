@@ -107,7 +107,7 @@
 <meta property="og:image" content="http://dzou.wangminwei.top/static/images/autoconfig/8.png">
 <meta property="og:image" content="http://dzou.wangminwei.top/static/images/autoconfig/7.png">
 <meta property="og:image" content="http://dzou.wangminwei.top/static/images/autoconfig/1.1.png">
-<meta property="og:updated_time" content="2019-08-02T12:11:53.759Z">
+<meta property="og:updated_time" content="2019-10-20T09:03:31.268Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SpringBoot自动配置源码分析及详解">
 <meta name="twitter:description" content="我们都知道一个SpringBoot主配置类只要标注上@SpringBootApplication的注解，Spring就会帮我们自动配置各个组件和实例化Bean，我们来通过源码分析一下SpringBoot自动配置原理。">
@@ -418,7 +418,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.4k字
+                  1.9k字
                 </span>
               
 
@@ -434,7 +434,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  5分
+                  7分
                 </span>
               
             </div>
@@ -635,6 +635,94 @@ return new AutoConfigurationImportSelector.AutoConfigurationEntry(configurations
 <blockquote>
 <p>SpringFactoriesLoader的实现机制跟util包下的 ServiceLoader（SPL）实现机制类似，是一种服务查找机制，为接口查找服务实现类，感兴趣的可以去了解一下</p>
 </blockquote>
+<h3 id="DependsOn注解"><a href="#DependsOn注解" class="headerlink" title="DependsOn注解"></a>DependsOn注解</h3><p><strong>DependsOn注解是一个标注在类上的注解，可以帮助我们定义依赖bean之间的配置注册顺序</strong></p>
+<pre><code class="java">@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface DependsOn {
+
+    String[] value() default {};
+
+}</code></pre>
+<p>比如：</p>
+<p>一般加载：</p>
+<blockquote>
+<p>我们在SearchController中注入了WordConifg这个bean，那么在配置时，会优先配置WordConfig这个类，之后才会继续配置SearchController这个类，然后加载SearchController时会先检查是否在IOC容器中存在WordConfig这个bean，有就加载Controller，没有就报错</p>
+</blockquote>
+<pre><code class="java">@DependsOn({&quot;wordConfig&quot;})
+public class SearchController  {
+
+    @Autowired
+    private WordConfig wordConfig;
+}</code></pre>
+<p>但是如果是这样，IOC就不能正确判断优先加载哪个bean，(<code>Service中相互引用</code>)，但是这两个类中都有两个初始化方法：</p>
+<ol>
+<li>afterPropertiesSet</li>
+<li>或者postConstruct方法(先于afterPropertiesSet执行)</li>
+</ol>
+<pre><code class="java">@Service
+public class A implements InitializingBean{
+    @Autowired
+    private B b;
+    public void afterPropertiesSet(){
+    }
+}
+
+@Service
+public class B implements InitializingBean {
+    @Autowired
+    private A a;
+    public void afterPropertiesSet(){
+    }
+}</code></pre>
+<blockquote>
+<p>如果此时我们想要A的初始化方法<code>afterPropertiesSet</code>先于B的初始化方法执行，那么我们需要使用到@DependsOn注解，</p>
+</blockquote>
+<p>如下：</p>
+<p><strong>标注上@DependsOn({“b”})注解，说明优先加载beanName为b的component</strong></p>
+<pre><code class="java">@Service
+@DependsOn({&quot;b&quot;})
+public class A implements InitializingBean{
+    @Autowired
+    private B b;
+    public void afterPropertiesSet(){
+    }
+}</code></pre>
+<p>我们看看它的源码：</p>
+<p>在<code>AbstractBeanFactory.doGetBean</code>方法中有下面这段代码</p>
+<pre><code class="java">try {
+                final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
+                checkMergedBeanDefinition(mbd, beanName, args);
+
+                // Guarantee initialization of beans that the current bean depends on.
+                String[] dependsOn = mbd.getDependsOn();
+                if (dependsOn != null) {
+                    for (String dep : dependsOn) {
+                        if (isDependent(beanName, dep)) {
+                            throw new BeanCreationException(mbd.getResourceDescription(), beanName,
+                                    &quot;Circular depends-on relationship between &#39;&quot; + beanName + &quot;&#39; and &#39;&quot; + dep + &quot;&#39;&quot;);
+                        }
+                        registerDependentBean(dep, beanName);
+                        try {
+                            getBean(dep);
+                        }
+                        catch (NoSuchBeanDefinitionException ex) {
+                            throw new BeanCreationException(mbd.getResourceDescription(), beanName,
+                                    &quot;&#39;&quot; + beanName + &quot;&#39; depends on missing bean &#39;&quot; + dep + &quot;&#39;&quot;, ex);
+                        }
+                    }
+                }
+
+    ---------------------------------------
+        //上面逻辑结束加载该bean
+        bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);</code></pre>
+<p><strong>分析下这里的逻辑：</strong></p>
+<ol>
+<li>拿到要加载<code>bean1</code>的<code>BeanDefinition</code></li>
+<li>检查该BeanDefinition上是否存在<code>dependson</code>注解</li>
+<li>如果不为空，根据注解中的<code>beanName</code>拿到相应的<code>beans</code>(多个)，注册beans</li>
+<li>依赖bean注册加载结束，执行<code>bean1</code>的加载和注册</li>
+</ol>
 
       
     </div>
@@ -814,7 +902,7 @@ return new AutoConfigurationImportSelector.AutoConfigurationEntry(configurations
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-count">77</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -825,7 +913,7 @@ return new AutoConfigurationImportSelector.AutoConfigurationEntry(configurations
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -836,7 +924,7 @@ return new AutoConfigurationImportSelector.AutoConfigurationEntry(configurations
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">87</span>
+                  <span class="site-state-item-count">91</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -932,7 +1020,7 @@ return new AutoConfigurationImportSelector.AutoConfigurationEntry(configurations
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringBoot自动配置"><span class="nav-number">1.</span> <span class="nav-text">SpringBoot自动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringBootApplication"><span class="nav-number">1.1.</span> <span class="nav-text">@SpringBootApplication</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EnableAutoConfiguration"><span class="nav-number">1.2.</span> <span class="nav-text">@EnableAutoConfiguration</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AutoConfigurationPackage"><span class="nav-number">1.2.1.</span> <span class="nav-text">@AutoConfigurationPackage</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Registrar注册类"><span class="nav-number">1.2.2.</span> <span class="nav-text">Registrar注册类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AutoConfigurationPackages中register方法"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">AutoConfigurationPackages中register方法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#getConstructorArgumentValues"><span class="nav-number">1.2.2.1.1.</span> <span class="nav-text">getConstructorArgumentValues</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#DefaultListableBeanFactory中实现的registerBeanDefinition方法"><span class="nav-number">1.2.2.1.2.</span> <span class="nav-text">DefaultListableBeanFactory中实现的registerBeanDefinition方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AutoConfigurationImportSelector"><span class="nav-number">1.2.3.</span> <span class="nav-text">AutoConfigurationImportSelector</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#getAutoConfigurationEntry方法"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">getAutoConfigurationEntry方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#getCandidateConfigurations"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">getCandidateConfigurations</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#loadFactoryNames"><span class="nav-number">1.2.3.2.1.</span> <span class="nav-text">loadFactoryNames</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringBoot自动配置"><span class="nav-number">1.</span> <span class="nav-text">SpringBoot自动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringBootApplication"><span class="nav-number">1.1.</span> <span class="nav-text">@SpringBootApplication</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EnableAutoConfiguration"><span class="nav-number">1.2.</span> <span class="nav-text">@EnableAutoConfiguration</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AutoConfigurationPackage"><span class="nav-number">1.2.1.</span> <span class="nav-text">@AutoConfigurationPackage</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Registrar注册类"><span class="nav-number">1.2.2.</span> <span class="nav-text">Registrar注册类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AutoConfigurationPackages中register方法"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">AutoConfigurationPackages中register方法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#getConstructorArgumentValues"><span class="nav-number">1.2.2.1.1.</span> <span class="nav-text">getConstructorArgumentValues</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#DefaultListableBeanFactory中实现的registerBeanDefinition方法"><span class="nav-number">1.2.2.1.2.</span> <span class="nav-text">DefaultListableBeanFactory中实现的registerBeanDefinition方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AutoConfigurationImportSelector"><span class="nav-number">1.2.3.</span> <span class="nav-text">AutoConfigurationImportSelector</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#getAutoConfigurationEntry方法"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">getAutoConfigurationEntry方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#getCandidateConfigurations"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">getCandidateConfigurations</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#loadFactoryNames"><span class="nav-number">1.2.3.2.1.</span> <span class="nav-text">loadFactoryNames</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DependsOn注解"><span class="nav-number">1.3.</span> <span class="nav-text">DependsOn注解</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -973,7 +1061,7 @@ return new AutoConfigurationImportSelector.AutoConfigurationEntry(configurations
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">103.3k</span>
+    <span title="Site words total count">110.7k</span>
   
 </div>
 
