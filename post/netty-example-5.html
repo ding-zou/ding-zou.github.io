@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "d1f94239"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java基础,Java,NIO,异步,NonBlockingIO,socket,网络通信,netty，事件驱动模型">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dzou's Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="最近正在学习netty，跟着教程写了一个基于WebSocket的网页聊天室，对netty有了一定的了解，现在正好项目使用到长连接，选用了netty。客户端A(网页)和服务端通过WebSocket进行通信，客户端B和服务端通过Socket通信，把客户端B的数据传输到客户端A，桥梁为服务端">
+<meta name="keywords" content="Java基础,Java,NIO,异步,NonBlockingIO,socket,网络通信,netty，事件驱动模型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="netty学习案例—实现websocket长连接和socket之间通信">
+<meta property="og:url" content="https://www.dzou.top/post/netty-example-5.html">
+<meta property="og:site_name" content="Dzou&#39;s Blog">
+<meta property="og:description" content="最近正在学习netty，跟着教程写了一个基于WebSocket的网页聊天室，对netty有了一定的了解，现在正好项目使用到长连接，选用了netty。客户端A(网页)和服务端通过WebSocket进行通信，客户端B和服务端通过Socket通信，把客户端B的数据传输到客户端A，桥梁为服务端">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/netty/1.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/netty/3.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/netty/2.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/netty/4.png">
+<meta property="og:updated_time" content="2019-10-27T12:35:34.407Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="netty学习案例—实现websocket长连接和socket之间通信">
+<meta name="twitter:description" content="最近正在学习netty，跟着教程写了一个基于WebSocket的网页聊天室，对netty有了一定的了解，现在正好项目使用到长连接，选用了netty。客户端A(网页)和服务端通过WebSocket进行通信，客户端B和服务端通过Socket通信，把客户端B的数据传输到客户端A，桥梁为服务端">
+<meta name="twitter:image" content="http://dzou.wangminwei.top/static/images/netty/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'Q66404JRFM',
+      apiKey: '27dd0e53d330bf96c9826662fc30055a',
+      indexName: 'dzou',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.dzou.top/post/netty-example-5.html">
+
+
+
+
+
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
+  <title>netty学习案例—实现websocket长连接和socket之间通信 | Dzou's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+  
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="bg_content">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dzou's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">No pains,no gains.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/netty-example-5.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dzou">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dzou's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">netty学习案例—实现websocket长连接和socket之间通信</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-26T20:32:01+08:00">
+                2019-10-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/netty/" itemprop="url" rel="index">
+                    <span itemprop="name">netty</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/netty-example-5.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/netty-example-5.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>&nbsp浏览次数：
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.7k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  7分
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  最近正在学习netty，跟着教程写了一个基于WebSocket的网页聊天室，对netty有了一定的了解，现在正好项目使用到长连接，选用了netty。客户端A(网页)和服务端通过WebSocket进行通信，客户端B和服务端通过Socket通信，把客户端B的数据传输到客户端A，桥梁为服务端
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="netty学习—实现websocket长连接和socket之间通信"><a href="#netty学习—实现websocket长连接和socket之间通信" class="headerlink" title="netty学习—实现websocket长连接和socket之间通信"></a>netty学习—实现websocket长连接和socket之间通信</h2><p>最近正在学习netty，跟着教程写了一个基于WebSocket的网页聊天室，对netty有了一定的了解，现在正好项目使用到长连接，选用了netty。</p>
+<p><strong>项目目标：客户端A(网页)和服务端通过WebSocket进行通信，客户端B和服务端通过Socket通信，把客户端B的数据传输到客户端A，桥梁为服务端</strong></p>
+<blockquote>
+<p>Socket服务端监听8090端口，长连接服务端监听8089端口，客户端A连接到8089端口，客户端B连接到8090端口</p>
+</blockquote>
+<img src="http://dzou.wangminwei.top/static/images/netty/1.png">
+
+<blockquote>
+<p>由于是需要对两个端口数据进行不同处理，所以我们创建两个<code>ServerBootstrap</code>，分别绑定两个端口，一个<code>ServerGzhBootstrap</code>处理客户端B和服务端的socket通信；<code>ServerWxQBootstrap</code>处理客户端A和服务端之间的WebSocket长连接通信</p>
+</blockquote>
+<ul>
+<li><strong><code>ServerInitializer</code>，实现<code>ChannelInitializer</code>，负责初始化客户端B和服务端通信的处理器Handler</strong></li>
+<li><strong><code>WebSocketChannelInitializer</code>，实现<code>ChannelInitializer</code>，负责初始化客户端A和服务端长连接通信的处理器Handler</strong></li>
+<li><strong><code>ServerInitializer</code>添加一个自定义<code>SimpleChannelInboundHandler</code>负责处理客户端B和服务端socket通信</strong></li>
+<li><strong><code>WebSocketChannelInitializer</code>添加一个自定义<code>SimpleChannelInboundHandler</code>负责处理客户端A和服务端WebSocket长连接通信</strong></li>
+</ul>
+<blockquote>
+<p>网页聊天室作为客户端A，客户端B通过Socket通信并接收控制台的输入作为通信数据传递给服务端，服务端再传递给客户端A</p>
+</blockquote>
+<p>问题：</p>
+<p>netty中SimpleChannelInboundHandler类的泛型中指定了传入的消息的类型，只能接收这种类型的消息，客户端B发送的String类型消息与客户端A接收的TextWebSocketFrame类型不同，客户端A无法接收。</p>
+<p>解决方法：</p>
+<p>我们把客户端B发送的String类型消息在Socket服务端接收到，要将其发送给客户端A(需要将其封装成TextWebSocketFrame类型才能发送给客户端A)，而且我们就必须要有客户端A的channel，我们才可以调用<code>writeAndFlush</code>方法把数据写入客户端A</p>
+<p><strong>使用什么可以得到客户端A的channel呢？</strong></p>
+<p>那就是<code>ChannelGroup</code>，我们定义一个类保存全部Channel客户端作为全局ChannelGroup，每次有客户端Channel创建(<code>handlerAdded</code>方法)，我们就把它保存到该全局ChannelGroup中，每次channel使用完毕，ChannelGroup会为我们自动删除其中无用的channel，这样我们就可以获取所有的客户端channel</p>
+<p><strong>任何获取到客户端A的channel？</strong></p>
+<p>客户端A和客户端B很大一个区别就是端口号，我们可以通过端口号来判断是客户端A还是客户端B</p>
+<ul>
+<li>全局ChannelGroup</li>
+</ul>
+<pre><code class="java">public class GlobalChannelGroup {
+    public static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+}</code></pre>
+<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><ul>
+<li>服务端启动器</li>
+</ul>
+<pre><code class="java">public class Server {
+    public static void main(String[] args) throws InterruptedException {
+        //两个事件循环组 boss获取连接发送 worker接收处理
+        EventLoopGroup boss = new NioEventLoopGroup();
+        EventLoopGroup worker = new NioEventLoopGroup();
+        try {
+            //server启动器
+            ServerBootstrap serverWxQBootstrap = new ServerBootstrap();
+            ServerBootstrap serverGzhBootstrap = new ServerBootstrap();
+            // 定义组
+            // channel(反射)
+            // 定义处理器(自定义)：连接上channel后执行init
+            System.out.println(&quot;启动server&quot;);
+            serverGzhBootstrap.group(boss, worker).channel(NioServerSocketChannel.class)
+                    .childHandler(new ServerInitializer());
+            serverWxQBootstrap.group(boss, worker).channel(NioServerSocketChannel.class)
+                    .childHandler(new WebSocketChannelInitializer());
+            //绑定端口，同步
+            ChannelFuture wxq = serverGzhBootstrap.bind(8090).sync();
+            ChannelFuture gzh = serverWxQBootstrap.bind(8089).sync();
+            gzh.channel().closeFuture().sync();
+            wxq.channel().closeFuture().sync();
+        } finally {
+            boss.shutdownGracefully();
+            worker.shutdownGracefully();
+        }
+    }
+}</code></pre>
+<ul>
+<li>服务端Socket端口初始化器</li>
+</ul>
+<pre><code class="java">public class ServerInitializer extends ChannelInitializer&lt;SocketChannel&gt; {
+    @Override
+    protected void initChannel(SocketChannel ch) throws Exception {
+        ChannelPipeline pipeline = ch.pipeline();
+        pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE,0,4,0,4));
+        pipeline.addLast(new LengthFieldPrepender(4));
+        pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));//用于解码
+        pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));//用于编码
+        pipeline.addLast(new ServerHandler());//自定义处理器
+    }
+}</code></pre>
+<ul>
+<li>服务端Socket端口通信处理器</li>
+</ul>
+<pre><code class="java">public class ServerHandler extends SimpleChannelInboundHandler&lt;String&gt; {
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+        System.out.println(ctx.channel().remoteAddress()+&quot;,&quot;+msg);
+        ctx.channel().writeAndFlush(&quot;消息已经进入数据库，正在赶往微信墙!&quot;);
+        GlobalChannelGroup.channelGroup.forEach(o-&gt;{
+            //如果端口以8089结尾，说明这个channel是客户端A
+            if (o.localAddress().toString().endsWith(&quot;8089&quot;)){
+                TextWebSocketFrame text = new TextWebSocketFrame(o.remoteAddress() + &quot;发送消息：&quot; + msg + &quot;\n&quot;);
+                o.writeAndFlush(text);
+            }
+        });
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        ctx.close();
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println(ctx.channel().remoteAddress()+&quot;:连接到微信墙模式成功!&quot;);
+        int size = GlobalChannelGroup.channelGroup.size();
+        System.out.println(&quot;当前微信墙连接数:&quot;+(size==0?0:size-1));
+    }
+
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        Channel channel = ctx.channel();
+        GlobalChannelGroup.channelGroup.add(channel);
+    }
+}</code></pre>
+<ul>
+<li>服务端长连接通信端口初始化器</li>
+</ul>
+<pre><code class="java"> public class WebSocketChannelInitializer extends ChannelInitializer&lt;SocketChannel&gt; {
+    @Override
+    protected void initChannel(SocketChannel ch) throws Exception {
+        ChannelPipeline pipeline = ch.pipeline();
+        pipeline.addLast(new HttpServerCodec());
+        pipeline.addLast(new ChunkedWriteHandler());
+        //用于将http数据聚合到一起发送一个请求 fullHttpRequest
+        pipeline.addLast(new HttpObjectAggregator(8192));
+        pipeline.addLast(new WebSocketServerProtocolHandler(&quot;/&quot;));//传入websocket path
+        pipeline.addLast(new TextWebSocketHandler());//传入websocket path
+    }
+}</code></pre>
+<ul>
+<li>服务端长连接通信处理器</li>
+</ul>
+<pre><code class="java">public class TextWebSocketHandler extends SimpleChannelInboundHandler&lt;TextWebSocketFrame&gt; {
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
+        int size = GlobalChannelGroup.channelGroup.size();
+        System.out.println(&quot;当前微信墙连接数:&quot;+(size==0?0:size-1));
+        System.out.println(&quot;收到消息：&quot;+msg.text());
+        Channel channel = ctx.channel();
+        GlobalChannelGroup.channelGroup.forEach(o-&gt;{
+            if (o.localAddress().toString().endsWith(&quot;8090&quot;)){
+                o.writeAndFlush(msg.text());
+            }else {
+                TextWebSocketFrame text = new TextWebSocketFrame(o.remoteAddress() + &quot;发送消息：&quot; + msg.text() + &quot;\n&quot;);
+                o.writeAndFlush(text);
+            }
+        });
+    }
+
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        Channel ch = ctx.channel();
+        GlobalChannelGroup.channelGroup.add(ch);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println(ctx.channel().remoteAddress()+&quot;:离开聊天室&quot;);
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        Channel ch = ctx.channel();
+        System.out.println(ch.remoteAddress()+&quot;：连接到聊天室&quot;);
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        System.out.println(&quot;异常&quot;);
+        ctx.close();
+    }
+}</code></pre>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><blockquote>
+<p>客户端把控制台的标准输入作为参数传入，创建客户端channel时将其发送</p>
+</blockquote>
+<ul>
+<li>客户端B启动器</li>
+</ul>
+<pre><code class="java">public class GzhClient {
+    public static void main(String[] args) {
+        EventLoopGroup eventExecutors = null;
+        ChannelFuture channelFuture = null;
+        try{
+//            while (true) {
+                eventExecutors = new NioEventLoopGroup();
+                Scanner scanner = new Scanner(System.in);
+                String json = scanner.nextLine();
+                Bootstrap bootstrap = new Bootstrap();
+                bootstrap.group(eventExecutors).channel(NioSocketChannel.class)
+                        .handler(new GzhClientInitializer(json));
+                System.out.println(&quot;启动客户端&quot;);
+                channelFuture = bootstrap.connect(&quot;localhost&quot;, 8090).sync();
+//            }
+//            channelFuture.channel().closeFuture().sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            eventExecutors.shutdownGracefully();
+        }
+    }
+}</code></pre>
+<ul>
+<li>客户端B初始化器</li>
+</ul>
+<pre><code class="java">public class GzhClientInitializer extends ChannelInitializer&lt;SocketChannel&gt; {
+    private String json;
+    public GzhClientInitializer(String json){
+        this.json = json;
+    }
+    @Override
+    protected void initChannel(SocketChannel ch) throws Exception {
+        ChannelPipeline pipeline = ch.pipeline();
+        pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE,0,4,0,4));
+        pipeline.addLast(new LengthFieldPrepender(4));
+        pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
+        pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
+        pipeline.addLast(new GzhClientHandler(json));
+    }
+}</code></pre>
+<ul>
+<li>客户端B与服务端Socket通信处理器</li>
+</ul>
+<pre><code class="java">public class GzhClientHandler extends SimpleChannelInboundHandler&lt;String&gt; {
+    private String json;
+    public GzhClientHandler(String json){
+        this.json = json;
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+        System.out.println(&quot;client receive:&quot;+msg);
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println(&quot;进入微信墙模式，清发消息:&quot;);
+        ctx.writeAndFlush(json);
+    }
+}</code></pre>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><ol>
+<li>启动服务端，创建两个客户端B(也就是GzhClient)</li>
+<li>打开聊天室，建立长连接</li>
+<li>两个客户端B从控制台发送消息</li>
+</ol>
+<img src="http://dzou.wangminwei.top/static/images/netty/3.png">
+
+<p>服务端接收到消息，打印出来并准备转发给客户端A(也就是网页聊天室)</p>
+<img src="http://dzou.wangminwei.top/static/images/netty/2.png">
+
+<p>网页聊天室接收到服务端发送的消息</p>
+<img src="http://dzou.wangminwei.top/static/images/netty/4.png">
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    dzou  |  微信：17856530567
+  </li>
+  <li class="post-copyright-link">
+  <strong>本文链接：</strong>
+  <a href="http://www.dzou.top/post/netty-example-5.html" title="netty学习案例—实现websocket长连接和socket之间通信">http://www.dzou.top/post/netty-example-5.html</a>
+</li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noopener noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+  <li class="post-copyright-license">
+    并保留本声明和上方二维码。感谢您的阅读和支持！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/基础/" rel="tag"># 基础</a>
+          
+            <a href="/tags/Web/" rel="tag"># Web</a>
+          
+            <a href="/tags/NIO/" rel="tag"># NIO</a>
+          
+            <a href="/tags/网络通信/" rel="tag"># 网络通信</a>
+          
+            <a href="/tags/netty/" rel="tag"># netty</a>
+          
+            <a href="/tags/异步/" rel="tag"># 异步</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/nonblocking-io.html" rel="next" title="多次尝试的学习—搞懂NIO">
+                <i class="fa fa-chevron-left"></i> 多次尝试的学习—搞懂NIO
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" rel="external nofollow noopener noreferrer" target="_blank">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/2.JPG" alt="dzou">
+            
+              <p class="site-author-name" itemprop="name">dzou</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">92</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ding-zou" target="_blank" title="GitHub" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="dingxiang.zoufubo@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://me.csdn.net/qq_44760332" target="_blank" title="CSDN" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                推荐链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/7a5625fe.html" title="Java并发之AQS源码分析" target="_blank">Java并发之AQS源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/19e1cc75.html" title="Linux基础命令" target="_blank">Linux基础命令</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/8184a8fd.html" title="JDK8新特性——流和Lambda表达式" target="_blank">JDK8新特性——流和Lambda表达式</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://music.163.com/#/user/home?id=564117665" title="网易云音乐" target="_blank" rel="external nofollow noopener noreferrer">网易云音乐</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#netty学习—实现websocket长连接和socket之间通信"><span class="nav-number">1.</span> <span class="nav-text">netty学习—实现websocket长连接和socket之间通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#服务端"><span class="nav-number">1.1.</span> <span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端"><span class="nav-number">1.2.</span> <span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">1.3.</span> <span class="nav-text">测试</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dzou</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">112.4k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问用户：
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问次数：
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://dzou.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://www.dzou.top/post/netty-example-5.html';
+          this.page.identifier = 'post/netty-example-5.html';
+          this.page.title = 'netty学习案例—实现websocket长连接和socket之间通信';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://dzou.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "topCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "topRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>
+

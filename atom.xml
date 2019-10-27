@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.dzou.top/"/>
-  <updated>2019-10-27T09:18:03.232Z</updated>
+  <updated>2019-10-27T12:35:34.407Z</updated>
   <id>https://www.dzou.top/</id>
   
   <author>
@@ -15,6 +15,40 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>netty学习案例—实现websocket长连接和socket之间通信</title>
+    <link href="https://www.dzou.top/post/netty-example-5.html"/>
+    <id>https://www.dzou.top/post/netty-example-5.html</id>
+    <published>2019-10-26T12:32:01.000Z</published>
+    <updated>2019-10-27T12:35:34.407Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="netty学习—实现websocket长连接和socket之间通信"><a href="#netty学习—实现websocket长连接和socket之间通信" class="headerlink" title="netty学习—实现websocket长连接和socket之间通信"></a>netty学习—实现websocket长连接和socket之间通信</h2><p>最近正在学习netty，跟着教程写了一个基于WebSocket的网页聊天室，对netty有了一定的了解，现在正好项目使用到长连接，选用了netty。</p><p><strong>项目目标：客户端A(网页)和服务端通过WebSocket进行通信，客户端B和服务端通过Socket通信，把客户端B的数据传输到客户端A，桥梁为服务端</strong></p><blockquote><p>Socket服务端监听8090端口，长连接服务端监听8089端口，客户端A连接到8089端口，客户端B连接到8090端口</p></blockquote><img src="http://dzou.wangminwei.top/static/images/netty/1.png"><blockquote><p>由于是需要对两个端口数据进行不同处理，所以我们创建两个<code>ServerBootstrap</code>，分别绑定两个端口，一个<code>ServerGzhBootstrap</code>处理客户端B和服务端的socket通信；<code>ServerWxQBootstrap</code>处理客户端A和服务端之间的WebSocket长连接通信</p></blockquote><ul><li><strong><code>ServerInitializer</code>，实现<code>ChannelInitializer</code>，负责初始化客户端B和服务端通信的处理器Handler</strong></li><li><strong><code>WebSocketChannelInitializer</code>，实现<code>ChannelInitializer</code>，负责初始化客户端A和服务端长连接通信的处理器Handler</strong></li><li><strong><code>ServerInitializer</code>添加一个自定义<code>SimpleChannelInboundHandler</code>负责处理客户端B和服务端socket通信</strong></li><li><strong><code>WebSocketChannelInitializer</code>添加一个自定义<code>SimpleChannelInboundHandler</code>负责处理客户端A和服务端WebSocket长连接通信</strong></li></ul><blockquote><p>网页聊天室作为客户端A，客户端B通过Socket通信并接收控制台的输入作为通信数据传递给服务端，服务端再传递给客户端A</p></blockquote><p>问题：</p><p>netty中SimpleChannelInboundHandler类的泛型中指定了传入的消息的类型，只能接收这种类型的消息，客户端B发送的String类型消息与客户端A接收的TextWebSocketFrame类型不同，客户端A无法接收。</p><p>解决方法：</p><p>我们把客户端B发送的String类型消息在Socket服务端接收到，要将其发送给客户端A(需要将其封装成TextWebSocketFrame类型才能发送给客户端A)，而且我们就必须要有客户端A的channel，我们才可以调用<code>writeAndFlush</code>方法把数据写入客户端A</p><p><strong>使用什么可以得到客户端A的channel呢？</strong></p><p>那就是<code>ChannelGroup</code>，我们定义一个类保存全部Channel客户端作为全局ChannelGroup，每次有客户端Channel创建(<code>handlerAdded</code>方法)，我们就把它保存到该全局ChannelGroup中，每次channel使用完毕，ChannelGroup会为我们自动删除其中无用的channel，这样我们就可以获取所有的客户端channel</p><p><strong>任何获取到客户端A的channel？</strong></p><p>客户端A和客户端B很大一个区别就是端口号，我们可以通过端口号来判断是客户端A还是客户端B</p><ul><li>全局ChannelGroup</li></ul><pre><code class="java">public class GlobalChannelGroup {    public static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);}</code></pre><h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><ul><li>服务端启动器</li></ul><pre><code class="java">public class Server {    public static void main(String[] args) throws InterruptedException {        //两个事件循环组 boss获取连接发送 worker接收处理        EventLoopGroup boss = new NioEventLoopGroup();        EventLoopGroup worker = new NioEventLoopGroup();        try {            //server启动器            ServerBootstrap serverWxQBootstrap = new ServerBootstrap();            ServerBootstrap serverGzhBootstrap = new ServerBootstrap();            // 定义组            // channel(反射)            // 定义处理器(自定义)：连接上channel后执行init            System.out.println(&quot;启动server&quot;);            serverGzhBootstrap.group(boss, worker).channel(NioServerSocketChannel.class)                    .childHandler(new ServerInitializer());            serverWxQBootstrap.group(boss, worker).channel(NioServerSocketChannel.class)                    .childHandler(new WebSocketChannelInitializer());            //绑定端口，同步            ChannelFuture wxq = serverGzhBootstrap.bind(8090).sync();            ChannelFuture gzh = serverWxQBootstrap.bind(8089).sync();            gzh.channel().closeFuture().sync();            wxq.channel().closeFuture().sync();        } finally {            boss.shutdownGracefully();            worker.shutdownGracefully();        }    }}</code></pre><ul><li>服务端Socket端口初始化器</li></ul><pre><code class="java">public class ServerInitializer extends ChannelInitializer&lt;SocketChannel&gt; {    @Override    protected void initChannel(SocketChannel ch) throws Exception {        ChannelPipeline pipeline = ch.pipeline();        pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE,0,4,0,4));        pipeline.addLast(new LengthFieldPrepender(4));        pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));//用于解码        pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));//用于编码        pipeline.addLast(new ServerHandler());//自定义处理器    }}</code></pre><ul><li>服务端Socket端口通信处理器</li></ul><pre><code class="java">public class ServerHandler extends SimpleChannelInboundHandler&lt;String&gt; {    @Override    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {        System.out.println(ctx.channel().remoteAddress()+&quot;,&quot;+msg);        ctx.channel().writeAndFlush(&quot;消息已经进入数据库，正在赶往微信墙!&quot;);        GlobalChannelGroup.channelGroup.forEach(o-&gt;{            //如果端口以8089结尾，说明这个channel是客户端A            if (o.localAddress().toString().endsWith(&quot;8089&quot;)){                TextWebSocketFrame text = new TextWebSocketFrame(o.remoteAddress() + &quot;发送消息：&quot; + msg + &quot;\n&quot;);                o.writeAndFlush(text);            }        });    }    @Override    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {        cause.printStackTrace();        ctx.close();    }    @Override    public void channelActive(ChannelHandlerContext ctx) throws Exception {        System.out.println(ctx.channel().remoteAddress()+&quot;:连接到微信墙模式成功!&quot;);        int size = GlobalChannelGroup.channelGroup.size();        System.out.println(&quot;当前微信墙连接数:&quot;+(size==0?0:size-1));    }    @Override    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {        Channel channel = ctx.channel();        GlobalChannelGroup.channelGroup.add(channel);    }}</code></pre><ul><li>服务端长连接通信端口初始化器</li></ul><pre><code class="java"> public class WebSocketChannelInitializer extends ChannelInitializer&lt;SocketChannel&gt; {    @Override    protected void initChannel(SocketChannel ch) throws Exception {        ChannelPipeline pipeline = ch.pipeline();        pipeline.addLast(new HttpServerCodec());        pipeline.addLast(new ChunkedWriteHandler());        //用于将http数据聚合到一起发送一个请求 fullHttpRequest        pipeline.addLast(new HttpObjectAggregator(8192));        pipeline.addLast(new WebSocketServerProtocolHandler(&quot;/&quot;));//传入websocket path        pipeline.addLast(new TextWebSocketHandler());//传入websocket path    }}</code></pre><ul><li>服务端长连接通信处理器</li></ul><pre><code class="java">public class TextWebSocketHandler extends SimpleChannelInboundHandler&lt;TextWebSocketFrame&gt; {    @Override    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {        int size = GlobalChannelGroup.channelGroup.size();        System.out.println(&quot;当前微信墙连接数:&quot;+(size==0?0:size-1));        System.out.println(&quot;收到消息：&quot;+msg.text());        Channel channel = ctx.channel();        GlobalChannelGroup.channelGroup.forEach(o-&gt;{            if (o.localAddress().toString().endsWith(&quot;8090&quot;)){                o.writeAndFlush(msg.text());            }else {                TextWebSocketFrame text = new TextWebSocketFrame(o.remoteAddress() + &quot;发送消息：&quot; + msg.text() + &quot;\n&quot;);                o.writeAndFlush(text);            }        });    }    @Override    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {        Channel ch = ctx.channel();        GlobalChannelGroup.channelGroup.add(ch);    }    @Override    public void channelInactive(ChannelHandlerContext ctx) throws Exception {        System.out.println(ctx.channel().remoteAddress()+&quot;:离开聊天室&quot;);    }    @Override    public void channelActive(ChannelHandlerContext ctx) throws Exception {        Channel ch = ctx.channel();        System.out.println(ch.remoteAddress()+&quot;：连接到聊天室&quot;);    }    @Override    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {        System.out.println(&quot;异常&quot;);        ctx.close();    }}</code></pre><h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><blockquote><p>客户端把控制台的标准输入作为参数传入，创建客户端channel时将其发送</p></blockquote><ul><li>客户端B启动器</li></ul><pre><code class="java">public class GzhClient {    public static void main(String[] args) {        EventLoopGroup eventExecutors = null;        ChannelFuture channelFuture = null;        try{//            while (true) {                eventExecutors = new NioEventLoopGroup();                Scanner scanner = new Scanner(System.in);                String json = scanner.nextLine();                Bootstrap bootstrap = new Bootstrap();                bootstrap.group(eventExecutors).channel(NioSocketChannel.class)                        .handler(new GzhClientInitializer(json));                System.out.println(&quot;启动客户端&quot;);                channelFuture = bootstrap.connect(&quot;localhost&quot;, 8090).sync();//            }//            channelFuture.channel().closeFuture().sync();        } catch (InterruptedException e) {            e.printStackTrace();        } finally {            eventExecutors.shutdownGracefully();        }    }}</code></pre><ul><li>客户端B初始化器</li></ul><pre><code class="java">public class GzhClientInitializer extends ChannelInitializer&lt;SocketChannel&gt; {    private String json;    public GzhClientInitializer(String json){        this.json = json;    }    @Override    protected void initChannel(SocketChannel ch) throws Exception {        ChannelPipeline pipeline = ch.pipeline();        pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE,0,4,0,4));        pipeline.addLast(new LengthFieldPrepender(4));        pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));        pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));        pipeline.addLast(new GzhClientHandler(json));    }}</code></pre><ul><li>客户端B与服务端Socket通信处理器</li></ul><pre><code class="java">public class GzhClientHandler extends SimpleChannelInboundHandler&lt;String&gt; {    private String json;    public GzhClientHandler(String json){        this.json = json;    }    @Override    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {        System.out.println(&quot;client receive:&quot;+msg);    }    @Override    public void channelActive(ChannelHandlerContext ctx) throws Exception {        System.out.println(&quot;进入微信墙模式，清发消息:&quot;);        ctx.writeAndFlush(json);    }}</code></pre><h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><ol><li>启动服务端，创建两个客户端B(也就是GzhClient)</li><li>打开聊天室，建立长连接</li><li>两个客户端B从控制台发送消息</li></ol><img src="http://dzou.wangminwei.top/static/images/netty/3.png"><p>服务端接收到消息，打印出来并准备转发给客户端A(也就是网页聊天室)</p><img src="http://dzou.wangminwei.top/static/images/netty/2.png"><p>网页聊天室接收到服务端发送的消息</p><img src="http://dzou.wangminwei.top/static/images/netty/4.png">]]></content>
+    
+    <summary type="html">
+    
+      最近正在学习netty，跟着教程写了一个基于WebSocket的网页聊天室，对netty有了一定的了解，现在正好项目使用到长连接，选用了netty。客户端A(网页)和服务端通过WebSocket进行通信，客户端B和服务端通过Socket通信，把客户端B的数据传输到客户端A，桥梁为服务端
+    
+    </summary>
+    
+      <category term="netty" scheme="https://www.dzou.top/categories/netty/"/>
+    
+    
+      <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="NIO" scheme="https://www.dzou.top/tags/NIO/"/>
+    
+      <category term="网络通信" scheme="https://www.dzou.top/tags/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1/"/>
+    
+      <category term="netty" scheme="https://www.dzou.top/tags/netty/"/>
+    
+      <category term="异步" scheme="https://www.dzou.top/tags/%E5%BC%82%E6%AD%A5/"/>
+    
+  </entry>
   
   <entry>
     <title>多次尝试的学习—搞懂NIO</title>
@@ -36,9 +70,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="NIO" scheme="https://www.dzou.top/tags/NIO/"/>
     
@@ -68,9 +102,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="编码" scheme="https://www.dzou.top/tags/%E7%BC%96%E7%A0%81/"/>
     
@@ -586,40 +620,6 @@
     <summary type="html">
     
       剑指offer—反转链表.输入一个链表，反转链表后，输出新链表的表头。
-    
-    </summary>
-    
-      <category term="算法" scheme="https://www.dzou.top/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
-    
-      <category term="算法" scheme="https://www.dzou.top/tags/%E7%AE%97%E6%B3%95/"/>
-    
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
-      <category term="牛客" scheme="https://www.dzou.top/tags/%E7%89%9B%E5%AE%A2/"/>
-    
-      <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
-    
-      <category term="剑指offer" scheme="https://www.dzou.top/tags/%E5%89%91%E6%8C%87offer/"/>
-    
-      <category term="笔试" scheme="https://www.dzou.top/tags/%E7%AC%94%E8%AF%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>牛客网算法编程题 剑指offer—二进制数中的1的个数 解答</title>
-    <link href="https://www.dzou.top/post/binary-one-counts.html"/>
-    <id>https://www.dzou.top/post/binary-one-counts.html</id>
-    <published>2019-09-04T08:29:32.000Z</published>
-    <updated>2019-09-12T10:54:27.515Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="剑指offer—二进制数中的1的个数"><a href="#剑指offer—二进制数中的1的个数" class="headerlink" title="剑指offer—二进制数中的1的个数"></a>剑指offer—二进制数中的1的个数</h2><h4 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h4><p>输入一个整数，输出该数二进制表示中1的个数。其中负数用补码表示。</p><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p><strong>依次无符号右移判断最右位是否为1，为1累加，当右移至0后结束循环</strong></p><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><h4 id="需要循环二进制位数"><a href="#需要循环二进制位数" class="headerlink" title="需要循环二进制位数"></a>需要循环二进制位数</h4><pre><code class="java">public class Solution {    public int NumberOf1(int n) {        int m = 0;        /*计算机负数存储的是补码        if(n&lt;0){            n = ~n + 1;        }*/        while(n!=0){            if((n&amp;1)!=0){                m++;            }            n = n&gt;&gt;&gt;1;        }        return m;    }}</code></pre><h4 id="只需要循环1的个数次循环"><a href="#只需要循环1的个数次循环" class="headerlink" title="只需要循环1的个数次循环"></a>只需要循环1的个数次循环</h4><blockquote><p>优化后方法：一个数减去1的话，它的<code>最后一个二进制1位</code>将由<code>1</code>变为<code>0</code>，它后面的数本来都为0，将由<code>0</code>全部变为<code>1</code>，相当于最后一个<code>1位</code>到最后的二进制取反了，再把它<code>与上自己原来的值(减一之前)</code>则就是把从<code>最后一个1位</code>到最后全变为0，此时最后一个<code>1位</code>将为原数倒数第二个<code>1位</code></p><p>例子：</p><p>10110</p><p>减一后：</p><p>10101</p><p>与上10110后：</p><p>10100</p><p>循环遍历次数就是1的个数</p></blockquote><pre><code class="java">public class Solution {    public int NumberOf1(int n) {        int m = 0;        while(n!=0){            m++;            n = (n-1)&amp;n;        }        return m;    }}</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      剑指offer—二进制数中的1的个数.输入一个整数，输出该数二进制表示中1的个数。其中负数用补码表示。
     
     </summary>
     
