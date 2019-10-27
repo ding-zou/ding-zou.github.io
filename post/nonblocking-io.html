@@ -95,7 +95,7 @@
 <meta name="keywords" content="Java基础,Java,NIO,异步,NonBlockingIO,socket,网络通信">
 <meta property="og:type" content="article">
 <meta property="og:title" content="多次尝试的学习—搞懂NIO">
-<meta property="og:url" content="https://www.dzou.top/post/nio.html">
+<meta property="og:url" content="https://www.dzou.top/post/nonblocking-io.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="io面向流编程，只能作为输入或者输出流的一种，是同步阻塞的，每一个连接过来都要创建一个线程去处理，线程上下文切换开销很大，造成了很大的瓶颈；于是有了线程池实现的伪阻塞IO，一定程度解决了线程创建过多的问题，但是没有从根本上解决阻塞的问题，并且线程过多而线程池过小时也会造成很大的瓶颈；NIO由原来的阻塞读写（占用线程）变成了单线程轮询事件，找到可以进行读写的网络描述符进行读写。除了事件的轮询是阻塞的">
 <meta property="og:locale" content="zh-Hans">
@@ -113,7 +113,7 @@
 <meta property="og:image" content="http://dzou.wangminwei.top/static/images/nio/12.png">
 <meta property="og:image" content="http://dzou.wangminwei.top/static/images/nio/13.png">
 <meta property="og:image" content="http://dzou.wangminwei.top/static/images/nio/14.png">
-<meta property="og:updated_time" content="2019-10-27T09:02:18.719Z">
+<meta property="og:updated_time" content="2019-10-27T09:18:03.232Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多次尝试的学习—搞懂NIO">
 <meta name="twitter:description" content="io面向流编程，只能作为输入或者输出流的一种，是同步阻塞的，每一个连接过来都要创建一个线程去处理，线程上下文切换开销很大，造成了很大的瓶颈；于是有了线程池实现的伪阻塞IO，一定程度解决了线程创建过多的问题，但是没有从根本上解决阻塞的问题，并且线程过多而线程池过小时也会造成很大的瓶颈；NIO由原来的阻塞读写（占用线程）变成了单线程轮询事件，找到可以进行读写的网络描述符进行读写。除了事件的轮询是阻塞的">
@@ -147,7 +147,7 @@
 
 
 
-  <link rel="canonical" href="https://www.dzou.top/post/nio.html">
+  <link rel="canonical" href="https://www.dzou.top/post/nonblocking-io.html">
 
 
 
@@ -326,7 +326,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/nio.html">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/nonblocking-io.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="dzou">
@@ -396,8 +396,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/post/nio.html#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/nio.html" itemprop="commentCount"></span>
+                <a href="/post/nonblocking-io.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/nonblocking-io.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1238,7 +1238,7 @@ public class Server {
   </li>
   <li class="post-copyright-link">
   <strong>本文链接：</strong>
-  <a href="http://www.dzou.top/post/nio.html" title="多次尝试的学习—搞懂NIO">http://www.dzou.top/post/nio.html</a>
+  <a href="http://www.dzou.top/post/nonblocking-io.html" title="多次尝试的学习—搞懂NIO">http://www.dzou.top/post/nonblocking-io.html</a>
 </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -1258,9 +1258,9 @@ public class Server {
           
             <a href="/tags/Java/" rel="tag"># Java</a>
           
-            <a href="/tags/Web/" rel="tag"># Web</a>
-          
             <a href="/tags/基础/" rel="tag"># 基础</a>
+          
+            <a href="/tags/Web/" rel="tag"># Web</a>
           
             <a href="/tags/NIO/" rel="tag"># NIO</a>
           
@@ -1710,8 +1710,8 @@ public class Server {
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'https://www.dzou.top/post/nio.html';
-          this.page.identifier = 'post/nio.html';
+          this.page.url = 'https://www.dzou.top/post/nonblocking-io.html';
+          this.page.identifier = 'post/nonblocking-io.html';
           this.page.title = '多次尝试的学习—搞懂NIO';
         };
         var d = document, s = d.createElement('script');

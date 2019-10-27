@@ -497,7 +497,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/nio.html">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/nonblocking-io.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="dzou">
@@ -516,7 +516,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/post/nio.html" itemprop="url">多次尝试的学习—搞懂NIO</a></h2>
+                <a class="post-title-link" href="/post/nonblocking-io.html" itemprop="url">多次尝试的学习—搞懂NIO</a></h2>
         
 
         <div class="post-meta">
@@ -569,8 +569,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/post/nio.html#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/nio.html" itemprop="commentCount"></span>
+                <a href="/post/nonblocking-io.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/nonblocking-io.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -633,7 +633,7 @@
           io面向流编程，只能作为输入或者输出流的一种，是同步阻塞的，每一个连接过来都要创建一个线程去处理，线程上下文切换开销很大，造成了很大的瓶颈；于是有了线程池实现的伪阻塞IO，一定程度解决了线程创建过多的问题，但是没有从根本上解决阻塞的问题，并且线程过多而线程池过小时也会造成很大的瓶颈；NIO由原来的阻塞读写（占用线程）变成了单线程轮询事件，找到可以进行读写的网络描述符进行读写。除了事件的轮询是阻塞的（没有可干的事情必须要阻塞），剩余的I/O操作都是纯CPU操作，没有必要开启多线程
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/post/nio.html">
+            <a class="btn" href="/post/nonblocking-io.html">
               阅读全文 &raquo;
             </a>
           </div>
