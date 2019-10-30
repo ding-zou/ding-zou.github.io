@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.dzou.top/"/>
-  <updated>2019-10-27T12:35:34.407Z</updated>
+  <updated>2019-10-30T15:48:27.415Z</updated>
   <id>https://www.dzou.top/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>动态规划—搞懂01背包和完全背包算法</title>
+    <link href="https://www.dzou.top/post/napzack-algorithm.html"/>
+    <id>https://www.dzou.top/post/napzack-algorithm.html</id>
+    <published>2019-10-30T08:29:32.000Z</published>
+    <updated>2019-10-30T15:48:27.415Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="01背包问题"><a href="#01背包问题" class="headerlink" title="01背包问题"></a>01背包问题</h2><p><strong>有N件物品和一个容量为V的背包。第i件物品的费用是v[i]，价值是w[i]。求解将哪些物品装入背包可使价值总和最大。</strong></p><p><strong>要么拿，要么不拿</strong></p><ul><li>dp解决方法</li></ul><img src="http://dzou.wangminwei.top/static/images/algorithm/28.png"><blockquote><p>关键就在于找到它的最优子问题，物品为N个，体积为V，我们需要取二维状态的dp</p><p><code>将前i个物品放入体积为j的背包中可以获得的最大价值</code>-&gt;<code>dp[i][j]</code></p><p>只有单件物品就只需要考虑放或者不放，如果放入，体积就需要减去v[i]，价值就加上w[i]</p></blockquote><img src="http://dzou.wangminwei.top/static/images/algorithm/29.png"><p><strong>比如我们想要知道前5个物品放入体积为9的背包中最大价值是多少，物品id为0-4</strong></p><blockquote><p>也就是求<code>dp[4][9]，</code>需要知道<code>dp[3][j]</code>,<code>0&lt;j&lt;V</code>,然后再对物品4进行选取，根据01背包状态转移方程计算dp[4][9]最大价值；</p><p>要知道<code>dp[3][j]</code>,我们就要知道<code>dp[2][j]</code>,再对物品3进行选取，根据01背包状态转移方程计算<code>dp[3][j]</code>最大价值；</p><p>要知道<code>dp[2][j]</code>,我们就要知道<code>dp[1][j]</code>,再对物品3进行选取，根据01背包状态转移方程计算<code>dp[2][j]</code>最大价值；</p><p>要知道<code>dp[1][j]</code>,我们就要知道<code>dp[0][j]</code>,再对物品3进行选取，根据01背包状态转移方程计算<code>dp[0][j]</code>最大价值；</p><p>把<code>dp[i][0]</code>初始化为0(0&lt;=i&lt;N)，体积为0最大价值为0</p></blockquote><img src="http://dzou.wangminwei.top/static/images/algorithm/31.png"><ul><li>计算流程</li></ul><img src="http://dzou.wangminwei.top/static/images/algorithm/30.png"><pre><code class="java">public int napzack01_first(int []w,int []v,int V,int N){        int [][]dp = new int[N][V+1];        for(int i=0;i&lt;N;i++)            for(int j=1;j&lt;=V;j++)                if(j&gt;=v[i])                    if(i==0) dp[0][j] = w[i];                    else dp[i][j] = Math.max(dp[i-1][j],dp[i-1][j-v[i]]+w[i]);                else                    dp[i][j] = dp[i-1][j];        return dp[N-1][V];    }</code></pre><p><strong>第一次优化：二维数组优化为一维数组</strong></p><p>我们可以从表格发现，当前行的数据只与上一行的数据有关，所以我们只要每次循环后确保数组保存了上一次计算的结果</p><blockquote><p>问题以及解决：</p><p>我们从当前循环来看，计算体积为<code>5</code>的dp值最多只需要<code>0-4</code>的上一次计算的结果，如果顺序从小到大更新的话，我们计算<code>5</code>时，此时之前的<code>0-4</code>的值都被更新了，不是上一次计算的结果(而是当前计算的结果)，而后面的需要上一次前面的数据；所以我们不能从头开始，而应该从最后开始更新，从后往前，这样可以保证优先更新体积大的值而让体积小的值保留上一次就算的结果。</p></blockquote><pre><code class="java">//1维01背包    public int napzack01_second(int []w,int []v,int V,int N){        int []dp = new int[V+1];        for(int i=0;i&lt;N;i++)            for(int j=V;j&gt;=0;j--)                if(j&gt;=v[i])                    if(i==0) dp[j] = w[i];                    else dp[j] = Math.max(dp[j],dp[j-v[i]]+w[i]);        return dp[V];    }</code></pre><p><strong>全部放满01背包：</strong></p><blockquote><p>我们之前讨论了一种是不要求全部放满的01背包，我们再看如果要求全部放满会有什么不同</p></blockquote><p>如果我们把物品表换成这样：</p><img src="http://dzou.wangminwei.top/static/images/algorithm/32.png"><p>如果我们想要全部放满，就拿不到物品4，即使它价值50，但是我们想要的是要把背包装满，这就涉及到初始化时的问题</p><blockquote><p>我们需要为每一次循环放入物品到j的背包中设置一个能否放满的标志，每次判断这个标志来检查当前物品放入能否使得背包装满</p></blockquote><p><strong>我们只需要在初始化时把一维数组的<code>1-V</code>初始化为<code>-1</code>，表示当前0个物品放入背包，不能装满这些体积的背包，把数组<code>dp[0]</code>正常设置为0，表示体积为0的背包可以被0个物品装满；然后我们在计算数组值时先判断<code>dp[j-v[i]]</code>是否为-1，为-1说明当前物品放入无法装满背包，则不进行修改数组的值；只有不为-1才能继续放入，说明当前物品放入可以放满体积为<code>j</code>的背包</strong></p><img src="http://dzou.wangminwei.top/static/images/algorithm/33.png"><pre><code class="java">//全部放满01背包    public int napzack01_fourth(int []w,int []v,int V,int N){        int []dp = new int[V+1];        for(int i=0;i&lt;dp.length;i++){            dp[i] = -1;        }        dp[0] = 0;        for(int i=0;i&lt;N;i++)            for(int j=V;j&gt;=0;j--)                if(j&gt;=v[i]&amp;&amp;dp[j-v[i]]!=-1)                    dp[j] = Math.max(dp[j],dp[j-v[i]]+w[i]);        return dp[V];    }</code></pre><h2 id="完全背包"><a href="#完全背包" class="headerlink" title="完全背包"></a>完全背包</h2><p><strong>有N件物品（每个物品都有无限个）和一个容量为V的背包。第i件物品的费用是v[i]，价值是w[i]。求解将哪些物品（每个物品都可以装多个）装入背包可使价值总和最大。</strong></p><ul><li>优化前</li></ul><p>我们每种物品最多有选取<code>V/v[i]</code>个，我们可以再多一次循环，计算选取<code>0-V/v[i]</code>个的最大价值</p><blockquote><p>时间复杂度：每种物品有V/v[i]个，共需要求解N<em>V中状态，时间为O（NV</em>Σ(V/v[i])）</p><p>空间复杂度：O(N)</p></blockquote><p>状态转移方程：</p><p><code>dp[j] = max{dp[j-1],dp[j-k*v[i]]+k*w[i]}</code></p><p><code>code</code></p><pre><code class="java">//完全背包    //状态转移方程 dp[j] = dp[j-k*v[i]]+k*w[i]    public int napzack_complete(int []w,int []v,int N,int V){        int dp[] = new int [V+1];        for(int i=0;i&lt;N;i++)            for(int j=0;j&lt;=V;j++)                for(int k=0;k*v[i]&lt;=j;k++)                    dp[j] = Math.max(dp[j-1],dp[j-k*v[i]]+k*w[i]);        return dp[V];    }</code></pre><ul><li>优化为01背包</li></ul><p><strong>我们记得在优化01背包时，我们为了获取到上一次计算的值，我们选择从后往前计算，但是完全背包<code>正好相反，这才是它此昂要的</code>，完全背包因为需要累计多个同一物品的值，前一次计算可能是1个、2个等等，下一次j变化了以后，计算的可能是3个或者更多，所以我们需要保存实时计算出来的多个同一物品的最大价值，我们选取从前往后的顺序，这样每次前面计算的我们都可以在j增大以后累加获得更多个同一物品的最大价值(根据状态转移方程可知，我们计算一个位置的最大价值只需要当前位置的上一次计算的值和当前次循环内更前面的值)</strong></p><p>例如：</p><p>在我们计算第2个物品dp[5]的时候，物品2的体积为2，价值为5，我们需要上一次计算也就是第一个物品的dp[5]的值，还需要dp[5-2]=dp[3]的值，dp[3]我们在本次循环内计算dp[5]之前就已经算过了，dp[3]可能选了一个物品2，也可能没有选，我们计算dp[5]就根据这个dp[3]的大小在进行选取，就可以进行多次选取。</p><p><code>根本上就是把一类物品转化为多个一种物品</code></p><blockquote><p>我们不需要体积从0开始计算。而只需要在每个物品的循环内从当前物品的最小个数1开始，也就是<code>v[i]</code>（不需要0个是因为初始化的时候已经把体积为0的dp值设置为0了）</p></blockquote><p>参数依然使用</p><img src="http://dzou.wangminwei.top/static/images/algorithm/29.png"><img src="http://dzou.wangminwei.top/static/images/algorithm/34.png"><p><code>code</code></p><pre><code class="java">//把完全背包优化为01背包    public int napzack_comlete01(int []w,int []v,int N,int V){        int dp[] = new int[V+1];        for(int i=0;i&lt;N;i++)            for(int j=v[i];j&lt;=V;j++)                dp[j] = Math.max(dp[j],dp[j-v[i]]+w[i]);        return dp[V];    }</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      有N件物品和一个容量为V的背包。第i件物品的费用是v[i]，价值是w[i]。求解将哪些物品装入背包可使价值总和最大。最优子问题就是：将前i个物品放入体积为j的背包中可以获得的最大价值。
+    
+    </summary>
+    
+      <category term="算法" scheme="https://www.dzou.top/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
+    
+      <category term="算法" scheme="https://www.dzou.top/tags/%E7%AE%97%E6%B3%95/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="动态规划" scheme="https://www.dzou.top/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"/>
+    
+  </entry>
   
   <entry>
     <title>netty学习案例—实现websocket长连接和socket之间通信</title>
@@ -36,9 +64,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="NIO" scheme="https://www.dzou.top/tags/NIO/"/>
     
@@ -70,9 +98,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="NIO" scheme="https://www.dzou.top/tags/NIO/"/>
     
@@ -102,9 +130,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="编码" scheme="https://www.dzou.top/tags/%E7%BC%96%E7%A0%81/"/>
     
@@ -218,9 +246,9 @@
       <category term="数据库" scheme="https://www.dzou.top/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
     
-      <category term="MongoDB" scheme="https://www.dzou.top/tags/MongoDB/"/>
-    
       <category term="数据库" scheme="https://www.dzou.top/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+      <category term="MongoDB" scheme="https://www.dzou.top/tags/MongoDB/"/>
     
       <category term="NoSql" scheme="https://www.dzou.top/tags/NoSql/"/>
     
@@ -586,40 +614,6 @@
     <summary type="html">
     
       剑指offer—斐波那契数列.斐波那契数，通常用 F(n) 表示，形成的序列称为斐波那契数列。该数列由 0 和 1 开始，后面的每一项数字都是前面两项数字的和。
-    
-    </summary>
-    
-      <category term="算法" scheme="https://www.dzou.top/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
-    
-      <category term="算法" scheme="https://www.dzou.top/tags/%E7%AE%97%E6%B3%95/"/>
-    
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
-      <category term="牛客" scheme="https://www.dzou.top/tags/%E7%89%9B%E5%AE%A2/"/>
-    
-      <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
-    
-      <category term="剑指offer" scheme="https://www.dzou.top/tags/%E5%89%91%E6%8C%87offer/"/>
-    
-      <category term="笔试" scheme="https://www.dzou.top/tags/%E7%AC%94%E8%AF%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>牛客网算法编程题 剑指offer—反转链表 解答</title>
-    <link href="https://www.dzou.top/post/reverse-linked-list.html"/>
-    <id>https://www.dzou.top/post/reverse-linked-list.html</id>
-    <published>2019-09-05T08:29:32.000Z</published>
-    <updated>2019-09-12T10:55:18.753Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="剑指offer—反转链表"><a href="#剑指offer—反转链表" class="headerlink" title="剑指offer—反转链表"></a>剑指offer—反转链表</h2><h3 id="反转链表一"><a href="#反转链表一" class="headerlink" title="反转链表一"></a>反转链表一</h3><h4 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h4><p>输入一个链表，反转链表后，输出新链表的表头。</p><h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><ul><li>方法一：使用辅助空间遍历链表并保存，再次循环翻转插入链表</li></ul><blockquote><p>时间复杂度和空间复杂度都较大，不推荐使用</p></blockquote><ul><li><strong>方法二：迭代一次链表，用指针保存前一个和后一个的引用，然后通过迭代反转链表指向</strong></li></ul><blockquote><p>时间复杂度O(N)，空间复杂度O(1)，我们就使用该方法</p></blockquote><h4 id="执行翻转一个节点的关键代码"><a href="#执行翻转一个节点的关键代码" class="headerlink" title="执行翻转一个节点的关键代码"></a>执行翻转一个节点的关键代码</h4><p>在看具体算法之前，有必要先弄清楚链接反转的原理以及需要哪些指针。举例而言，有一个三个不同结点组成的链表 <code>A → B → C</code>，需要反转结点中的链接成为 <code>A ← B ← C</code>。</p><p>假设我们有两个指针，一个指向结点<code>A</code>，一个指向结点<code>B</code>。 分别记为 <code>pre</code> 和 <code>head</code>。则可以用这两个指针简单地实现 A 和 B 之间的链接反转：</p><pre><code class="java">ListNode node = head.next;//保存下一个节点的引用(用于把head往后移动)head.next = pre;//把head next节点指向前驱节点pre = head;//把pre移动到head节点上head = node;//把head节点移动到下一个节点上</code></pre><blockquote><p>只需要迭代执行该过程，整个链表就被翻转了</p></blockquote><img src="http://dzou.wangminwei.top/static/images/algorithm/9.png"><h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><pre><code class="java">/*public class ListNode {    int val;    ListNode next = null;    ListNode(int val) {        this.val = val;    }}*/public class Solution {    public ListNode ReverseList(ListNode head) {        ListNode pre = null;        while(head!=null){            ListNode node = head.next;            head.next = pre;            pre = head;            head = node;        }        return pre;    }}</code></pre><h3 id="反转链表二"><a href="#反转链表二" class="headerlink" title="反转链表二"></a>反转链表二</h3><h4 id="题目描述-1"><a href="#题目描述-1" class="headerlink" title="题目描述"></a>题目描述</h4><p>反转从位置 m 到 n 的链表。请使用一趟扫描完成反转。</p><p>说明:<br>1 ≤ m ≤ n ≤ 链表长度。</p><pre><code>示例:输入: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, m = 2, n = 4输出: 1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;NULL</code></pre><h4 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h4><blockquote><p>根据要求只循环一次，那就只能使用第一题的思想，当然可以使用O(1)的辅助空间</p></blockquote><ul><li><p>反转节点还是使用上面的思想，只是我们需要在反转节点结束后把m前面和n后面的节点调整到正确的位置</p></li><li><p>注意我们要引入两个额外指针，分别称为 <code>startPre</code> 和 <code>startNext</code>。<code>startNext</code> 指针指向从链表头起的第<code>m</code>个结点，此结点是反转后链表的尾部。<code>startPre</code> 指针指向第 <code>m</code> 个结点的前一个结点，此结点是新链表的头部。</p></li></ul><ul><li>两个指针都已经到达最终位置。我们完成了子链表的反转工作。然而，还有一些链接需要调整。下图展示了利用 <code>startPre</code> 和 <code>startNext</code> 指针完成链接调整的过程。</li></ul><img src="http://dzou.wangminwei.top/static/images/algorithm/10.png"><h4 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h4><pre><code class="java">/** * Definition for singly-linked list. * public class ListNode { *     int val; *     ListNode next; *     ListNode(int x) { val = x; } * } */class Solution {    public ListNode reverseBetween(ListNode head, int m, int n) {        if(head==null){            return null;        }        ListNode h,pre,startPre,startNext;        h = startNext = head; pre = null; startPre = new ListNode(0);//startPre初始化，为空的话无法调整位置        int i = 1;        while(i&lt;=n+1){//前n次翻转，第n+1次调整m、n外面的节点位置            if(i&lt;=m){                pre = head;                head = head.next;                if(i&lt;m){                    startPre = pre;//保存startPre位置                    startNext = startNext.next;//保存startNext位置                }            }else if(i&lt;=n){//开始翻转                ListNode node = head.next;                head.next = pre;                pre = head;                head = node;            }else{//调整位置                startPre.next = pre;//指向开始反转的前一个节点，这个节点就是新的反转链表的前面一个节点                startNext.next = head;//指向开始反转的第一个节点，反转结束需要与链表末尾连接            }            i++;        }        return m==1?pre:h;//当m==1时，第一个节点就被反转，pre节点就是反转链表的头结点，否则h保存的head节点就是头结点        // if(head==null){        //     return null;        // }        // final ListNode h = head;        // ListNode pre = null;        // ListNode startPre = new ListNode(0);        // ListNode startNext = head;        // int i = 1;        // while(head!=null){        //     if(i&lt;m){        //         pre = head;        //         head = head.next;        //         if(i&lt;m){        //             // startPre = pre;        //             startNext = startNext.next;        //         }else if(i==m){        //             startPre = pre;        //         }        //     }else if(i&lt;=n){        //         final ListNode node = head.next;        //         head.next = pre;        //         startPre.next = head;        //         pre = head;        //         head = node;        //     }else{        //         startNext.next = head;        //         head = head.next;        //     }        //     i++;        // }        // return h;    }}</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      剑指offer—反转链表.输入一个链表，反转链表后，输出新链表的表头。
     
     </summary>
     

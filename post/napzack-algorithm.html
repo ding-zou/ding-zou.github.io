@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "d1f94239"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,算法,Java基础,背包算法,01背包,完全背包,动态规划">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dzou's Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="有N件物品和一个容量为V的背包。第i件物品的费用是v[i]，价值是w[i]。求解将哪些物品装入背包可使价值总和最大。最优子问题就是：将前i个物品放入体积为j的背包中可以获得的最大价值。">
+<meta name="keywords" content="Java,算法,Java基础,背包算法,01背包,完全背包,动态规划">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动态规划—搞懂01背包和完全背包算法">
+<meta property="og:url" content="https://www.dzou.top/post/napzack-algorithm.html">
+<meta property="og:site_name" content="Dzou&#39;s Blog">
+<meta property="og:description" content="有N件物品和一个容量为V的背包。第i件物品的费用是v[i]，价值是w[i]。求解将哪些物品装入背包可使价值总和最大。最优子问题就是：将前i个物品放入体积为j的背包中可以获得的最大价值。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/algorithm/28.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/algorithm/29.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/algorithm/31.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/algorithm/30.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/algorithm/32.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/algorithm/33.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/algorithm/29.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/algorithm/34.png">
+<meta property="og:updated_time" content="2019-10-30T15:48:27.415Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="动态规划—搞懂01背包和完全背包算法">
+<meta name="twitter:description" content="有N件物品和一个容量为V的背包。第i件物品的费用是v[i]，价值是w[i]。求解将哪些物品装入背包可使价值总和最大。最优子问题就是：将前i个物品放入体积为j的背包中可以获得的最大价值。">
+<meta name="twitter:image" content="http://dzou.wangminwei.top/static/images/algorithm/28.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'Q66404JRFM',
+      apiKey: '27dd0e53d330bf96c9826662fc30055a',
+      indexName: 'dzou',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.dzou.top/post/napzack-algorithm.html">
+
+
+
+
+
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
+  <title>动态规划—搞懂01背包和完全背包算法 | Dzou's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+  
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="bg_content">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dzou's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">No pains,no gains.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/napzack-algorithm.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dzou">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dzou's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">动态规划—搞懂01背包和完全背包算法</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-30T16:29:32+08:00">
+                2019-10-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/napzack-algorithm.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/napzack-algorithm.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>&nbsp浏览次数：
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.9k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  7分
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  有N件物品和一个容量为V的背包。第i件物品的费用是v[i]，价值是w[i]。求解将哪些物品装入背包可使价值总和最大。最优子问题就是：将前i个物品放入体积为j的背包中可以获得的最大价值。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="01背包问题"><a href="#01背包问题" class="headerlink" title="01背包问题"></a>01背包问题</h2><p><strong>有N件物品和一个容量为V的背包。第i件物品的费用是v[i]，价值是w[i]。求解将哪些物品装入背包可使价值总和最大。</strong></p>
+<p><strong>要么拿，要么不拿</strong></p>
+<ul>
+<li>dp解决方法</li>
+</ul>
+<img src="http://dzou.wangminwei.top/static/images/algorithm/28.png">
+
+<blockquote>
+<p>关键就在于找到它的最优子问题，物品为N个，体积为V，我们需要取二维状态的dp</p>
+<p><code>将前i个物品放入体积为j的背包中可以获得的最大价值</code>-&gt;<code>dp[i][j]</code></p>
+<p>只有单件物品就只需要考虑放或者不放，如果放入，体积就需要减去v[i]，价值就加上w[i]</p>
+</blockquote>
+<img src="http://dzou.wangminwei.top/static/images/algorithm/29.png">
+
+<p><strong>比如我们想要知道前5个物品放入体积为9的背包中最大价值是多少，物品id为0-4</strong></p>
+<blockquote>
+<p>也就是求<code>dp[4][9]，</code>需要知道<code>dp[3][j]</code>,<code>0&lt;j&lt;V</code>,然后再对物品4进行选取，根据01背包状态转移方程计算dp[4][9]最大价值；</p>
+<p>要知道<code>dp[3][j]</code>,我们就要知道<code>dp[2][j]</code>,再对物品3进行选取，根据01背包状态转移方程计算<code>dp[3][j]</code>最大价值；</p>
+<p>要知道<code>dp[2][j]</code>,我们就要知道<code>dp[1][j]</code>,再对物品3进行选取，根据01背包状态转移方程计算<code>dp[2][j]</code>最大价值；</p>
+<p>要知道<code>dp[1][j]</code>,我们就要知道<code>dp[0][j]</code>,再对物品3进行选取，根据01背包状态转移方程计算<code>dp[0][j]</code>最大价值；</p>
+<p>把<code>dp[i][0]</code>初始化为0(0&lt;=i&lt;N)，体积为0最大价值为0</p>
+</blockquote>
+<img src="http://dzou.wangminwei.top/static/images/algorithm/31.png">
+
+<ul>
+<li>计算流程</li>
+</ul>
+<img src="http://dzou.wangminwei.top/static/images/algorithm/30.png">
+
+<pre><code class="java">public int napzack01_first(int []w,int []v,int V,int N){
+        int [][]dp = new int[N][V+1];
+        for(int i=0;i&lt;N;i++)
+            for(int j=1;j&lt;=V;j++)
+                if(j&gt;=v[i])
+                    if(i==0) dp[0][j] = w[i];
+                    else dp[i][j] = Math.max(dp[i-1][j],dp[i-1][j-v[i]]+w[i]);
+                else
+                    dp[i][j] = dp[i-1][j];
+        return dp[N-1][V];
+    }</code></pre>
+<p><strong>第一次优化：二维数组优化为一维数组</strong></p>
+<p>我们可以从表格发现，当前行的数据只与上一行的数据有关，所以我们只要每次循环后确保数组保存了上一次计算的结果</p>
+<blockquote>
+<p>问题以及解决：</p>
+<p>我们从当前循环来看，计算体积为<code>5</code>的dp值最多只需要<code>0-4</code>的上一次计算的结果，如果顺序从小到大更新的话，我们计算<code>5</code>时，此时之前的<code>0-4</code>的值都被更新了，不是上一次计算的结果(而是当前计算的结果)，而后面的需要上一次前面的数据；所以我们不能从头开始，而应该从最后开始更新，从后往前，这样可以保证优先更新体积大的值而让体积小的值保留上一次就算的结果。</p>
+</blockquote>
+<pre><code class="java">//1维01背包
+    public int napzack01_second(int []w,int []v,int V,int N){
+        int []dp = new int[V+1];
+        for(int i=0;i&lt;N;i++)
+            for(int j=V;j&gt;=0;j--)
+                if(j&gt;=v[i])
+                    if(i==0) dp[j] = w[i];
+                    else dp[j] = Math.max(dp[j],dp[j-v[i]]+w[i]);
+        return dp[V];
+    }</code></pre>
+<p><strong>全部放满01背包：</strong></p>
+<blockquote>
+<p>我们之前讨论了一种是不要求全部放满的01背包，我们再看如果要求全部放满会有什么不同</p>
+</blockquote>
+<p>如果我们把物品表换成这样：</p>
+<img src="http://dzou.wangminwei.top/static/images/algorithm/32.png">
+
+<p>如果我们想要全部放满，就拿不到物品4，即使它价值50，但是我们想要的是要把背包装满，这就涉及到初始化时的问题</p>
+<blockquote>
+<p>我们需要为每一次循环放入物品到j的背包中设置一个能否放满的标志，每次判断这个标志来检查当前物品放入能否使得背包装满</p>
+</blockquote>
+<p><strong>我们只需要在初始化时把一维数组的<code>1-V</code>初始化为<code>-1</code>，表示当前0个物品放入背包，不能装满这些体积的背包，把数组<code>dp[0]</code>正常设置为0，表示体积为0的背包可以被0个物品装满；然后我们在计算数组值时先判断<code>dp[j-v[i]]</code>是否为-1，为-1说明当前物品放入无法装满背包，则不进行修改数组的值；只有不为-1才能继续放入，说明当前物品放入可以放满体积为<code>j</code>的背包</strong></p>
+<img src="http://dzou.wangminwei.top/static/images/algorithm/33.png">
+
+<pre><code class="java">//全部放满01背包
+    public int napzack01_fourth(int []w,int []v,int V,int N){
+        int []dp = new int[V+1];
+        for(int i=0;i&lt;dp.length;i++){
+            dp[i] = -1;
+        }
+        dp[0] = 0;
+        for(int i=0;i&lt;N;i++)
+            for(int j=V;j&gt;=0;j--)
+                if(j&gt;=v[i]&amp;&amp;dp[j-v[i]]!=-1)
+                    dp[j] = Math.max(dp[j],dp[j-v[i]]+w[i]);
+        return dp[V];
+    }</code></pre>
+<h2 id="完全背包"><a href="#完全背包" class="headerlink" title="完全背包"></a>完全背包</h2><p><strong>有N件物品（每个物品都有无限个）和一个容量为V的背包。第i件物品的费用是v[i]，价值是w[i]。求解将哪些物品（每个物品都可以装多个）装入背包可使价值总和最大。</strong></p>
+<ul>
+<li>优化前</li>
+</ul>
+<p>我们每种物品最多有选取<code>V/v[i]</code>个，我们可以再多一次循环，计算选取<code>0-V/v[i]</code>个的最大价值</p>
+<blockquote>
+<p>时间复杂度：每种物品有V/v[i]个，共需要求解N<em>V中状态，时间为O（NV</em>Σ(V/v[i])）</p>
+<p>空间复杂度：O(N)</p>
+</blockquote>
+<p>状态转移方程：</p>
+<p><code>dp[j] = max{dp[j-1],dp[j-k*v[i]]+k*w[i]}</code></p>
+<p><code>code</code></p>
+<pre><code class="java">//完全背包
+    //状态转移方程 dp[j] = dp[j-k*v[i]]+k*w[i]
+    public int napzack_complete(int []w,int []v,int N,int V){
+        int dp[] = new int [V+1];
+        for(int i=0;i&lt;N;i++)
+            for(int j=0;j&lt;=V;j++)
+                for(int k=0;k*v[i]&lt;=j;k++)
+                    dp[j] = Math.max(dp[j-1],dp[j-k*v[i]]+k*w[i]);
+        return dp[V];
+    }</code></pre>
+<ul>
+<li>优化为01背包</li>
+</ul>
+<p><strong>我们记得在优化01背包时，我们为了获取到上一次计算的值，我们选择从后往前计算，但是完全背包<code>正好相反，这才是它此昂要的</code>，完全背包因为需要累计多个同一物品的值，前一次计算可能是1个、2个等等，下一次j变化了以后，计算的可能是3个或者更多，所以我们需要保存实时计算出来的多个同一物品的最大价值，我们选取从前往后的顺序，这样每次前面计算的我们都可以在j增大以后累加获得更多个同一物品的最大价值(根据状态转移方程可知，我们计算一个位置的最大价值只需要当前位置的上一次计算的值和当前次循环内更前面的值)</strong></p>
+<p>例如：</p>
+<p>在我们计算第2个物品dp[5]的时候，物品2的体积为2，价值为5，我们需要上一次计算也就是第一个物品的dp[5]的值，还需要dp[5-2]=dp[3]的值，dp[3]我们在本次循环内计算dp[5]之前就已经算过了，dp[3]可能选了一个物品2，也可能没有选，我们计算dp[5]就根据这个dp[3]的大小在进行选取，就可以进行多次选取。</p>
+<p><code>根本上就是把一类物品转化为多个一种物品</code></p>
+<blockquote>
+<p>我们不需要体积从0开始计算。而只需要在每个物品的循环内从当前物品的最小个数1开始，也就是<code>v[i]</code>（不需要0个是因为初始化的时候已经把体积为0的dp值设置为0了）</p>
+</blockquote>
+<p>参数依然使用</p>
+<img src="http://dzou.wangminwei.top/static/images/algorithm/29.png">
+
+<img src="http://dzou.wangminwei.top/static/images/algorithm/34.png">
+
+<p><code>code</code></p>
+<pre><code class="java">//把完全背包优化为01背包
+    public int napzack_comlete01(int []w,int []v,int N,int V){
+        int dp[] = new int[V+1];
+        for(int i=0;i&lt;N;i++)
+            for(int j=v[i];j&lt;=V;j++)
+                dp[j] = Math.max(dp[j],dp[j-v[i]]+w[i]);
+        return dp[V];
+    }</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    dzou  |  微信：17856530567
+  </li>
+  <li class="post-copyright-link">
+  <strong>本文链接：</strong>
+  <a href="http://www.dzou.top/post/napzack-algorithm.html" title="动态规划—搞懂01背包和完全背包算法">http://www.dzou.top/post/napzack-algorithm.html</a>
+</li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noopener noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+  <li class="post-copyright-license">
+    并保留本声明和上方二维码。感谢您的阅读和支持！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+            <a href="/tags/基础/" rel="tag"># 基础</a>
+          
+            <a href="/tags/动态规划/" rel="tag"># 动态规划</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/netty-example-5.html" rel="next" title="netty学习案例—实现websocket长连接和socket之间通信">
+                <i class="fa fa-chevron-left"></i> netty学习案例—实现websocket长连接和socket之间通信
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" rel="external nofollow noopener noreferrer" target="_blank">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/2.JPG" alt="dzou">
+            
+              <p class="site-author-name" itemprop="name">dzou</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">92</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ding-zou" target="_blank" title="GitHub" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="dingxiang.zoufubo@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://me.csdn.net/qq_44760332" target="_blank" title="CSDN" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                推荐链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/7a5625fe.html" title="Java并发之AQS源码分析" target="_blank">Java并发之AQS源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/19e1cc75.html" title="Linux基础命令" target="_blank">Linux基础命令</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/8184a8fd.html" title="JDK8新特性——流和Lambda表达式" target="_blank">JDK8新特性——流和Lambda表达式</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://music.163.com/#/user/home?id=564117665" title="网易云音乐" target="_blank" rel="external nofollow noopener noreferrer">网易云音乐</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#01背包问题"><span class="nav-number">1.</span> <span class="nav-text">01背包问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完全背包"><span class="nav-number">2.</span> <span class="nav-text">完全背包</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dzou</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">114.4k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问用户：
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问次数：
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://dzou.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://www.dzou.top/post/napzack-algorithm.html';
+          this.page.identifier = 'post/napzack-algorithm.html';
+          this.page.title = '动态规划—搞懂01背包和完全背包算法';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://dzou.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "topCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "topRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>
+
