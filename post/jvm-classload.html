@@ -106,8 +106,8 @@
 <meta property="og:image" content="http://dzou.wangminwei.top/static/images/jvm/7.png">
 <meta property="og:image" content="http://dzou.wangminwei.top/static/images/jvm/8.png">
 <meta property="og:image" content="http://dzou.wangminwei.top/static/images/jvm/6.png">
-<meta property="og:image" content="http://dzou.wangminwei.top/static/images/JVM/7.png">
-<meta property="og:updated_time" content="2019-11-07T12:31:58.388Z">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/jvm/7.png">
+<meta property="og:updated_time" content="2019-11-07T12:36:59.460Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机之—JVM类加载过程和类加载器">
 <meta name="twitter:description" content="把Java字节码加载成一段二进制流，读取到内存，放在运行时数据区的方法区内；创建一个java.lang.Class对象描述该类的数据结构.加载一个类时，会由自底向上检查一个类是否被加载，如果没有被加载过，会尝试从顶向下加载，首先会由启动器加载器rt.jar加载Object，所有类被加载时都要保证Object类已经被加载.">
@@ -1139,7 +1139,7 @@ service interface loader :null</code></pre><blockquote>
 </ul>
 <h4 id="tomcat加载模型"><a href="#tomcat加载模型" class="headerlink" title="tomcat加载模型"></a>tomcat加载模型</h4><p>我们在上述情况下思考一下双亲委托模型可以实现吗？</p>
 <p>显然不行，所以tomcat创建了自己的一套加载模型，如下：</p>
-<img src="http://dzou.wangminwei.top/static/images/JVM/7.png">
+<img src="http://dzou.wangminwei.top/static/images/jvm/7.png">
 
 <ol>
 <li><code>common类加载器</code>就是负责加载服务器和应用程序都可以共享的类库，如classpath下的lib目录</li>
