@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/2.JPG?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java Web,Java,WebSocket,轮询,扫码登录,二维码,登录,项目">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Dzou's Blog" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="信息存储在用户手机上，通过二维码验证是否匹配的方式就可以登录，免去了用户多次输入密码的场景。.我们把一个全局唯一id保存在二维码中，使用手机扫码可以获取到二维码中的信息，此时就把该二维码和你的手机用户账号建立一种绑定的关系，这个二维码就只归你所有了，当你登录完后这个二维码就废弃了，二维码起的作用就是一种认证的机制">
+<meta name="keywords" content="Java Web,Java,WebSocket,轮询,扫码登录,二维码,登录,项目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码">
+<meta property="og:url" content="https://www.dzou.top/post/qrcode-scan.html">
+<meta property="og:site_name" content="Dzou&#39;s Blog">
+<meta property="og:description" content="信息存储在用户手机上，通过二维码验证是否匹配的方式就可以登录，免去了用户多次输入密码的场景。.我们把一个全局唯一id保存在二维码中，使用手机扫码可以获取到二维码中的信息，此时就把该二维码和你的手机用户账号建立一种绑定的关系，这个二维码就只归你所有了，当你登录完后这个二维码就废弃了，二维码起的作用就是一种认证的机制">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/pj/2.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/pj/3.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/pj/4.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/pj/5.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/pj/6.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/pj/7.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/pj/8.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/pj/9.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/pj/10.png">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/pj/11.png">
+<meta property="og:updated_time" content="2019-11-13T16:25:14.534Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码">
+<meta name="twitter:description" content="信息存储在用户手机上，通过二维码验证是否匹配的方式就可以登录，免去了用户多次输入密码的场景。.我们把一个全局唯一id保存在二维码中，使用手机扫码可以获取到二维码中的信息，此时就把该二维码和你的手机用户账号建立一种绑定的关系，这个二维码就只归你所有了，当你登录完后这个二维码就废弃了，二维码起的作用就是一种认证的机制">
+<meta name="twitter:image" content="http://dzou.wangminwei.top/static/images/pj/2.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'Q66404JRFM',
+      apiKey: '27dd0e53d330bf96c9826662fc30055a',
+      indexName: 'dzou',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://www.dzou.top/post/qrcode-scan.html">
+
+
+
+
+
+<link href="/js/google-code-prettify/tomorrow-night-eighties.min.css" type="text/css" rel="stylesheet">
+
+
+
+  <title>扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码 | Dzou's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+  
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="bg_content">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dzou's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">No pains,no gains.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/qrcode-scan.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dzou">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/2.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dzou's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-12T23:55:55+08:00">
+                2019-11-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/项目/" itemprop="url" rel="index">
+                    <span itemprop="name">项目</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/post/qrcode-scan.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/qrcode-scan.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>&nbsp浏览次数：
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.9k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  12分
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  信息存储在用户手机上，通过二维码验证是否匹配的方式就可以登录，免去了用户多次输入密码的场景。.我们把一个全局唯一id保存在二维码中，使用手机扫码可以获取到二维码中的信息，此时就把该二维码和你的手机用户账号建立一种绑定的关系，这个二维码就只归你所有了，当你登录完后这个二维码就废弃了，二维码起的作用就是一种认证的机制
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码"><a href="#扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码" class="headerlink" title="扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码"></a>扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码</h2><p>扫码登录其实就是一个登录请求，只不过信息存储在用户手机上，还需要通过二维码验证是否匹配的方式就可以登录，免去了用户多次输入密码的场景，现在越来越多登录方式，其中扫码登录算是比较人性化的了</p>
+<p><strong>我们把一个全局唯一id保存在二维码中，使用手机扫码可以获取到二维码中的信息，此时就把该二维码和你的手机用户账号建立一种绑定的关系，这个二维码就只归你所有了，当你登录完后这个二维码就废弃了，二维码起的作用就是一种认证的机制</strong></p>
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><p>具体流程如下图：</p>
+<img src="http://dzou.wangminwei.top/static/images/pj/2.png">
+
+<ol>
+<li>Step 1、用户 A 访问网页客户端，服务器为这个会话生成一个全局唯一的 ID，此时系统并不知道访问者是谁。</li>
+<li>Step 2、用户A打开自己的手机App并扫描这个二维码，并提示用户是否确认登录。</li>
+<li>Step 3、手机上的是登录状态，用户点击确认登录后，手机上的客户端将账号和这个扫描得到的 ID 一起提交到服务器</li>
+<li>Step 4、服务器将这个 ID 和用户 A 的账号绑定在一起，并通知网页版，这个 ID 对应的微信号为用户 A，网页版加载用户 A 的信息，至此，扫码登录全部流程完成</li>
+</ol>
+<h3 id="创建二维码"><a href="#创建二维码" class="headerlink" title="创建二维码"></a>创建二维码</h3><p>我们选取使用自己在服务器端根据创建的全局唯一id生成一个二维码，使用<code>google</code>的<code>zxing</code>二维码生成类库</p>
+<ul>
+<li>依赖</li>
+</ul>
+<pre><code class="xml">&lt;dependency&gt;
+            &lt;groupId&gt;com.google.zxing&lt;/groupId&gt;
+            &lt;artifactId&gt;javase&lt;/artifactId&gt;
+            &lt;version&gt;3.2.1&lt;/version&gt;
+        &lt;/dependency&gt;</code></pre>
+<ul>
+<li>生成二维码</li>
+</ul>
+<p>根据content内容和指定高度和宽度生成二维码的base64格式图片，可以直接在前端显示</p>
+<pre><code class="java">public String createQrCode(String content, int width, int height) throws IOException {
+        String resultImage = &quot;&quot;;
+        if (!StringUtils.isEmpty(content)) {
+            ServletOutputStream stream = null;
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            @SuppressWarnings(&quot;rawtypes&quot;)
+            HashMap&lt;EncodeHintType, Comparable&gt; hints = new HashMap&lt;&gt;();
+            hints.put(EncodeHintType.CHARACTER_SET, &quot;utf-8&quot;); // 指定字符编码为“utf-8”
+            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M); // 指定二维码的纠错等级为中级
+            hints.put(EncodeHintType.MARGIN, 2); // 设置图片的边距
+            try {
+                QRCodeWriter writer = new QRCodeWriter();
+                BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, width, height, hints);
+
+                BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
+                ImageIO.write(bufferedImage, &quot;png&quot;, os);
+                /**
+                 * 原生转码前面没有 data:image/png;base64 这些字段，返回给前端是无法被解析，可以让前端加，也可以在下面加上
+                 */
+                resultImage = new String(&quot;data:image/png;base64,&quot; + Base64.encode(os.toByteArray()));
+
+                return resultImage;
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (stream != null) {
+                    stream.flush();
+                    stream.close();
+                }
+            }
+        }
+        return null;
+    }</code></pre>
+<h3 id="二维码状态管理"><a href="#二维码状态管理" class="headerlink" title="二维码状态管理"></a>二维码状态管理</h3><p><strong>我们使用redis来存储每一张二维码的状态</strong></p>
+<p>状态:</p>
+<ol>
+<li>NOT_SCAN 未被扫描</li>
+<li>SCANNED 被扫描</li>
+<li>VERIFIED 确认完后</li>
+<li>EXPIRED 过期</li>
+<li>FINISH 完成</li>
+</ol>
+<blockquote>
+<p>由于一张二维码只能被扫描一次，所以我们每一次扫描一张二维码后，把状态设置为<code>SCANNED</code>，<code>SCANNED</code>状态的二维码无法再次被扫描，抛出已被扫描的信息</p>
+</blockquote>
+<p>状态转移：</p>
+<blockquote>
+<p>NOT_SCANNED-&gt;SCANNED-&gt;VERIFIED-&gt;FINISH</p>
+<p>其中EXPIRED状态可以插在其中任意一个位置，过期了的二维码也自动过期</p>
+</blockquote>
+<h3 id="生成二维码接口"><a href="#生成二维码接口" class="headerlink" title="生成二维码接口"></a>生成二维码接口</h3><ul>
+<li>创建二维码</li>
+</ul>
+<p><strong>使用UUID工具类生成全局唯一id，也可以使用snowflake生成自增的全局唯一id，然后保存到redis中，key为uuid，val为当前二维码状态，我们这里维护了一个map保存所有uuid对应的二维码base格式，用于建立对应关系，前端传递二维码base64过来我们来判断这张二维码对应的uuid是多少</strong></p>
+<blockquote>
+<p>很多人问为什么不让前端传递扫描过后的uuid呢？第一，我们只能使用postman模拟请求，我们无法根据手机app扫码获取二维码信息，所以暂时采取传输图片，实际中肯定采用uuid去传输，因为base64本来就很大，尽量传输数据量小的数据</p>
+</blockquote>
+<pre><code class="java">@GetMapping(&quot;/createQr&quot;)
+    @ResponseBody
+    public Result&lt;String&gt; createQrCode() throws IOException {
+        String uuid = UUIDUtil.uuid();
+        log.info(uuid);
+        String qrCode = qrCodeService.createQrCode(uuid,200,200);
+        qrCodeMap.put(qrCode,uuid);
+        redisService.set(QrCodeKey.UUID,uuid,QrCodeStatus.NOT_SCAN);
+        return Result.success(qrCode);
+    }</code></pre>
+<h3 id="前端轮询法判断二维码是否被扫描"><a href="#前端轮询法判断二维码是否被扫描" class="headerlink" title="前端轮询法判断二维码是否被扫描"></a>前端轮询法判断二维码是否被扫描</h3><p><strong>目前阿里云登录控制台就是使用轮询的方法，具体为什么不使用长连接我也不清楚，但是说明这种方法也是比较常见的</strong></p>
+<p>后端只需要处理app登录请求和确认请求以及网页端响应的请求就好了</p>
+<h4 id="二维码是否被扫描接口—前端只需要轮询该接口"><a href="#二维码是否被扫描接口—前端只需要轮询该接口" class="headerlink" title="二维码是否被扫描接口—前端只需要轮询该接口"></a>二维码是否被扫描接口—前端只需要轮询该接口</h4><p>获取到redis保存对应uuid的状态，返回给前端，前端轮询判断做处理</p>
+<pre><code class="java">@GetMapping(&quot;/query&quot;)
+    @ResponseBody
+    public Result&lt;String&gt; queryIsScannedOrVerified(@RequestParam(&quot;img&quot;)String img){
+        String uuid = qrCodeMap.get(img);
+        QrCodeStatus s = redisService.get(QrCodeKey.UUID, uuid, QrCodeStatus.class);
+        return Result.success(s.getStatus());
+    }</code></pre>
+<h4 id="app扫描接口"><a href="#app扫描接口" class="headerlink" title="app扫描接口"></a>app扫描接口</h4><p>app扫描二维码后，拿到对应的二维码信息发送一个扫描请求给后端，携带app用户参数，这里demo演示就模拟一个绝对的用户信息</p>
+<p><em>*之后就是判断redis中uuid的状态，</em></p>
+<ul>
+<li><strong>如果为<code>NOT_SCAN</code>，就修改为<code>SCANNED</code></strong></li>
+<li><strong>如果为<code>SCANNED</code>，就返回重复扫描的错误</strong></li>
+<li><strong>如果为<code>VERIFIED</code>，就完成本次二维码登录逻辑，用户登录成功</strong></li>
+</ul>
+<pre><code class="java">@GetMapping(&quot;/doScan&quot;)
+    @ResponseBody
+    public Result doAppScanQrCode(@RequestParam(&quot;username&quot;)String username,
+                               @RequestParam(&quot;password&quot;)String password,
+                               @RequestParam(&quot;uuid&quot;)String uuid){
+        QrCodeStatus status = redisService.get(QrCodeKey.UUID,uuid,QrCodeStatus.class);
+        log.info(status.getStatus());
+        if(status.getStatus().isEmpty()) return Result.error(ErrorCodeEnum.UUID_EXPIRED);
+        switch (status){
+            case NOT_SCAN:
+                //等待确认 todo
+                if(username.equals(&quot;dzou&quot;)&amp;&amp;password.equals(&quot;1234&quot;)){
+                    redisService.set(QrCodeKey.UUID,uuid, QrCodeStatus.SCANNED);
+                    return Result.success(&quot;请手机确认&quot;);
+                }else{
+                    return Result.error(ErrorCodeEnum.LOGIN_FAIL);
+                }
+            case SCANNED:
+                return Result.error(ErrorCodeEnum.QRCODE_SCANNED);
+            case VERIFIED:
+                return Result.success(&quot;你已经确认过了&quot;);
+        }
+        return Result.error(ErrorCodeEnum.SEVER_ERROR);
+    }</code></pre>
+<h4 id="app确认登录接口"><a href="#app确认登录接口" class="headerlink" title="app确认登录接口"></a>app确认登录接口</h4><p><strong>app扫描成功后，二维码状态变为<code>SCANNED</code>，需要发送一个请求给app前端请求用户确认，用户点击确认后请求这个接口，完成登录</strong></p>
+<pre><code class="java">@GetMapping(&quot;/verify&quot;)
+    @ResponseBody
+    public Result verifyQrCode(@RequestParam(&quot;uuid&quot;)String uuid){
+        String status = redisService.get(QrCodeKey.UUID,uuid,String.class);
+        if(status.isEmpty()) return Result.error(ErrorCodeEnum.UUID_EXPIRED);
+        redisService.set(QrCodeKey.UUID,uuid,QrCodeStatus.VERIFIED);
+        return Result.success(&quot;确认成功&quot;);
+    }</code></pre>
+<h4 id="前端—JQuery"><a href="#前端—JQuery" class="headerlink" title="前端—JQuery"></a>前端—JQuery</h4><pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot; xmlns:th=&quot;http://www.thymeleaf.org&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;扫描二维码&lt;/title&gt;
+  &lt;!-- jquery --&gt;
+  &lt;script type=&quot;text/javascript&quot; th:src=&quot;@{/js/jquery.min.js}&quot;&gt;&lt;/script&gt;
+  &lt;!-- bootstrap --&gt;
+  &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; th:href=&quot;@{/bootstrap/css/bootstrap.min.css}&quot;/&gt;
+  &lt;script type=&quot;text/javascript&quot; th:src=&quot;@{/bootstrap/js/bootstrap.min.js}&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;二维码&lt;/h1&gt;
+  &lt;div&gt;
+    &lt;table&gt;
+      &lt;tr&gt;
+        &lt;td&gt;&lt;img id=&quot;qrCode&quot; width=&quot;200&quot; height=&quot;200&quot;/&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;script&gt;
+  var img = &quot;&quot;;
+  $.ajax({
+    url: &quot;/api/createQr&quot;,
+    type:&quot;GET&quot;,
+    success:function (data) {
+      $(&quot;#qrCode&quot;).attr(&quot;src&quot;,data.data);
+      img = data.data;
+      callbackScan($(&quot;#qrCode&quot;).attr(&quot;src&quot;))
+    }
+  });
+    //使用setTimeOut来循环请求判断是否被扫描，被扫描以后调用下面一个函数循环判断是否被确认
+  function callbackScan(img) {
+    var tID = setTimeout(function() {
+      $.ajax({
+        url : &#39;/api/query&#39;,
+        dataType: &quot;json&quot;,
+        type: &#39;GET&#39;,
+        data:{&quot;img&quot;:img},
+        success : function(res) {
+          //process data here
+          console.log(&quot;img:&quot;+img);
+          console.log(res.data);
+          if(res.data==&quot;scanned&quot;) {
+            clearTimeout(tID);
+            console.log(&quot;请求确认&quot;)
+            callbackVerify(img)
+          }else {
+            callbackScan(img)
+          }
+        }
+      }) }, 1500);
+  }
+//循环判断是否被确认
+  function callbackVerify(img) {
+    var tID = setTimeout(function() {
+      $.ajax({
+        url : &#39;/api/query&#39;,
+        dataType: &quot;json&quot;,
+        type: &#39;GET&#39;,
+        data:{&quot;img&quot;:img},
+        success : function(res) {
+          //process data here
+          console.log(res.data);
+          if(res.data==&quot;verified&quot;) {
+            clearTimeout(tID);
+            console.log(&quot;确认成功&quot;)
+            window.location.href = &quot;success&quot;;
+          }else {
+            callbackVerify(img)
+          }
+        }
+      }) }, 1500);
+  }
+
+&lt;/script&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>成功后跳转到成功页面</strong></p>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><ul>
+<li>打开主页创建二维码</li>
+</ul>
+<img src="http://dzou.wangminwei.top/static/images/pj/3.png">
+
+<ul>
+<li>拿到服务器端创建的uuid请求扫描接口</li>
+</ul>
+<img src="http://dzou.wangminwei.top/static/images/pj/4.png">
+
+<ul>
+<li>拿uuid请求确认接口</li>
+</ul>
+<img src="http://dzou.wangminwei.top/static/images/pj/5.png">
+
+<ul>
+<li>确认完成，跳转到登录界面</li>
+</ul>
+<img src="http://dzou.wangminwei.top/static/images/pj/6.png">
+
+
+
+<h3 id="长连接WebSocket来传输二维码被扫描的信息"><a href="#长连接WebSocket来传输二维码被扫描的信息" class="headerlink" title="长连接WebSocket来传输二维码被扫描的信息"></a>长连接WebSocket来传输二维码被扫描的信息</h3><blockquote>
+<p>除了轮询还有一种相对来说更好的实现方式就是WebSocket长连接，但是有些浏览器不支持WebSocket，考虑到这点我们决定使用<code>SockJs</code>，他是一种优先Websocket的连接方式，不支持的话它会去使用其他类似轮询的方式</p>
+</blockquote>
+<p><strong>我们服务器端需要编写对应的WebSocket处理逻辑，我们在加载页面时建立长连接，扫描时请求接口，把状态发送给前端WebSocket，如果为被扫描，发送请求确认的信息，请求确认接口完成确认后发送状态给前端WebSocket，跳转到success页面</strong></p>
+<blockquote>
+<p>我们使用Springboot提供的WebSocket支持类库编写，如果有需要使用netty编写的同学，可以参考我的另外一篇netty的文章</p>
+</blockquote>
+<p>maven依赖</p>
+<pre><code class="xml">&lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-websocket&lt;/artifactId&gt;
+            &lt;version&gt;2.0.4.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;</code></pre>
+<h4 id="WebSocket配置类"><a href="#WebSocket配置类" class="headerlink" title="WebSocket配置类"></a>WebSocket配置类</h4><ul>
+<li>其中第一个方法<code>registerStompEndpoints</code>相当于指定代理服务器的WebSocket路由</li>
+<li>第二个方法就是客户端订阅路由，客户端可以接收到这个路由发送的信息</li>
+</ul>
+<pre><code class="java">@Configuration
+@EnableWebSocketMessageBroker
+public class IWebSocketConfig implements WebSocketMessageBrokerConfigurer {
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+//注册一个Stomp 协议的endpoint,并指定 SockJS协议
+        registry.addEndpoint(&quot;/websocket&quot;).withSockJS();
+    }
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker(&quot;/topic&quot;);
+        //registry.setApplicationDestinationPrefixes(&quot;/app&quot;);
+    }
+}</code></pre>
+<h4 id="注入WebSocket发送消息模板"><a href="#注入WebSocket发送消息模板" class="headerlink" title="注入WebSocket发送消息模板"></a>注入WebSocket发送消息模板</h4><pre><code class="java">@Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;</code></pre>
+<h4 id="扫描二维码接口"><a href="#扫描二维码接口" class="headerlink" title="扫描二维码接口"></a>扫描二维码接口</h4><p><strong>我们只需要稍微改一下代码，在第一次扫描后使用WebSocket发送一个信息请求确认给前端WebSocket</strong></p>
+<pre><code class="java">@GetMapping(&quot;/doScan&quot;)
+    @ResponseBody
+    public Result doAppScanQrCode(@RequestParam(&quot;username&quot;)String username,
+                                  @RequestParam(&quot;password&quot;)String password,
+                                  @RequestParam(&quot;uuid&quot;)String uuid){
+        QrCodeStatus status = redisService.get(QrCodeKey.UUID,uuid,QrCodeStatus.class);
+        log.info(
+                status.getStatus());
+        if(status.getStatus().isEmpty()) return Result.error(ErrorCodeEnum.UUID_EXPIRED);
+        switch (status){
+            case NOT_SCAN:
+                if(username.equals(&quot;dzou&quot;)&amp;&amp;password.equals(&quot;1234&quot;)){
+                    redisService.set(QrCodeKey.UUID,uuid, QrCodeStatus.SCANNED);
+                    simpMessagingTemplate.convertAndSend(&quot;/topic/ws&quot;,&quot;请确认&quot;);
+                    return Result.success(&quot;请手机确认&quot;);
+                }else{
+                    return Result.error(ErrorCodeEnum.LOGIN_FAIL);
+                }
+            case SCANNED:
+                return Result.error(ErrorCodeEnum.QRCODE_SCANNED);
+            case VERIFIED:
+                return Result.success(&quot;你已经确认过了&quot;);
+        }
+        return Result.error(ErrorCodeEnum.SEVER_ERROR);
+    }</code></pre>
+<h4 id="确认登录接口"><a href="#确认登录接口" class="headerlink" title="确认登录接口"></a>确认登录接口</h4><p><strong>我们需要稍改确认的代码，因为确认成功我们需要向客户端订阅的指定路由发送一条消息</strong></p>
+<p>调用<code>convertAndSend</code>发送指定消息到指定路由下</p>
+<pre><code class="java">@GetMapping(&quot;/verify&quot;)
+    @ResponseBody
+    public Result verifyQrCode(@RequestParam(&quot;uuid&quot;)String uuid){
+        String status = redisService.get(QrCodeKey.UUID,uuid,String.class);
+        if(status.isEmpty()) return Result.error(ErrorCodeEnum.UUID_EXPIRED);
+        redisService.set(QrCodeKey.UUID,uuid,QrCodeStatus.VERIFIED);
+        simpMessagingTemplate.convertAndSend(&quot;/topic/ws&quot;,&quot;已经确认&quot;);
+        return Result.success(&quot;确认成功&quot;);
+    }</code></pre>
+<h4 id="前端"><a href="#前端" class="headerlink" title="前端"></a>前端</h4><p><strong>前端就不需要轮询的那两个方法了，只需要连接SockJs就好了，根据WebSocket发送的信息进行处理，我们这里需要客户端连接上后进行订阅，指定接收服务器哪个路由发送的消息</strong></p>
+<pre><code class="js">function connect() {
+    var socket = new SockJS(&#39;/websocket&#39;);
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+      console.log(&#39;Connected: &#39; + frame);
+      stompClient.subscribe(&#39;/topic/ws&#39;, function (response) {//订阅路由消息
+        console.log(response);
+        if(response.body==&quot;请确认&quot;){
+          layer.msg(&quot;请在你的app上确认登录&quot;)
+        }else if(response.body==&quot;已经确认&quot;){
+          window.location.href = &quot;success&quot;
+        }
+      });
+    });
+  }</code></pre>
+<h4 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h4><ul>
+<li>打开主页创建二维码，连接WebSocket</li>
+</ul>
+<img src="http://dzou.wangminwei.top/static/images/pj/7.png">
+
+<ul>
+<li>拿到服务器端创建的uuid请求扫描接口</li>
+</ul>
+<img src="http://dzou.wangminwei.top/static/images/pj/8.png">
+
+<ul>
+<li>控制台打印请求确认信息</li>
+</ul>
+<img src="http://dzou.wangminwei.top/static/images/pj/9.png">
+
+<ul>
+<li>拿uuid请求确认接口</li>
+</ul>
+<img src="http://dzou.wangminwei.top/static/images/pj/10.png">
+
+<ul>
+<li>确认完成，跳转到登录界面，发送已经确认</li>
+</ul>
+<img src="http://dzou.wangminwei.top/static/images/pj/11.png">
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    dzou  |  微信：17856530567
+  </li>
+  <li class="post-copyright-link">
+  <strong>本文链接：</strong>
+  <a href="http://www.dzou.top/post/qrcode-scan.html" title="扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码">http://www.dzou.top/post/qrcode-scan.html</a>
+</li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noopener noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+  <li class="post-copyright-license">
+    并保留本声明和上方二维码。感谢您的阅读和支持！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Web/" rel="tag"># Web</a>
+          
+            <a href="/tags/项目/" rel="tag"># 项目</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/napzack-algorithm.html" rel="next" title="动态规划—搞懂01背包和完全背包算法">
+                <i class="fa fa-chevron-left"></i> 动态规划—搞懂01背包和完全背包算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" rel="external nofollow noopener noreferrer" target="_blank">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/2.JPG" alt="dzou">
+            
+              <p class="site-author-name" itemprop="name">dzou</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">80</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">92</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/ding-zou" target="_blank" title="GitHub" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="dingxiang.zoufubo@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://me.csdn.net/qq_44760332" target="_blank" title="CSDN" rel="external nofollow noopener noreferrer">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                推荐链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/7a5625fe.html" title="Java并发之AQS源码分析" target="_blank">Java并发之AQS源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/366ffd58.html" title="SpringBoot自动配置原理-源码分析" target="_blank">SpringBoot自动配置原理-源码分析</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/712f837.html" title="Java Web安全框架Shiro使用" target="_blank">Java Web安全框架Shiro使用</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/19e1cc75.html" title="Linux基础命令" target="_blank">Linux基础命令</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.dzou.top/post/8184a8fd.html" title="JDK8新特性——流和Lambda表达式" target="_blank">JDK8新特性——流和Lambda表达式</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://music.163.com/#/user/home?id=564117665" title="网易云音乐" target="_blank" rel="external nofollow noopener noreferrer">网易云音乐</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码"><span class="nav-number">1.</span> <span class="nav-text">扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#流程"><span class="nav-number">1.1.</span> <span class="nav-text">流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建二维码"><span class="nav-number">1.2.</span> <span class="nav-text">创建二维码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二维码状态管理"><span class="nav-number">1.3.</span> <span class="nav-text">二维码状态管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成二维码接口"><span class="nav-number">1.4.</span> <span class="nav-text">生成二维码接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前端轮询法判断二维码是否被扫描"><span class="nav-number">1.5.</span> <span class="nav-text">前端轮询法判断二维码是否被扫描</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#二维码是否被扫描接口—前端只需要轮询该接口"><span class="nav-number">1.5.1.</span> <span class="nav-text">二维码是否被扫描接口—前端只需要轮询该接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#app扫描接口"><span class="nav-number">1.5.2.</span> <span class="nav-text">app扫描接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#app确认登录接口"><span class="nav-number">1.5.3.</span> <span class="nav-text">app确认登录接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前端—JQuery"><span class="nav-number">1.5.4.</span> <span class="nav-text">前端—JQuery</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试"><span class="nav-number">1.5.5.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#长连接WebSocket来传输二维码被扫描的信息"><span class="nav-number">1.6.</span> <span class="nav-text">长连接WebSocket来传输二维码被扫描的信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#WebSocket配置类"><span class="nav-number">1.6.1.</span> <span class="nav-text">WebSocket配置类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注入WebSocket发送消息模板"><span class="nav-number">1.6.2.</span> <span class="nav-text">注入WebSocket发送消息模板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#扫描二维码接口"><span class="nav-number">1.6.3.</span> <span class="nav-text">扫描二维码接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确认登录接口"><span class="nav-number">1.6.4.</span> <span class="nav-text">确认登录接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#前端"><span class="nav-number">1.6.5.</span> <span class="nav-text">前端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试-1"><span class="nav-number">1.6.6.</span> <span class="nav-text">测试</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dzou</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">117.3k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问用户：
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问次数：
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://dzou.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://www.dzou.top/post/qrcode-scan.html';
+          this.page.identifier = 'post/qrcode-scan.html';
+          this.page.title = '扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://dzou.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "topCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "topRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
+<script type="text/javascript" src="/js/src/dynamic_bg.js"></script>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<script type="text/javascript">
+$(window).load(function(){
+   $('pre').addClass('prettyprint linenums').attr('style', 'overflow:auto;');
+   prettyPrint();
+ })    
+</script>
+
