@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.dzou.top/"/>
-  <updated>2019-11-13T16:25:14.534Z</updated>
+  <updated>2019-11-22T02:53:47.146Z</updated>
   <id>https://www.dzou.top/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="https://www.dzou.top/post/0.html"/>
+    <id>https://www.dzou.top/post/0.html</id>
+    <published>2019-11-22T02:18:07.644Z</published>
+    <updated>2019-11-22T02:53:47.146Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="剑指offer—连续子数组最大和"><a href="#剑指offer—连续子数组最大和" class="headerlink" title="剑指offer—连续子数组最大和"></a>剑指offer—连续子数组最大和</h2><h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。给一个数组，返回它的最大连续子序列的和，你会不会被他忽悠住？(子向量的长度至少是1)</p><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><ul><li>方法一：动态规划数组保存每个数的前面的包括自己的连续最大和，最后排序dp[]返回最后一个元素</li><li>方法二：用变量s保存当前数组位置前一个数的最大和</li></ul><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><h4 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h4><ul><li>动态规划</li></ul><pre><code class="java">import java.util.Arrays;public class Solution {    public int FindGreatestSumOfSubArray(int[] array) {        int []dp = new int[array.length];        for(int i=0;i&lt;array.length;i++){            if(i==0) dp[i] = array[i];            else{                int m = dp[i-1]&lt;0?0:dp[i-1];//如果前一个最大和为负数，就从0开始加，前面的不要算进去                if(m+array[i]&gt;=0) dp[i] = m+array[i];                else dp[i] = array[i];            }        }        Arrays.sort(dp);        return dp[dp.length-1];    }}</code></pre><h4 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h4><ul><li>记录当前位置前面一个位置的最大和，并更新res为最大和中的最大值</li></ul><pre><code class="java">import java.util.Arrays;public class Solution {    public int FindGreatestSumOfSubArray(int[] array) {        int s = 0;        int res = Integer.MIN_VALUE;//可以保存负数        for(int i=0;i&lt;array.length;i++){            if(s&lt;=0){                s = array[i];            }else {                s = s + array[i];            }            res = Math.max(res,s);        }        return res;    }}</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;剑指offer—连续子数组最大和&quot;&gt;&lt;a href=&quot;#剑指offer—连续子数组最大和&quot; class=&quot;headerlink&quot; title=&quot;剑指offer—连续子数组最大和&quot;&gt;&lt;/a&gt;剑指offer—连续子数组最大和&lt;/h2&gt;&lt;h3 id=&quot;题目描述&quot;&gt;&lt;a 
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码</title>
@@ -62,9 +83,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
       <category term="算法" scheme="https://www.dzou.top/tags/%E7%AE%97%E6%B3%95/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="动态规划" scheme="https://www.dzou.top/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"/>
     
@@ -527,11 +548,11 @@
   </entry>
   
   <entry>
-    <title>牛客网算法编程题 剑指offer—数值的整数次方 解答</title>
+    <title>剑指offer—数值的整数次方 解答</title>
     <link href="https://www.dzou.top/post/quick-mi-numm.html"/>
     <id>https://www.dzou.top/post/quick-mi-numm.html</id>
     <published>2019-09-09T08:29:32.000Z</published>
-    <updated>2019-09-12T10:58:59.918Z</updated>
+    <updated>2019-11-22T02:41:42.446Z</updated>
     
     <content type="html"><![CDATA[<h2 id="剑指offer—数值的整数次方"><a href="#剑指offer—数值的整数次方" class="headerlink" title="剑指offer—数值的整数次方"></a>剑指offer—数值的整数次方</h2><h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。</p><p>保证base和exponent不同时为0</p><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><blockquote><p>这题首先考虑到循环遍历数值的大小次，计算出结果，<code>但是还有比这更优的方法：快速幂</code></p></blockquote><h4 id="快速幂"><a href="#快速幂" class="headerlink" title="快速幂"></a>快速幂</h4><blockquote><p>快速幂就是快速算底数的n次幂。其时间复杂度为 O(log₂N)，比O(N)更快</p></blockquote><p>例如</p><p><img src="https://gss3.bdstatic.com/7Po3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D103/sign=885b42e39c16fdfadc6cc2ee878d8cea/d0c8a786c9177f3e48bd45c571cf3bc79e3d5668.jpg" alt="img"></p><p>11的二进制是1011</p><p><img src="https://gss3.bdstatic.com/7Po3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D247/sign=2a9c504edfc8a786ba2a4d0a5008c9c7/aa18972bd40735fae94ebe0d90510fb30e2408c3.jpg" alt="img"></p><p>因此，我们将a¹¹转化为算</p><p><img src="https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D95/sign=257afe75a8773912c0268964f919a226/e850352ac65c1038803a760ab3119313b17e89b6.jpg" alt="img"></p><ul><li><strong>快速幂可以帮助我们使用二进制快速计算幂函数和指数函数</strong></li></ul><blockquote><p>在正数情况下，我们每次对指数右移，只要它对应二进制位为<code>1</code>，我们就需要乘上a的2的n次方(n为二进制所在位数)，我们可以利用右移每次对一个duoble变量累乘，只要当前位为<code>1</code>就乘上该变量，否则就一直累乘该变量，直到为1的位数，或者指数为0时结束循环。</p></blockquote><p>我们需要用到的：</p><ul><li>判断二进制当前位(最右边一位)是否为1</li></ul><pre><code class="java">(e&amp;1)==1</code></pre><ul><li>每次循环右移</li></ul><pre><code class="java">e&gt;&gt;=1  或者   e=e&gt;&gt;1</code></pre><blockquote><p>当然我们需要考虑到指数为负数的情况，我们知道负数的指数函数为正数的倒数，所以如果为负数我们把它取负保存到一个变量(变为正数进行计算)，最后输出结果时判断该指数为负数的话则输出倒数，反之输出结果。</p></blockquote><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><pre><code class="java">public class Solution {    public double Power(double base, int exp) {        int e = exp;//存储正数的指数        double res = 1;//存储结果        double count = base;//原来存储累乘变量        if(exp==0){//指数为0返回1            return 1;        }else if(exp&lt;1){//小于1取负保存到e中            e = -exp;        }        while(e!=0){//循环计算            if((e&amp;1)==1){                res *= count;//利用快速幂，如果当前位为1则相乘            }            count *= base;//累乘操作            e&gt;&gt;=1;//右移        }        return exp&lt;0?1/res:res;    }}</code></pre>]]></content>
     
@@ -546,9 +567,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
       <category term="算法" scheme="https://www.dzou.top/tags/%E7%AE%97%E6%B3%95/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="牛客" scheme="https://www.dzou.top/tags/%E7%89%9B%E5%AE%A2/"/>
     
@@ -561,11 +582,11 @@
   </entry>
   
   <entry>
-    <title>牛客网算法编程题 剑指offer—链表倒数第k个节点 解答</title>
+    <title>剑指offer—链表倒数第k个节点 解答</title>
     <link href="https://www.dzou.top/post/last-kth-node-linedlist.html"/>
     <id>https://www.dzou.top/post/last-kth-node-linedlist.html</id>
     <published>2019-09-08T08:29:32.000Z</published>
-    <updated>2019-09-12T10:57:38.182Z</updated>
+    <updated>2019-11-22T02:36:37.727Z</updated>
     
     <content type="html"><![CDATA[<h2 id="剑指offer—链表倒数第k个节点"><a href="#剑指offer—链表倒数第k个节点" class="headerlink" title="剑指offer—链表倒数第k个节点"></a>剑指offer—链表倒数第k个节点</h2><h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>输入一个链表，输出该链表中倒数第k个结点。</p><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><blockquote><p>单向链表只能从前往后获取，而无法从后往前获取</p></blockquote><ul><li>方法1：首先我们可以想到的就是遍历一次链表存储链表长度<code>l</code>，然后再进行一次<code>l-k</code>的循环，获得第k个节点</li></ul><blockquote><p>但是该方法耗费时间太多，时间复杂度大，我们想想有没有一种方法只需要遍历一次就可以获得结果</p></blockquote><ul><li>方法2：我们使用两个指针，第一个指针在循环<code>前k次</code>指向后面一个节点，此时第一个指针指向第<code>k</code>个节点，此时开始两个指针移动，直到第一个指针移动到链表末尾，这个时候第二个指针指向的节点就是倒数第<code>k</code>个节点</li></ul><blockquote><p>这种方法就是使用一点点空间换取了大量的时间，使用一个辅助节点来判断第二个节点需要移动到的位置</p></blockquote><img src="http://dzou.wangminwei.top/static/images/algorithm/8.png"><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><ul><li>基础版本</li></ul><pre><code class="java">/*public class ListNode {    int val;    ListNode next = null;    ListNode(int val) {        this.val = val;    }}*/public class Solution {    public ListNode FindKthToTail(ListNode head,int k) {        if(head == null||k == 0){            return null;        }        ListNode node = head;        ListNode kThFlag = head;        while(kThFlag.next!=null){            if(k-1&gt;0){                k--;                kThFlag = kThFlag.next;            }else{                kThFlag = kThFlag.next;                node = node.next;            }        }        if(k&gt;=2){            return null;        }        return node;    }}</code></pre><blockquote><p>看起来很复杂，优化一下，慢慢写出漂亮的代码</p></blockquote><ul><li>简化后</li></ul><pre><code class="java">public ListNode FindKthToTail(ListNode head,int k) {        if(head == null||k == 0)            return null;        ListNode q,p;        q = p = head;        while(q.next!=null){            if(--k&gt;0){                q = q.next;            }else{                q = q.next;                p = p.next;            }        }        return k&gt;=2?null:p;    }</code></pre><h3 id="扩展—删除链表的倒数第N个节点"><a href="#扩展—删除链表的倒数第N个节点" class="headerlink" title="扩展—删除链表的倒数第N个节点"></a>扩展—删除链表的倒数第N个节点</h3><ul><li>给定一个链表，删除链表的倒数第 n 个节点，并且返回链表的头结点。</li></ul><pre><code>示例：给定一个链表: 1-&gt;2-&gt;3-&gt;4-&gt;5, 和 n = 2.当删除了倒数第二个节点后，链表变为 1-&gt;2-&gt;3-&gt;5.说明：给定的 n 保证是有效的。</code></pre><h4 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h4><ul><li>根据上面一题思路，但是这里要拿到的是删除节点的前一个节点，执行删除<code>node.next=node.next.next</code></li><li>根据这样的思考，既然拿到删除节点的前一个节点，就要考虑<code>删除节点前一个节点是否为null</code>(不存在，删除节点为头结点)，想到了使用变量<code>i</code>来存储节点数量(每次循环+1)和<code>m</code>存储倒数节点数n的值<ul><li>如果<code>i=m</code>说明要删除头结点，我们需要进行单独操作把头结点指向后面一个节点</li><li>如果<code>i&gt;m</code>说明删除节点n是有效的，在链表范围内，就执行<code>node.next=node.next.next</code>操作</li></ul></li></ul><h4 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h4><pre><code class="java">class Solution {    //拿到第n-1个节点    public ListNode removeNthFromEnd(ListNode head, int n) {        ListNode q,h;        q = h = head;        int i = 1;int m = n;        while(q.next!=null){            if(n--&gt;0){                q = q.next;            }else{                q = q.next;                head = head.next;            }            i++;        }        if(i&gt;m){            head.next = n&gt;=1||q==head?null:head.next.next;//n&gt;=1用来判断n是否有效(在链表范围内)；因为n每次减一，如果循环结束了n还不为0则说明n是无效的数(无法删除该节点)        }else if(i==m){            h = h.next;        }        return h;    }}</code></pre>]]></content>
     
@@ -580,43 +601,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
       <category term="算法" scheme="https://www.dzou.top/tags/%E7%AE%97%E6%B3%95/"/>
     
-      <category term="牛客" scheme="https://www.dzou.top/tags/%E7%89%9B%E5%AE%A2/"/>
-    
-      <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
-    
-      <category term="剑指offer" scheme="https://www.dzou.top/tags/%E5%89%91%E6%8C%87offer/"/>
-    
-      <category term="笔试" scheme="https://www.dzou.top/tags/%E7%AC%94%E8%AF%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>牛客网算法编程题 剑指offer—合并两个有序链表 解答</title>
-    <link href="https://www.dzou.top/post/combine-two-sorted-linkedlist.html"/>
-    <id>https://www.dzou.top/post/combine-two-sorted-linkedlist.html</id>
-    <published>2019-09-07T08:29:32.000Z</published>
-    <updated>2019-09-12T10:56:41.360Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="剑指offer—合并两个有序链表"><a href="#剑指offer—合并两个有序链表" class="headerlink" title="剑指offer—合并两个有序链表"></a>剑指offer—合并两个有序链表</h2><h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。</p><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><blockquote><p>我们考虑到最优实现，时间复杂度应该为两个链表长度O(M+N)，空间复杂度为O(1)，只使用几个指针，类似归并排序思想</p></blockquote><ul><li>先从第一个链表开始迭代，如果链表1当前指针的值&lt;链表2当前指针的值则链表1指针往后移动一位，反之如果链表1当前指针的值&gt;=链表2的值，则执行插入到链表1当前指针前面一个位置，基本代码如下：<code>pre</code>指向链表1当前节点的前一个节点，用于插入</li></ul><pre><code class="java">ListNode next = list2.next;//保存链表2的下一个节点指针pre.next = list2;//pre指向新插入节点list2.next = list1;//新插入节点指向链表1当前节点pre = list2;//更新pre到pre的下一个节点也就是新插入的节点list2 = next;//更新链表2当前节点为下一个节点(保存的引用在这里使用)</code></pre><ul><li>当链表1为空或者链表2为空时，结束迭代，剩下的非空链表的所有元素都大于新链表所有元素，直接<code>接入</code>到新链表后面就可以了，代码如下</li></ul><pre><code class="java">if(list1==null&amp;&amp;list2!=null){//如果有一个不为空则执行连接链表操作    list1 = list2;    pre.next = list1;}    </code></pre><img src="http://dzou.wangminwei.top/static/images/algorithm/11.png"><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><pre><code class="java">public class Solution {    public ListNode Merge(ListNode list1,ListNode list2) {        if(list1==null||list2==null){            return list2==null?list1:list2;        }        ListNode head1,head2,pre;        head1 = list1;head2 = list2;pre = null;        while(list1!=null&amp;&amp;list2!=null){            if(list1.val&gt;=list2.val){                //把list2放过来                ListNode next = list2.next;                if(pre!=null){                    pre.next = list2;                }                list2.next = list1;                pre = list2;                list2 = next;            }else{                list1 = list1.next;                if(pre == null){                    pre = head1;                }else{                    pre = pre.next;                }            }        }        if(list1==null&amp;&amp;list2!=null){            list1 = list2;            pre.next = list1;        }        return head2.val&lt;=head1.val?head2:head1;    }}</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      剑指offer—合并两个有序链表.输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。
-    
-    </summary>
-    
-      <category term="算法" scheme="https://www.dzou.top/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
-      <category term="算法" scheme="https://www.dzou.top/tags/%E7%AE%97%E6%B3%95/"/>
     
       <category term="牛客" scheme="https://www.dzou.top/tags/%E7%89%9B%E5%AE%A2/"/>
     
