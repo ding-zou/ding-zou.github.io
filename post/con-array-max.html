@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="一位不想学习算法的后端同学">
+  <meta name="keywords" content="Java,算法,Java基础,牛客网,LeetCode,剑指offer">
 
 
 
@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="剑指offer—连续子数组最大和题目描述HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。给一">
-<meta name="keywords" content="Java后端">
+<meta name="description" content="HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。给一个数组，返回它的最大连续子序列的和，你会">
+<meta name="keywords" content="Java,算法,Java基础,牛客网,LeetCode,剑指offer">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Dzou&#39;s Blog">
-<meta property="og:url" content="https://www.dzou.top/post/0.html">
+<meta property="og:title" content="剑指offer—连续子数组最大和 解答">
+<meta property="og:url" content="https://www.dzou.top/post/con-array-max.html">
 <meta property="og:site_name" content="Dzou&#39;s Blog">
-<meta property="og:description" content="剑指offer—连续子数组最大和题目描述HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。给一">
+<meta property="og:description" content="HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。给一个数组，返回它的最大连续子序列的和，你会">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-22T02:53:47.146Z">
+<meta property="og:updated_time" content="2019-11-22T03:08:33.839Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Dzou&#39;s Blog">
-<meta name="twitter:description" content="剑指offer—连续子数组最大和题目描述HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。给一">
+<meta name="twitter:title" content="剑指offer—连续子数组最大和 解答">
+<meta name="twitter:description" content="HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。给一个数组，返回它的最大连续子序列的和，你会">
 
 
 
@@ -122,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="https://www.dzou.top/post/0.html">
+  <link rel="canonical" href="https://www.dzou.top/post/con-array-max.html">
 
 
 
@@ -132,7 +132,7 @@
 
 
 
-  <title> | Dzou's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>剑指offer—连续子数组最大和 解答 | Dzou's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -301,7 +301,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/0.html">
+    <link itemprop="mainEntityOfPage" href="https://www.dzou.top/post/con-array-max.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="dzou">
@@ -318,7 +318,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline"></h2>
+          <h2 class="post-title" itemprop="name headline">剑指offer—连续子数组最大和 解答</h2>
         
 
         <div class="post-meta">
@@ -330,8 +330,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-22T10:18:07+08:00">
-                2019-11-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-23T16:29:32+08:00">
+                2019-07-23
               </time>
             
 
@@ -341,6 +341,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -349,8 +371,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/post/0.html#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/0.html" itemprop="commentCount"></span>
+                <a href="/post/con-array-max.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="post/con-array-max.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -399,6 +421,10 @@
             </div>
           
 
+          
+              <div class="post-description">
+                  HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。给一个数组，返回它的最大连续子序列的和，你会不会被他忽悠住？(子向量的长度至少是1)
+              </div>
           
 
         </div>
@@ -477,7 +503,7 @@ public class Solution {
   </li>
   <li class="post-copyright-link">
   <strong>本文链接：</strong>
-  <a href="http://www.dzou.top/post/0.html" title>http://www.dzou.top/post/0.html</a>
+  <a href="http://www.dzou.top/post/con-array-max.html" title="剑指offer—连续子数组最大和 解答">http://www.dzou.top/post/con-array-max.html</a>
 </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -492,6 +518,24 @@ public class Solution {
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+            <a href="/tags/基础/" rel="tag"># 基础</a>
+          
+            <a href="/tags/牛客/" rel="tag"># 牛客</a>
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+            <a href="/tags/剑指offer/" rel="tag"># 剑指offer</a>
+          
+            <a href="/tags/笔试/" rel="tag"># 笔试</a>
+          
+        </div>
       
 
       
@@ -517,8 +561,8 @@ public class Solution {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/post/qrcode-scan.html" rel="next" title="扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码">
-                <i class="fa fa-chevron-left"></i> 扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码
+              <a href="/post/37228cde.html" rel="next" title="Java并发编程学习笔记-更新中">
+                <i class="fa fa-chevron-left"></i> Java并发编程学习笔记-更新中
               </a>
             
           </div>
@@ -526,6 +570,10 @@ public class Solution {
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/f08593ab.html" rel="prev" title="牛客网算法编程题--办公室路径走法 解答">
+                牛客网算法编程题--办公室路径走法 解答 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -933,9 +981,9 @@ public class Solution {
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'https://www.dzou.top/post/0.html';
-          this.page.identifier = 'post/0.html';
-          this.page.title = '';
+          this.page.url = 'https://www.dzou.top/post/con-array-max.html';
+          this.page.identifier = 'post/con-array-max.html';
+          this.page.title = '剑指offer—连续子数组最大和 解答';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://dzou.disqus.com/embed.js';

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.dzou.top/"/>
-  <updated>2019-11-22T02:53:47.146Z</updated>
+  <updated>2019-11-13T16:25:14.534Z</updated>
   <id>https://www.dzou.top/</id>
   
   <author>
@@ -15,27 +15,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title></title>
-    <link href="https://www.dzou.top/post/0.html"/>
-    <id>https://www.dzou.top/post/0.html</id>
-    <published>2019-11-22T02:18:07.644Z</published>
-    <updated>2019-11-22T02:53:47.146Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="剑指offer—连续子数组最大和"><a href="#剑指offer—连续子数组最大和" class="headerlink" title="剑指offer—连续子数组最大和"></a>剑指offer—连续子数组最大和</h2><h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。给一个数组，返回它的最大连续子序列的和，你会不会被他忽悠住？(子向量的长度至少是1)</p><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><ul><li>方法一：动态规划数组保存每个数的前面的包括自己的连续最大和，最后排序dp[]返回最后一个元素</li><li>方法二：用变量s保存当前数组位置前一个数的最大和</li></ul><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><h4 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h4><ul><li>动态规划</li></ul><pre><code class="java">import java.util.Arrays;public class Solution {    public int FindGreatestSumOfSubArray(int[] array) {        int []dp = new int[array.length];        for(int i=0;i&lt;array.length;i++){            if(i==0) dp[i] = array[i];            else{                int m = dp[i-1]&lt;0?0:dp[i-1];//如果前一个最大和为负数，就从0开始加，前面的不要算进去                if(m+array[i]&gt;=0) dp[i] = m+array[i];                else dp[i] = array[i];            }        }        Arrays.sort(dp);        return dp[dp.length-1];    }}</code></pre><h4 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h4><ul><li>记录当前位置前面一个位置的最大和，并更新res为最大和中的最大值</li></ul><pre><code class="java">import java.util.Arrays;public class Solution {    public int FindGreatestSumOfSubArray(int[] array) {        int s = 0;        int res = Integer.MIN_VALUE;//可以保存负数        for(int i=0;i&lt;array.length;i++){            if(s&lt;=0){                s = array[i];            }else {                s = s + array[i];            }            res = Math.max(res,s);        }        return res;    }}</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;剑指offer—连续子数组最大和&quot;&gt;&lt;a href=&quot;#剑指offer—连续子数组最大和&quot; class=&quot;headerlink&quot; title=&quot;剑指offer—连续子数组最大和&quot;&gt;&lt;/a&gt;剑指offer—连续子数组最大和&lt;/h2&gt;&lt;h3 id=&quot;题目描述&quot;&gt;&lt;a 
-      
-    
-    </summary>
-    
-    
-  </entry>
   
   <entry>
     <title>扫码登录功能—轮询or长连接WebSocket—Zxing生成二维码</title>
@@ -111,9 +90,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="NIO" scheme="https://www.dzou.top/tags/NIO/"/>
     
@@ -145,9 +124,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="NIO" scheme="https://www.dzou.top/tags/NIO/"/>
     
@@ -177,9 +156,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
-    
       <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="编码" scheme="https://www.dzou.top/tags/%E7%BC%96%E7%A0%81/"/>
     
@@ -353,11 +332,11 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="项目" scheme="https://www.dzou.top/tags/%E9%A1%B9%E7%9B%AE/"/>
+    
+      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
     
   </entry>
   
@@ -441,11 +420,11 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="项目" scheme="https://www.dzou.top/tags/%E9%A1%B9%E7%9B%AE/"/>
+    
+      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
     
   </entry>
   
@@ -499,11 +478,11 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="项目" scheme="https://www.dzou.top/tags/%E9%A1%B9%E7%9B%AE/"/>
+    
+      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
     
       <category term="Redis" scheme="https://www.dzou.top/tags/Redis/"/>
     
@@ -535,11 +514,11 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="项目" scheme="https://www.dzou.top/tags/%E9%A1%B9%E7%9B%AE/"/>
+    
+      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
     
       <category term="加密" scheme="https://www.dzou.top/tags/%E5%8A%A0%E5%AF%86/"/>
     
@@ -593,6 +572,40 @@
     <summary type="html">
     
       剑指offer—链表倒数第k个节点.输入一个链表，输出该链表中倒数第k个结点。
+    
+    </summary>
+    
+      <category term="算法" scheme="https://www.dzou.top/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
+    
+      <category term="算法" scheme="https://www.dzou.top/tags/%E7%AE%97%E6%B3%95/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="牛客" scheme="https://www.dzou.top/tags/%E7%89%9B%E5%AE%A2/"/>
+    
+      <category term="面试" scheme="https://www.dzou.top/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+      <category term="剑指offer" scheme="https://www.dzou.top/tags/%E5%89%91%E6%8C%87offer/"/>
+    
+      <category term="笔试" scheme="https://www.dzou.top/tags/%E7%AC%94%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>剑指offer—合并两个有序链表 解答</title>
+    <link href="https://www.dzou.top/post/combine-two-sorted-linkedlist.html"/>
+    <id>https://www.dzou.top/post/combine-two-sorted-linkedlist.html</id>
+    <published>2019-09-07T08:29:32.000Z</published>
+    <updated>2019-11-22T02:32:38.781Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="剑指offer—合并两个有序链表"><a href="#剑指offer—合并两个有序链表" class="headerlink" title="剑指offer—合并两个有序链表"></a>剑指offer—合并两个有序链表</h2><h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。</p><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><blockquote><p>我们考虑到最优实现，时间复杂度应该为两个链表长度O(M+N)，空间复杂度为O(1)，只使用几个指针，类似归并排序思想</p></blockquote><ul><li>先从第一个链表开始迭代，如果链表1当前指针的值&lt;链表2当前指针的值则链表1指针往后移动一位，反之如果链表1当前指针的值&gt;=链表2的值，则执行插入到链表1当前指针前面一个位置，基本代码如下：<code>pre</code>指向链表1当前节点的前一个节点，用于插入</li></ul><pre><code class="java">ListNode next = list2.next;//保存链表2的下一个节点指针pre.next = list2;//pre指向新插入节点list2.next = list1;//新插入节点指向链表1当前节点pre = list2;//更新pre到pre的下一个节点也就是新插入的节点list2 = next;//更新链表2当前节点为下一个节点(保存的引用在这里使用)</code></pre><ul><li>当链表1为空或者链表2为空时，结束迭代，剩下的非空链表的所有元素都大于新链表所有元素，直接<code>接入</code>到新链表后面就可以了，代码如下</li></ul><pre><code class="java">if(list1==null&amp;&amp;list2!=null){//如果有一个不为空则执行连接链表操作    list1 = list2;    pre.next = list1;}    </code></pre><img src="http://dzou.wangminwei.top/static/images/algorithm/11.png"><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><pre><code class="java">public class Solution {    public ListNode Merge(ListNode list1,ListNode list2) {        if(list1==null||list2==null){            return list2==null?list1:list2;        }        ListNode head1,head2,pre;        head1 = list1;head2 = list2;pre = null;        while(list1!=null&amp;&amp;list2!=null){            if(list1.val&gt;=list2.val){                //把list2放过来                ListNode next = list2.next;                if(pre!=null){                    pre.next = list2;                }                list2.next = list1;                pre = list2;                list2 = next;            }else{                list1 = list1.next;                if(pre == null){                    pre = head1;                }else{                    pre = pre.next;                }            }        }        if(list1==null&amp;&amp;list2!=null){            list1 = list2;            pre.next = list1;        }        return head2.val&lt;=head1.val?head2:head1;    }}</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      剑指offer—合并两个有序链表.输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。
     
     </summary>
     
