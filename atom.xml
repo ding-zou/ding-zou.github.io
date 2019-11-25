@@ -90,9 +90,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="NIO" scheme="https://www.dzou.top/tags/NIO/"/>
     
@@ -124,9 +124,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="NIO" scheme="https://www.dzou.top/tags/NIO/"/>
     
@@ -156,9 +156,9 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
-      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
-    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
+    
+      <category term="基础" scheme="https://www.dzou.top/tags/%E5%9F%BA%E7%A1%80/"/>
     
       <category term="编码" scheme="https://www.dzou.top/tags/%E7%BC%96%E7%A0%81/"/>
     
@@ -272,9 +272,9 @@
       <category term="数据库" scheme="https://www.dzou.top/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
     
-      <category term="MongoDB" scheme="https://www.dzou.top/tags/MongoDB/"/>
-    
       <category term="数据库" scheme="https://www.dzou.top/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+      <category term="MongoDB" scheme="https://www.dzou.top/tags/MongoDB/"/>
     
       <category term="NoSql" scheme="https://www.dzou.top/tags/NoSql/"/>
     
@@ -332,11 +332,11 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
+      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
+    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="项目" scheme="https://www.dzou.top/tags/%E9%A1%B9%E7%9B%AE/"/>
-    
-      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
     
   </entry>
   
@@ -420,11 +420,11 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
+      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
+    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="项目" scheme="https://www.dzou.top/tags/%E9%A1%B9%E7%9B%AE/"/>
-    
-      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
     
   </entry>
   
@@ -478,11 +478,11 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
+      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
+    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="项目" scheme="https://www.dzou.top/tags/%E9%A1%B9%E7%9B%AE/"/>
-    
-      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
     
       <category term="Redis" scheme="https://www.dzou.top/tags/Redis/"/>
     
@@ -514,11 +514,11 @@
     
       <category term="Java" scheme="https://www.dzou.top/tags/Java/"/>
     
+      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
+    
       <category term="Web" scheme="https://www.dzou.top/tags/Web/"/>
     
       <category term="项目" scheme="https://www.dzou.top/tags/%E9%A1%B9%E7%9B%AE/"/>
-    
-      <category term="SpringBoot" scheme="https://www.dzou.top/tags/SpringBoot/"/>
     
       <category term="加密" scheme="https://www.dzou.top/tags/%E5%8A%A0%E5%AF%86/"/>
     

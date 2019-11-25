@@ -89,12 +89,12 @@
 <meta property="og:site_name" content="Dzou&#39;s Blog">
 <meta property="og:description" content="如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。我们使用Insert()方法读取数据流，使用GetMedian()方法获取当前读取数据的中位数。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://dzou.wangminwei.top/static/images/algorithm/45,png">
-<meta property="og:updated_time" content="2019-11-22T02:41:35.350Z">
+<meta property="og:image" content="http://dzou.wangminwei.top/static/images/algorithm/45.png">
+<meta property="og:updated_time" content="2019-11-25T02:40:59.939Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="剑指offer—数据流的中位数  解答">
 <meta name="twitter:description" content="如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。我们使用Insert()方法读取数据流，使用GetMedian()方法获取当前读取数据的中位数。">
-<meta name="twitter:image" content="http://dzou.wangminwei.top/static/images/algorithm/45,png">
+<meta name="twitter:image" content="http://dzou.wangminwei.top/static/images/algorithm/45.png">
 
 
 
@@ -444,7 +444,7 @@
       
         <h2 id="剑指offer—数据流的中位数"><a href="#剑指offer—数据流的中位数" class="headerlink" title="剑指offer—数据流的中位数"></a>剑指offer—数据流的中位数</h2><h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。我们使用Insert()方法读取数据流，使用GetMedian()方法获取当前读取数据的中位数。</p>
 <h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p><strong>如果使用接收完一次排序，那么最短时间复杂度也是O(nlogn)，我们需要找一种可以在接收完就可以直接返回的，也就是O(n)n次查找以内的做法，可以想到构建一颗<code>二叉搜索树</code>，但是二叉搜索树最好最坏情况较为不稳定，我们又可以想到使用一颗<code>AVL</code>树，但是AVL树代码比较复杂，我们还是找寻其他解决办法，——<code>堆</code>，想到Java有堆实现的优先级队列<code>PriorityQueue</code>，这不省事了吗，但是要的是中位数！！！我们无法从<code>大根堆</code>或者<code>小根堆</code>获取中位数呀，仔细一想，那不就是<code>大根堆和小根堆的相交的地方</code>，我们构建一个大根堆，一个小根堆，分别存储一半元素，那么最后相交的地方就可以根据奇偶判断中位数了吗！</strong></p>
-<img src="http://dzou.wangminwei.top/static/images/algorithm/45,png">
+<img src="http://dzou.wangminwei.top/static/images/algorithm/45.png">
 
 <p>就像两个金字塔一样，<strong>大根堆存储元素中最小的一半，小根堆存储最大的一半，小根堆的顶部就是最大的一半中最小的，大根堆堆顶就是最小的一半中最大的，那么中位数一定可以由他们两个产生，如果总长为奇数，那么就是堆元素较多的那个，如果为偶数那么就是他们之间的和除以2</strong></p>
 <h4 id="一些细节的处理"><a href="#一些细节的处理" class="headerlink" title="一些细节的处理"></a>一些细节的处理</h4><ul>
@@ -640,8 +640,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/post/topk.html" rel="next" title="剑指offer—数组前K个元素 TopK  解答">
-                <i class="fa fa-chevron-left"></i> 剑指offer—数组前K个元素 TopK  解答
+              <a href="/post/straight.html" rel="next" title="剑指offer—扑克牌顺子  解答">
+                <i class="fa fa-chevron-left"></i> 剑指offer—扑克牌顺子  解答
               </a>
             
           </div>
@@ -650,8 +650,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/post/half-num-repeated.html" rel="prev" title="剑指offer—数组中出现超过一半的数  解答">
-                剑指offer—数组中出现超过一半的数  解答 <i class="fa fa-chevron-right"></i>
+              <a href="/post/find-enter-of-loop-list.html" rel="prev" title="剑指offer—找出链表环的入口  解答">
+                剑指offer—找出链表环的入口  解答 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
